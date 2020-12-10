@@ -1,13 +1,14 @@
 package com.github.fratikak.l4d_gamepl;
 
-import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
 public class Login implements Listener {
 
@@ -32,19 +33,25 @@ public class Login implements Listener {
     //サーバーjoin時にサバイバルモードにしてロビーアイテムを与える
     @EventHandler
     public void joinEvent(PlayerJoinEvent event){
+
         Player player = event.getPlayer();
         Inventory inventory = player.getInventory();
+        World world = player.getWorld();
+        Location location = world.getSpawnLocation(); //プレイヤーのいるワールドのスポーン地点を取得する
 
         event.setJoinMessage(ChatColor.AQUA + player.getDisplayName() + "がゲームに参加しました！");
 
+        //ゲームモードを固定。サバイバル
         if(player.getGameMode() != GameMode.SURVIVAL){
             player.setGameMode(GameMode.SURVIVAL);
         }
 
-        inventory.clear();
+        inventory.clear(); //インベントリ内を削除
+
+        pl.giveLobbyItem(inventory); //ロビーアイテム追加
+
+        player.teleport(location,PlayerTeleportEvent.TeleportCause.PLUGIN); //スポーン地点固定
 
     }
-
-
 
 }
