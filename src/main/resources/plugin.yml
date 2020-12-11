@@ -4,3 +4,7 @@ main: com.github.fratikak.l4d_gamepl.L4D_gamepl
 api-version: 1.16
 authors: [ FratikaK ]
 description: L4D in Minecraft
+
+commands:
+  l4d:
+    description: ゲームに関する処理開始など
