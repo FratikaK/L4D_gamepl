@@ -48,7 +48,7 @@ public class Start {
                     if (target.getGameMode() == GameMode.SURVIVAL) {
                         String playerName = target.getDisplayName();
                         L4D_gamepl.getPlayerList().add(playerName);
-                        pl.getLogger().info(Color.AQUA + playerName);
+                        pl.getLogger().info(ChatColor.AQUA + playerName);
                     }
                 }
 
@@ -67,7 +67,7 @@ public class Start {
                     player.sendMessage("参加者は" + ChatColor.AQUA + L4D_gamepl.getPlayerList() + ChatColor.WHITE + "です");
                     player.sendMessage("10秒後に開始します...");
 
-                    for (int i = 10; i <= 0; i--) {
+                    for (int i = 10; i >= 0; i--) {
                         if (!L4D_gamepl.isGame()) {
                             timer.cancel();
                         }
@@ -75,8 +75,8 @@ public class Start {
                         //プレイヤーにカウントを表示。不参加者にも表示
                         for (Player target : Bukkit.getOnlinePlayers()) {
                             target.playSound(target.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 24);
-                            target.sendTitle(ChatColor.WHITE + "" + i, "", 5, 10, 5);
-                            pl.getServer().broadcastMessage(ChatColor.GOLD + "" + i);
+                            target.sendTitle(ChatColor.WHITE + "ゲーム開始まで" + i + "秒", "", 5, 10, 5);
+                            pl.getServer().broadcastMessage(ChatColor.GOLD + "ゲーム開始まで" + i + "秒");
                         }
 
                         try {
