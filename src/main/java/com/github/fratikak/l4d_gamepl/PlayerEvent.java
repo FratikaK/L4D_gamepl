@@ -12,7 +12,7 @@ import org.bukkit.inventory.Inventory;
 public class PlayerEvent implements Listener {
 
     private final L4D_gamepl pl;
-    private static Location deathlocation;
+    private static Location deathLocation;
 
     //コンストラクタ
     public PlayerEvent(L4D_gamepl pl) {
@@ -33,7 +33,7 @@ public class PlayerEvent implements Listener {
          */
 
         Player player = event.getEntity();
-        deathlocation = player.getLocation().clone();
+        deathLocation = player.getLocation().clone();
 
         player.setGameMode(GameMode.CREATIVE);
 
@@ -51,7 +51,10 @@ public class PlayerEvent implements Listener {
 
         Inventory inventory = player.getInventory();
 
-        event.setRespawnLocation(deathlocation);
+        event.setRespawnLocation(deathLocation);
+
+        //透明化処理とインベントリ処理
+        player.hidePlayer(pl,player);
 
         inventory.clear();
 
