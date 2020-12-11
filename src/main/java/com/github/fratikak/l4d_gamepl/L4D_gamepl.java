@@ -23,9 +23,10 @@ public final class L4D_gamepl extends JavaPlugin {
     @Override
     public void onEnable() {
         getLogger().info("L4DGame START!");
-        Objects.requireNonNull(this.getCommand("l4d")).setExecutor(new L4DCommands(this));
+        Objects.requireNonNull(getCommand("l4d")).setExecutor(new L4DCommands(this));
         getServer().getPluginManager().registerEvents(new Login(this),this);
         getServer().getPluginManager().registerEvents(new PlayerEvent(this),this);
+        getServer().getPluginManager().registerEvents(new DamageOff(this),this);
     }
 
     @Override

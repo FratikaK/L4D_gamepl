@@ -18,20 +18,20 @@ public class L4DCommands implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
         if (!(sender instanceof Player)){
+            pl.getLogger().info("ゲーム内から実行するコマンドです！");
             return false;
         }
 
-        if (args.length == 1){
-            switch (args[0].toLowerCase()) {
+        if(command.getName().equalsIgnoreCase("l4d")){
 
-                case "start":
-                    new Start(pl).startGame((Player) sender);
-                    break;
+            if(args.length == 0)return false;
 
-                default:
-                    sender.sendMessage("/l4d <start>");
+            if(args[0].equalsIgnoreCase("start")){
+                new Start(pl).startGame((Player) sender);
+                return true;
             }
         }
-        return true;
+
+        return false;
     }
 }

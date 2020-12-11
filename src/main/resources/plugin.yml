@@ -7,4 +7,3 @@ description: L4D in Minecraft
 
 commands:
   l4d:
-    description: ゲームに関する処理開始など
