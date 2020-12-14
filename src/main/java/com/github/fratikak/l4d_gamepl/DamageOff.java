@@ -28,7 +28,7 @@ public class DamageOff implements Listener {
 
 
     @EventHandler
-    public void dmOffEvent(EntityDamageByEntityEvent event){
+    public void dmOffEvent(EntityDamageByEntityEvent event) {
 
         /**
          * 観戦者がダメージを与えてもそれをキャンセルさせる
@@ -37,11 +37,11 @@ public class DamageOff implements Listener {
 
         Entity damager = event.getDamager();
 
-        if(damager.getType() == EntityType.PLAYER){
+        if (damager.getType() == EntityType.PLAYER) {
             Player spectator = (Player) damager;
 
-            if(!spectator.isOp()){
-                if (spectator.getGameMode() != GameMode.SURVIVAL){
+            if (!spectator.isOp()) {
+                if (spectator.getGameMode() != GameMode.SURVIVAL) {
                     event.setCancelled(true);
                 }
             }
@@ -49,7 +49,7 @@ public class DamageOff implements Listener {
     }
 
     @EventHandler
-    public void blockBreakEvent(BlockBreakEvent event){
+    public void blockBreakEvent(BlockBreakEvent event) {
 
         /**
          * ブロック破壊を無効にする
@@ -58,19 +58,19 @@ public class DamageOff implements Listener {
 
         Player player = event.getPlayer();
 
-        if(!player.isOp()){
+        if (!player.isOp()) {
             event.setCancelled(true);
         }
     }
 
     @EventHandler
-    public void blockPlaceEvent(BlockPlaceEvent event){
+    public void blockPlaceEvent(BlockPlaceEvent event) {
 
         //ブロック破壊と同様、置けないようにする
 
         Player player = event.getPlayer();
 
-        if(!player.isOp()){
+        if (!player.isOp()) {
             event.setCancelled(true);
         }
     }

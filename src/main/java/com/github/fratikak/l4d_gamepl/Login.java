@@ -24,17 +24,17 @@ public class Login implements Listener {
 
     //op権限を持っているかの判定
     @EventHandler
-    public void loginEvent(PlayerLoginEvent event){
+    public void loginEvent(PlayerLoginEvent event) {
         Player player = event.getPlayer();
 
-        if (player.isOp()){
+        if (player.isOp()) {
             pl.getLogger().info(player.getDisplayName() + "はop権限を持っています");
         }
     }
 
     //サーバーjoin時にサバイバルモードにしてロビーアイテムを与える
     @EventHandler
-    public void joinEvent(PlayerJoinEvent event){
+    public void joinEvent(PlayerJoinEvent event) {
 
         Player player = event.getPlayer();
         Inventory inventory = player.getInventory();
@@ -44,7 +44,7 @@ public class Login implements Listener {
         event.setJoinMessage(ChatColor.AQUA + player.getDisplayName() + "がゲームに参加しました！");
 
         //ゲームモードを固定。サバイバル
-        if(player.getGameMode() != GameMode.SURVIVAL){
+        if (player.getGameMode() != GameMode.SURVIVAL) {
             player.setGameMode(GameMode.SURVIVAL);
         }
 
@@ -52,7 +52,7 @@ public class Login implements Listener {
 
         pl.giveLobbyItem(inventory); //ロビーアイテム追加
 
-        player.teleport(location,PlayerTeleportEvent.TeleportCause.PLUGIN); //スポーン地点固定
+        player.teleport(location, PlayerTeleportEvent.TeleportCause.PLUGIN); //スポーン地点固定
 
     }
 

@@ -21,11 +21,12 @@ public class PlayerEvent implements Listener {
 
     /**
      * プレイヤー関連のイベントを記述する
+     *
      * @author FratikaK
      */
 
     @EventHandler
-    public void changeGamerule(PlayerDeathEvent event){
+    public void changeGamerule(PlayerDeathEvent event) {
 
         /**
          * プレイヤーの死亡地点をクローンして、リスポーンイベントに渡す
@@ -40,7 +41,7 @@ public class PlayerEvent implements Listener {
     }
 
     @EventHandler
-    public void setSpectator(PlayerRespawnEvent event){
+    public void setSpectator(PlayerRespawnEvent event) {
 
         /**
          * リスポーン位置をデスイベントから受け取り、設定
@@ -54,7 +55,7 @@ public class PlayerEvent implements Listener {
         event.setRespawnLocation(deathLocation);
 
         //透明化処理とインベントリ処理
-        player.hidePlayer(pl,player);
+        player.hidePlayer(pl, player);
 
         inventory.clear();
 
