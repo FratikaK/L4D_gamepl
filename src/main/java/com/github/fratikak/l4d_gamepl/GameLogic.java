@@ -23,24 +23,32 @@ public class GameLogic implements Listener {
      * ・プレイヤーが死亡した場合にstaticプレイヤーリストから削除
      * ・同じくプレイヤーが死亡した場合にプレイヤーリストネームタグを変更する
      * ・サバイバルモードのみスプリント処理を無効化（クリエイティブは可）
+     * ・イベント内容がPlayerEventと被る所があるので統一するかもしれない
      *
      * @author FratikaK
      */
 
+    //プレイヤーが死亡時、リストから削除、プロフィール名変更
     @EventHandler
     public void playerDeathEvent(PlayerDeathEvent event) {
         Player player = event.getEntity();
 
-        L4D_gamepl.getPlayerList().remove(player);
-        player.setPlayerListName("[" + ChatColor.RED + "死亡" + ChatColor.WHITE + "]" + player.getDisplayName());
+        if (player.getGameMode() == GameMode.SURVIVAL){
+            L4D_gamepl.getPlayerList().remove(player.getDisplayName());
+            player.setPlayerListName("[" + ChatColor.RED + "死亡" + ChatColor.WHITE + "]" + player.getDisplayName());
+
+            pl.getLogger().info(ChatColor.GREEN + player.getDisplayName() + ChatColor.WHITE + "が死亡しました");
+            pl.getLogger().info("残りのプレイヤーは" + ChatColor.GREEN + L4D_gamepl.getPlayerList() + ChatColor.WHITE + "です");
+        }
 
     }
 
+    //ゲーム参加者のみスプリントを禁止する
     @EventHandler
     public void dontSplint(PlayerToggleSprintEvent event){
         Player player = event.getPlayer();
 
-        if(player.getGameMode() == GameMode.SURVIVAL){
+        if(player.getGameMode() == GameMode.SURVIVAL && L4D_gamepl.isGame()){
             event.setCancelled(true);
         }
     }
