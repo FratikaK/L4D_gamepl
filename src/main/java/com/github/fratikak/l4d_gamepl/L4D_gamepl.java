@@ -12,6 +12,8 @@ import java.util.Objects;
 /**
  * メインクラス
  * イベント、コマンド読み込み
+ *
+ * @author FratikaK
  */
 
 public final class L4D_gamepl extends JavaPlugin {

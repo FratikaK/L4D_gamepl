@@ -66,7 +66,7 @@ public class GameLogic implements Listener {
     @EventHandler
     public void zombieSpawn(PlayerMoveEvent event) {
 
-        /**
+        /*
          * 基本となるゾンビがスポーンするロジックを記述する
          * 参加者が歩くことで確率でスポーンする
          *
@@ -96,7 +96,7 @@ public class GameLogic implements Listener {
     @EventHandler
     public void specialMobSpawn(EntityDeathEvent event) {
 
-        /**
+        /*
          * ゾンビが死亡すると、一定確率で特殊なMobが出現する
          * スポーンするMobの挙動は別クラスにて記述する
          */

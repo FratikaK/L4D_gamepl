@@ -30,7 +30,7 @@ public class DamageOff implements Listener {
     @EventHandler
     public void dmOffEvent(EntityDamageByEntityEvent event) {
 
-        /**
+        /*
          * 観戦者がダメージを与えてもそれをキャンセルさせる
          * ただし、op権限がないプレイヤーのみ
          */
@@ -51,7 +51,7 @@ public class DamageOff implements Listener {
     @EventHandler
     public void blockBreakEvent(BlockBreakEvent event) {
 
-        /**
+        /*
          * ブロック破壊を無効にする
          * ただし、op権限がないプレイヤーのみ
          */
