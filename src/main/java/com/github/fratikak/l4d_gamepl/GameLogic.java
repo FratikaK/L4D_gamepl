@@ -60,6 +60,7 @@ public class GameLogic implements Listener {
 
         if (player.getGameMode() == GameMode.SURVIVAL && L4D_gamepl.isGame()) {
             event.setCancelled(true);
+            player.setSprinting(false);
         }
     }
 
