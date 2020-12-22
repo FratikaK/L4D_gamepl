@@ -21,7 +21,7 @@ public class Start {
      * @author FratikaK
      */
 
-    /**
+    /*
      * [課題]
      * カウント終了後に、ゲーム進行用のメソッドを呼び出す
      * ゲームが始まった時にプレイタイムをカウントするメソッド作成
@@ -52,7 +52,7 @@ public class Start {
                     }
                 }
 
-                /**
+                /*
                  * 参加プレイヤーがいればゲーム開始、
                  * いなければタイマーキャンセル。
                  */
@@ -91,7 +91,7 @@ public class Start {
                     //武器などのアイテムを渡す処理
                     for (Player target : Bukkit.getOnlinePlayers()) {
                         if (target.getGameMode() == GameMode.SURVIVAL) {
-                            /**
+                            /*
                              * <後で記述するもの>
                              * ステージへテレポート処理
                              * 参加プレイヤーのステータスを設定
