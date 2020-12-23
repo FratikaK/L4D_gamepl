@@ -36,7 +36,6 @@ public class Start {
 
     public void startGame(Player player) {
 
-        Timer timer = new Timer();
         TimerTask task = new TimerTask() {
 
             @Override
@@ -59,7 +58,7 @@ public class Start {
                 if (L4D_gamepl.getPlayerList().isEmpty()) {
                     player.sendMessage(ChatColor.RED + "参加するプレイヤーが存在しません！");
                     L4D_gamepl.setGame(false);
-                    timer.cancel();
+
                 } else {
                     L4D_gamepl.setTime(0);
                     L4D_gamepl.setGame(true);
@@ -69,7 +68,6 @@ public class Start {
 
                     for (int i = 10; i >= 0; i--) {
                         if (!L4D_gamepl.isGame()) {
-                            timer.cancel();
                         }
 
                         //プレイヤーにカウントを表示。不参加者にも表示
@@ -103,6 +101,5 @@ public class Start {
                 }
             }
         };
-        timer.schedule(task, 0);
     }
 }
