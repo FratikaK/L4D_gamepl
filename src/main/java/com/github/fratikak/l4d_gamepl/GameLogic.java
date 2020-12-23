@@ -24,7 +24,7 @@ public class GameLogic implements Listener {
 
     /**
      * ゲーム開始後から修了までの処理を記述する
-     *
+     * <p>
      * ・プレイヤーが死亡した場合にstaticプレイヤーリストから削除
      * ・同じくプレイヤーが死亡した場合にプレイヤーリストネームタグを変更する
      * ・サバイバルモードのみスプリント処理を無効化（クリエイティブは可）
@@ -71,22 +71,21 @@ public class GameLogic implements Listener {
          *
          * サーバーの負荷具合をみてスポーン量を調整する
          */
-        
-        if (L4D_gamepl.isGame()){
+
+        if (L4D_gamepl.isGame()) {
             //スポナーの場所を取得する
             Location location = event.getLocation().clone();
             event.setCancelled(true);
-            
+
             //プレイヤー数を取得して、プレイヤー数×指定した数のゾンビをスポーンさせる
             World world = event.getSpawner().getWorld();
             int players = L4D_gamepl.getPlayerList().size();
-            for (int i = 0; i < players*20; i++){
+            for (int i = 0; i < players * 10; i++) {
                 world.spawnEntity(location, EntityType.ZOMBIE);
             }
         }
-        
 
-        
+
     }
 
     @EventHandler
