@@ -71,12 +71,12 @@ public class GameLogic implements Listener {
          *
          * サーバーの負荷具合をみてスポーン量を調整する
          */
-
+        
         if (L4D_gamepl.isGame()){
             //スポナーの場所を取得する
             Location location = event.getLocation().clone();
             event.setCancelled(true);
-
+            
             //プレイヤー数を取得して、プレイヤー数×指定した数のゾンビをスポーンさせる
             World world = event.getSpawner().getWorld();
             int players = L4D_gamepl.getPlayerList().size();
@@ -84,9 +84,9 @@ public class GameLogic implements Listener {
                 world.spawnEntity(location, EntityType.ZOMBIE);
             }
         }
+        
 
-
-
+        
     }
 
     @EventHandler
@@ -98,7 +98,7 @@ public class GameLogic implements Listener {
          */
 
         Random random = new Random();
-        int spawnValue = random.nextInt(20);
+        int spawnValue = random.nextInt(10);
 
         EntityType type = event.getEntity().getType();
 
@@ -109,10 +109,10 @@ public class GameLogic implements Listener {
                 World world = event.getEntity().getWorld();
 
                 switch (spawnValue) {
-                    case 1:
-                        //ゾンビホース
-                        world.spawnEntity(specialLocation, EntityType.ZOMBIE_HORSE);
-                        break;
+//                    case 1:
+//                        //ゾンビホース
+//                        world.spawnEntity(specialLocation, EntityType.ZOMBIE_HORSE);
+//                        break;
 
                     case 2:
                         //クリーパー
