@@ -1,15 +1,13 @@
 package com.github.fratikak.l4d_gamepl;
 
-import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.entity.SpawnerSpawnEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerToggleSprintEvent;
 
@@ -65,33 +63,30 @@ public class GameLogic implements Listener {
     }
 
     @EventHandler
-    public void zombieSpawn(PlayerMoveEvent event) {
+    public void zombieSpawn(SpawnerSpawnEvent event) {
 
         /*
          * 基本となるゾンビがスポーンするロジックを記述する
-         * 参加者が歩くことで確率でスポーンする
+         * スポナーが稼働した場合、追加でプレイヤー一人につき10匹程度追加でゾンビをスポーンさせる
          *
-         * サーバーの負荷具合をみてスポーン確率を調整する
+         * サーバーの負荷具合をみてスポーン量を調整する
          */
 
-        Random random = new Random();
-        //スポーン確率変更はspawnValueの数値を弄ればOK
-        int spawnValue = random.nextInt(10);
+        if (L4D_gamepl.isGame()){
+            //スポナーの場所を取得する
+            Location location = event.getLocation().clone();
+            event.setCancelled(true);
 
-        Player player = event.getPlayer();
-
-        //参加者の周りのみスポーンさせる
-        if (player.getGameMode() == GameMode.SURVIVAL && L4D_gamepl.isGame()) {
-            Location playerLocation = player.getLocation().clone();
-            Location zombieLocation = playerLocation.add(10, 1, 0);
-            World world = player.getWorld();
-
-            if (spawnValue == 5) {
-                world.spawnEntity(zombieLocation, EntityType.ZOMBIE);
-            } else if (spawnValue == 1) {
-                world.spawnEntity(zombieLocation, EntityType.ZOMBIE_VILLAGER);
+            //プレイヤー数を取得して、プレイヤー数×指定した数のゾンビをスポーンさせる
+            World world = event.getSpawner().getWorld();
+            int players = L4D_gamepl.getPlayerList().size();
+            for (int i = 0; i < players*20; i++){
+                world.spawnEntity(location, EntityType.ZOMBIE);
             }
         }
+
+
+
     }
 
     @EventHandler
