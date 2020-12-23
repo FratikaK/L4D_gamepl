@@ -4,11 +4,9 @@ import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntitySpawnEvent;
-import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 import org.bukkit.event.raid.RaidTriggerEvent;
 
 public class L4DMobs implements Listener {
@@ -34,11 +32,13 @@ public class L4DMobs implements Listener {
         if (L4D_gamepl.isGame()) {
             Entity entity = event.getEntity();
             EntityType type = entity.getType();
-            LivingEntity livingEntity = (LivingEntity) entity;
             World world = entity.getWorld();
-            LivingEntity player = (LivingEntity) world.getPlayers();
-            Entity playerEntity = player;
+            LivingEntity livingEntity = (LivingEntity) entity;
 
+            //ターゲットとなるプレイヤー
+            Entity player = (Entity) world.getPlayers();
+
+            livingEntity.setAI(true);
 
             /*
             今はゾンビホースのみ。今後追加する予定
@@ -47,7 +47,7 @@ public class L4DMobs implements Listener {
              */
             switch (type) {
                 case ZOMBIE_HORSE:
-                    livingEntity.attack(playerEntity);
+                    livingEntity.attack(player);
                     break;
             }
         }
