@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.inventory.InventoryCreativeEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.Inventory;
 
@@ -28,7 +29,7 @@ public class PlayerEvent implements Listener {
     @EventHandler
     public void changeGamerule(PlayerDeathEvent event) {
 
-        /**
+        /*
          * プレイヤーの死亡地点をクローンして、リスポーンイベントに渡す
          * ゲームモードをクリエイティブに変更する
          */
@@ -43,7 +44,7 @@ public class PlayerEvent implements Listener {
     @EventHandler
     public void setSpectator(PlayerRespawnEvent event) {
 
-        /**
+        /*
          * リスポーン位置をデスイベントから受け取り、設定
          * ロビーアイテムを付与
          */
@@ -62,5 +63,17 @@ public class PlayerEvent implements Listener {
         pl.giveLobbyItem(player.getInventory());
 
     }
+
+    //クリエイティブ時にアイテム取り出しを禁止
+    @EventHandler
+    public void onCreativeItems(InventoryCreativeEvent event){
+        Player player = (Player) event.getWhoClicked();
+
+        //opじゃなければ無効化
+        if (!player.isOp()){
+            event.setCancelled(true);
+        }
+    }
+
 
 }
