@@ -7,6 +7,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryCreativeEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.Inventory;
 
@@ -68,6 +69,17 @@ public class PlayerEvent implements Listener {
     @EventHandler
     public void onCreativeItems(InventoryCreativeEvent event){
         Player player = (Player) event.getWhoClicked();
+
+        //opじゃなければ無効化
+        if (!player.isOp()){
+            event.setCancelled(true);
+        }
+    }
+
+    //アイテムドロップ（アイテムを捨てる）を禁止
+    @EventHandler
+    public void onDropItems(PlayerDropItemEvent event){
+        Player player = event.getPlayer();
 
         //opじゃなければ無効化
         if (!player.isOp()){
