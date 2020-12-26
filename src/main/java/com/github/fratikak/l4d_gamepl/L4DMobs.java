@@ -6,6 +6,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.SlimeSplitEvent;
 import org.bukkit.event.raid.RaidTriggerEvent;
@@ -31,7 +32,7 @@ public class L4DMobs implements Listener {
 
     //クリーパーが攻撃を受けた時に、即爆発するようにする
     @EventHandler
-    public void bommer(EntityDamageEvent event){
+    public void bommer(EntityDamageByEntityEvent event){
         Entity entity = event.getEntity();
 
         if (entity.getType() == EntityType.CREEPER){
@@ -40,6 +41,7 @@ public class L4DMobs implements Listener {
 
             //対象の場所に爆発を起こす
             world.createExplosion(location,3,false,false);
+            pl.getServer().broadcastMessage("クリーパーによる爆発がおきました");
         }
     }
 
@@ -49,7 +51,7 @@ public class L4DMobs implements Listener {
         World world = event.getEntity().getWorld();
         Location location = event.getEntity().getLocation();
 
-        world.createExplosion(location,1,false,false);
+        world.createExplosion(location,2,false,false);
     }
 
     //村人レイドを発生させない
