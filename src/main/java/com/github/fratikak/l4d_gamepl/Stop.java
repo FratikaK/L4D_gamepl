@@ -1,11 +1,8 @@
 package com.github.fratikak.l4d_gamepl;
 
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 
-import java.util.Timer;
 import java.util.TimerTask;
 
 import static java.lang.Thread.sleep;
@@ -28,7 +25,7 @@ public class Stop {
      * @author FratikaK
      */
 
-    public void stopGame(Player player) {
+    public void stopGame() {
 
         /**
          * コマンドで呼び出されるメソッド
@@ -71,7 +68,6 @@ public class Stop {
          * サーバーリスポーン地点へテレポート
          */
 
-        Timer timer = new Timer();
         TimerTask task = new TimerTask() {
 
             @Override
@@ -79,19 +75,22 @@ public class Stop {
                 if (L4D_gamepl.isGame()) {
                     for (int i = 10; i > 0; i--) {
 
-                        for (Player target : Bukkit.getOnlinePlayers()){
-                            target.playSound(target.getLocation(),Sound.BLOCK_BONE_BLOCK_BREAK,1,24);
+                        for (Player target : Bukkit.getOnlinePlayers()) {
+                            target.playSound(target.getLocation(), Sound.BLOCK_BONE_BLOCK_BREAK, 1, 24);
                             pl.getServer().broadcastMessage(ChatColor.AQUA + "ゲーム終了まで" + i + "秒");
                         }
 
                         try {
                             sleep(1000);
-                        }catch (InterruptedException e){
+                        } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
                     }
 
-                    //ここにテレポートとアイテム処理
+                    //テレポートとアイテム処理
+                    for (Player target : Bukkit.getOnlinePlayers()){
+
+                    }
                 }
             }
         };
