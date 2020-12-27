@@ -41,7 +41,7 @@ public final class L4D_gamepl extends JavaPlugin {
     public void giveLobbyItem(Inventory inventory) {
 
         ItemStack diamond = new ItemStack(Material.DIAMOND);
-
+        inventory.clear();
         inventory.setItem(0, diamond);
     }
 
