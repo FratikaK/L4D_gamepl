@@ -2,7 +2,10 @@ package com.github.fratikak.l4d_gamepl;
 
 import org.bukkit.*;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.inventory.Inventory;
 
+import java.util.Timer;
 import java.util.TimerTask;
 
 import static java.lang.Thread.sleep;
@@ -33,6 +36,12 @@ public class Stop {
          * @param player コマンドを入力したプレイヤー
          */
 
+        //ゲーム中ではないならreturn
+        if (!L4D_gamepl.isGame()) {
+            pl.getServer().broadcastMessage(ChatColor.RED + "ゲーム中ではありません！");
+            return;
+        }
+
         //プレイヤーが全員死亡している場合
         if (L4D_gamepl.getPlayerList().isEmpty()) {
 
@@ -59,6 +68,12 @@ public class Stop {
                 L4D_gamepl.getPlayerList().clear();
             }
         }
+
+        if (L4D_gamepl.isGame()){
+            setRespawn();
+        }
+
+
     }
 
     public void setRespawn() {
@@ -68,12 +83,15 @@ public class Stop {
          * サーバーリスポーン地点へテレポート
          */
 
+        Timer timer = new Timer();
         TimerTask task = new TimerTask() {
 
             @Override
             public void run() {
+
                 if (L4D_gamepl.isGame()) {
-                    for (int i = 10; i > 0; i--) {
+
+                    for (int i = 10; i >= 0; i--) {
 
                         for (Player target : Bukkit.getOnlinePlayers()) {
                             target.playSound(target.getLocation(), Sound.BLOCK_BONE_BLOCK_BREAK, 1, 24);
@@ -87,12 +105,20 @@ public class Stop {
                         }
                     }
 
-                    //テレポートとアイテム処理
-                    for (Player target : Bukkit.getOnlinePlayers()){
+                    L4D_gamepl.setGame(false);
 
+                    for (Player target : Bukkit.getOnlinePlayers()) {
+                        //アイテム処理
+                        Inventory inventory = target.getInventory();
+                        pl.giveLobbyItem(inventory);
+                        target.teleport(target.getWorld().getSpawnLocation());
+                        target.setGameMode(GameMode.SURVIVAL);
                     }
+                }else{
+                    timer.cancel();
                 }
             }
         };
+        timer.schedule(task, 0);
     }
 }

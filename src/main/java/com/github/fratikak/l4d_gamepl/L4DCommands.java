@@ -30,9 +30,7 @@ public class L4DCommands implements CommandExecutor {
                 new Start(pl).startGame((Player) sender);
                 return true;
             } else if (args[0].equalsIgnoreCase("stop")) {
-                Stop stop = new Stop(pl);
-                stop.stopGame();
-                stop.setRespawn();
+                new Stop(pl).stopGame();
                 return true;
             }
         }

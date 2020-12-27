@@ -36,9 +36,15 @@ public class PlayerEvent implements Listener {
          */
 
         Player player = event.getEntity();
+        String playername = player.getDisplayName();
         deathLocation = player.getLocation().clone();
 
+        L4D_gamepl.getPlayerList().remove(playername);
         player.setGameMode(GameMode.CREATIVE);
+
+        if (L4D_gamepl.getPlayerList().isEmpty()){
+            new Stop(pl).stopGame();
+        }
 
     }
 
@@ -58,9 +64,6 @@ public class PlayerEvent implements Listener {
 
         //透明化処理とインベントリ処理
         player.hidePlayer(pl, player);
-
-        inventory.clear();
-
         pl.giveLobbyItem(player.getInventory());
 
     }
