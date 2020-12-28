@@ -35,6 +35,31 @@ public class Start {
     }
 
     public void startGame(Player player) {
+        //参加するプレイヤーを取得する
+        for (Player target : Bukkit.getOnlinePlayers()) {
+            if (target.getGameMode() == GameMode.SURVIVAL) {
+                String playerName = target.getDisplayName();
+                L4D_gamepl.getPlayerList().add(playerName);
+                pl.getLogger().info(ChatColor.AQUA + playerName);
+            }
+        }
+
+        //参加プレイヤーがいなければreturn
+        if (L4D_gamepl.getPlayerList().isEmpty()) {
+            player.sendMessage(ChatColor.RED + "参加するプレイヤーが存在しません！");
+            L4D_gamepl.setGame(false);
+            return;
+        }
+
+        for (Player target : Bukkit.getOnlinePlayers()) {
+            if (target.getGameMode() == GameMode.SURVIVAL) {
+                Location loc = target.getLocation();
+                loc.setX(1198);
+                loc.setY(4);
+                loc.setZ(1018);
+                target.teleport(loc);
+            }
+        }
 
         Timer timer = new Timer();
         TimerTask task = new TimerTask() {
@@ -42,68 +67,49 @@ public class Start {
             @Override
             public void run() {
                 pl.getLogger().info("ゲームに参加するプレイヤーを表示します...");
+                L4D_gamepl.setStarting(true);
+                L4D_gamepl.setTime(0);
+                player.sendMessage("参加者が決まりました");
+                player.sendMessage("参加者は" + ChatColor.AQUA + L4D_gamepl.getPlayerList() + ChatColor.WHITE + "です");
+                player.sendMessage("10秒後に開始します...");
 
-                //参加するプレイヤーを取得する
-                for (Player target : Bukkit.getOnlinePlayers()) {
-                    if (target.getGameMode() == GameMode.SURVIVAL) {
-                        String playerName = target.getDisplayName();
-                        L4D_gamepl.getPlayerList().add(playerName);
-                        pl.getLogger().info(ChatColor.AQUA + playerName);
+                for (int i = 10; i >= 0; i--) {
+
+                    if (!L4D_gamepl.isGame()) {
+                        timer.cancel();
+                    }
+
+                    //プレイヤーにカウントを表示。不参加者にも表示
+                    for (Player target : Bukkit.getOnlinePlayers()) {
+                        target.playSound(target.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 24);
+                        target.sendTitle(ChatColor.WHITE + "ゲーム開始まで" + i + "秒", "", 5, 10, 5);
+                        pl.getServer().broadcastMessage(ChatColor.GOLD + "ゲーム開始まで" + i + "秒");
+                    }
+
+                    try {
+                        sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
                 }
 
-                /*
-                 * 参加プレイヤーがいればゲーム開始、
-                 * いなければタイマーキャンセル。
-                 */
-                if (L4D_gamepl.getPlayerList().isEmpty()) {
-                    player.sendMessage(ChatColor.RED + "参加するプレイヤーが存在しません！");
-                    L4D_gamepl.setGame(false);
-                    timer.cancel();
-                } else {
-                    L4D_gamepl.setStarting(true);
-                    L4D_gamepl.setTime(0);
-                    player.sendMessage("参加者が決まりました");
-                    player.sendMessage("参加者は" + ChatColor.AQUA + L4D_gamepl.getPlayerList() + ChatColor.WHITE + "です");
-                    player.sendMessage("10秒後に開始します...");
+                L4D_gamepl.setStarting(false);
+                L4D_gamepl.setGame(true);
 
-                    for (int i = 10; i >= 0; i--) {
+                //武器などのアイテムを渡す処理
+                for (Player target : Bukkit.getOnlinePlayers()) {
+                    if (target.getGameMode() == GameMode.SURVIVAL) {
 
-                        if (!L4D_gamepl.isGame()) {
-                            timer.cancel();
-                        }
+                        /*
+                         * <後で記述するもの>
+                         * ステージへテレポート処理
+                         * 参加プレイヤーのステータスを設定
+                         * アイテム付与
+                         */
+                        pl.giveGameItem(target.getInventory());
+                        target.setPlayerListName("[" + ChatColor.AQUA + "生存者" + ChatColor.WHITE + "]" + target.getDisplayName());
 
-                        //プレイヤーにカウントを表示。不参加者にも表示
-                        for (Player target : Bukkit.getOnlinePlayers()) {
-                            target.playSound(target.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 24);
-                            target.sendTitle(ChatColor.WHITE + "ゲーム開始まで" + i + "秒", "", 5, 10, 5);
-                            pl.getServer().broadcastMessage(ChatColor.GOLD + "ゲーム開始まで" + i + "秒");
-                        }
 
-                        try {
-                            sleep(1000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                    L4D_gamepl.setStarting(false);
-                    L4D_gamepl.setGame(true);
-
-                    //武器などのアイテムを渡す処理
-                    for (Player target : Bukkit.getOnlinePlayers()) {
-                        if (target.getGameMode() == GameMode.SURVIVAL) {
-                            /*
-                             * <後で記述するもの>
-                             * ステージへテレポート処理
-                             * 参加プレイヤーのステータスを設定
-                             * アイテム付与
-                             */
-                            pl.giveLobbyItem(target.getInventory());
-                            target.setPlayerListName("[" + ChatColor.AQUA + "生存者" + ChatColor.WHITE + "]" + target.getDisplayName());
-                            target.teleport(target.getWorld().getSpawnLocation());
-
-                        }
                     }
                 }
             }
@@ -111,3 +117,5 @@ public class Start {
         timer.schedule(task, 0);
     }
 }
+
+
