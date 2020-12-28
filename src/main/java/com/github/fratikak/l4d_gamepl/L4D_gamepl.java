@@ -19,8 +19,9 @@ import java.util.Objects;
 public final class L4D_gamepl extends JavaPlugin {
 
     private static boolean game = false;
+    private static boolean starting = false;
     private static int time = 0;
-    private final static List<String> playerList = new ArrayList<>();
+    private static List<String> playerList = new ArrayList<>();
 
     @Override
     public void onEnable() {
@@ -45,6 +46,17 @@ public final class L4D_gamepl extends JavaPlugin {
         inventory.setItem(0, diamond);
     }
 
+    //ゲーム用アイテムを付与
+    public void giveGameItem(Inventory inventory){
+        inventory.clear();
+
+        ItemStack food = new ItemStack(Material.BREAD,64);
+        ItemStack healItem = new ItemStack(Material.GOLDEN_APPLE,10);
+
+        inventory.setItem(1,food);
+        inventory.setItem(2,healItem);
+    }
+
 
     //ゲッターセッター
     public static boolean isGame() {
@@ -53,6 +65,14 @@ public final class L4D_gamepl extends JavaPlugin {
 
     public static void setGame(boolean game) {
         L4D_gamepl.game = game;
+    }
+
+    public static boolean isStarting() {
+        return starting;
+    }
+
+    public static void setStarting(boolean starting) {
+        L4D_gamepl.starting = starting;
     }
 
     public static int getTime() {
