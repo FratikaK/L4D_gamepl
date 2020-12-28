@@ -8,6 +8,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryCreativeEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.Inventory;
 
@@ -27,6 +28,15 @@ public class PlayerEvent implements Listener {
      * @author FratikaK
      */
 
+    //ゲームカウント中は動けないようにする
+    @EventHandler
+    public void onMove(PlayerMoveEvent event) {
+
+        if (L4D_gamepl.isStarting()) {
+            event.setCancelled(true);
+        }
+    }
+
     @EventHandler
     public void changeGamerule(PlayerDeathEvent event) {
 
@@ -42,7 +52,7 @@ public class PlayerEvent implements Listener {
         L4D_gamepl.getPlayerList().remove(playername);
         player.setGameMode(GameMode.CREATIVE);
 
-        if (L4D_gamepl.getPlayerList().isEmpty()){
+        if (L4D_gamepl.getPlayerList().isEmpty()) {
             new Stop(pl).stopGame();
         }
 
@@ -64,28 +74,28 @@ public class PlayerEvent implements Listener {
 
         //透明化処理とインベントリ処理
         player.hidePlayer(pl, player);
-        pl.giveLobbyItem(player.getInventory());
+        pl.giveLobbyItem(inventory);
 
     }
 
     //クリエイティブ時にアイテム取り出しを禁止
     @EventHandler
-    public void onCreativeItems(InventoryCreativeEvent event){
+    public void onCreativeItems(InventoryCreativeEvent event) {
         Player player = (Player) event.getWhoClicked();
 
         //opじゃなければ無効化
-        if (!player.isOp()){
+        if (!player.isOp()) {
             event.setCancelled(true);
         }
     }
 
     //アイテムドロップ（アイテムを捨てる）を禁止
     @EventHandler
-    public void onDropItems(PlayerDropItemEvent event){
+    public void onDropItems(PlayerDropItemEvent event) {
         Player player = event.getPlayer();
 
         //opじゃなければ無効化
-        if (!player.isOp()){
+        if (!player.isOp()) {
             event.setCancelled(true);
         }
     }
