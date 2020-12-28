@@ -1,8 +1,10 @@
 package com.github.fratikak.l4d_gamepl;
 
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.Inventory;
 
 import java.util.Timer;
@@ -53,6 +55,7 @@ public class Stop {
                 //プレイヤーリストを更新。[観戦者]
                 target.setPlayerListName(null);
                 target.setPlayerListName(ChatColor.WHITE + "[観戦者]" + target.getDisplayName());
+                target.teleport(target.getWorld().getSpawnLocation());
             }
         } else {
             //プレイヤーがゴールにたどり着いた時を想定
@@ -64,12 +67,13 @@ public class Stop {
                 //プレイヤーリストを更新。[観戦者]
                 target.setPlayerListName(null);
                 target.setPlayerListName(ChatColor.WHITE + "[観戦者]" + target.getDisplayName());
+                target.teleport(target.getWorld().getSpawnLocation());
 
                 L4D_gamepl.getPlayerList().clear();
             }
         }
 
-        if (L4D_gamepl.isGame()){
+        if (L4D_gamepl.isGame()) {
             setRespawn();
         }
 
@@ -111,10 +115,10 @@ public class Stop {
                         //アイテム処理
                         Inventory inventory = target.getInventory();
                         pl.giveLobbyItem(inventory);
-                        target.teleport(target.getWorld().getSpawnLocation());
+//                        target.teleport(target.getWorld().getSpawnLocation());
                         target.setGameMode(GameMode.SURVIVAL);
                     }
-                }else{
+                } else {
                     timer.cancel();
                 }
             }

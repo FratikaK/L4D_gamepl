@@ -23,7 +23,7 @@ public class L4DMobs implements Listener {
     /**
      * ゲーム中に出現する特殊Mobの処理を記述する
      * ボス系モンスターもここで作成する
-     *
+     * <p>
      * ClassCastの問題を解決できない為、ゾンビ馬など通常敵対化しないmobを
      * モンスターとして登録するのは避けることにする
      *
@@ -32,31 +32,31 @@ public class L4DMobs implements Listener {
 
     //クリーパーが攻撃を受けた時に、即爆発するようにする
     @EventHandler
-    public void bommer(EntityDamageByEntityEvent event){
+    public void bommer(EntityDamageByEntityEvent event) {
         Entity entity = event.getEntity();
 
-        if (entity.getType() == EntityType.CREEPER){
+        if (entity.getType() == EntityType.CREEPER) {
             World world = entity.getWorld();
             Location location = entity.getLocation().clone();
 
             //対象の場所に爆発を起こす
-            world.createExplosion(location,3,false,false);
+            world.createExplosion(location, 3, false, false);
             pl.getServer().broadcastMessage("クリーパーによる爆発がおきました");
         }
     }
 
     //スライムが分裂する度に爆発が起きる
     @EventHandler
-    public void slimeBommer(SlimeSplitEvent event){
+    public void slimeBommer(SlimeSplitEvent event) {
         World world = event.getEntity().getWorld();
         Location location = event.getEntity().getLocation();
 
-        world.createExplosion(location,2,false,false);
+        world.createExplosion(location, 2, false, false);
     }
 
     //村人レイドを発生させない
     @EventHandler
-    public void notRaid(RaidTriggerEvent event){
+    public void notRaid(RaidTriggerEvent event) {
         event.setCancelled(true);
     }
 
