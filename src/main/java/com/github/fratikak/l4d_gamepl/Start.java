@@ -12,10 +12,10 @@ public class Start {
 
     /**
      * ゲームの開始に関するロジックを記述する
-     *
+     * <p>
      * startコマンド（別クラス）が呼び出された時、
      * 人数チェック。一人以上いるならゲームを開始する
-     *
+     * <p>
      * 10秒程度カウント。
      *
      * @author FratikaK
@@ -61,13 +61,14 @@ public class Start {
                     L4D_gamepl.setGame(false);
                     timer.cancel();
                 } else {
+                    L4D_gamepl.setStarting(true);
                     L4D_gamepl.setTime(0);
-                    L4D_gamepl.setGame(true);
                     player.sendMessage("参加者が決まりました");
                     player.sendMessage("参加者は" + ChatColor.AQUA + L4D_gamepl.getPlayerList() + ChatColor.WHITE + "です");
                     player.sendMessage("10秒後に開始します...");
 
                     for (int i = 10; i >= 0; i--) {
+
                         if (!L4D_gamepl.isGame()) {
                             timer.cancel();
                         }
@@ -86,7 +87,8 @@ public class Start {
                         }
                     }
 
-                    //ここにゲーム進行の処理を入れる。別クラス
+                    L4D_gamepl.setStarting(false);
+                    L4D_gamepl.setGame(true);
 
                     //武器などのアイテムを渡す処理
                     for (Player target : Bukkit.getOnlinePlayers()) {
@@ -97,7 +99,10 @@ public class Start {
                              * 参加プレイヤーのステータスを設定
                              * アイテム付与
                              */
+                            pl.giveLobbyItem(target.getInventory());
                             target.setPlayerListName("[" + ChatColor.AQUA + "生存者" + ChatColor.WHITE + "]" + target.getDisplayName());
+                            target.teleport(target.getWorld().getSpawnLocation());
+
                         }
                     }
                 }
