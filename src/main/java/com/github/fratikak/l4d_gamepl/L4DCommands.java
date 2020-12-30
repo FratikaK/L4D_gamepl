@@ -17,11 +17,6 @@ public class L4DCommands implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
-        if (!(sender instanceof Player)) {
-            pl.getLogger().info("ゲーム内から実行するコマンドです！");
-            return false;
-        }
-
         if (command.getName().equalsIgnoreCase("l4d")) {
 
             if (args.length == 0) return false;
