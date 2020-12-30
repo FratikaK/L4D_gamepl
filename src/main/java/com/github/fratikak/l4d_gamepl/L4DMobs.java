@@ -41,11 +41,10 @@ public class L4DMobs implements Listener {
 
             //対象の場所に爆発を起こす
             world.createExplosion(location, 3, false, false);
-            pl.getServer().broadcastMessage("クリーパーによる爆発がおきました");
         }
     }
 
-    //スライムが分裂する度に爆発が起きる
+    //スライム（マグマキューブ）が分裂する度に爆発が起きる
     @EventHandler
     public void slimeBommer(SlimeSplitEvent event) {
         World world = event.getEntity().getWorld();
