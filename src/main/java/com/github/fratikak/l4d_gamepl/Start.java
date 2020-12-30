@@ -106,9 +106,8 @@ public class Start {
                          * 参加プレイヤーのステータスを設定
                          * アイテム付与
                          */
-                        pl.giveGameItem(target.getInventory());
+                        pl.giveGameItem(target.getInventory(),target);
                         target.setPlayerListName("[" + ChatColor.AQUA + "生存者" + ChatColor.WHITE + "]" + target.getDisplayName());
-
 
                     }
                 }

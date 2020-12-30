@@ -2,15 +2,9 @@ package com.github.fratikak.l4d_gamepl;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
-
-import java.util.Timer;
-import java.util.TimerTask;
-
-import static java.lang.Thread.sleep;
 
 public class Stop {
 
@@ -55,9 +49,10 @@ public class Stop {
                 //プレイヤーリストを更新。[観戦者]
                 target.setPlayerListName(null);
                 target.setPlayerListName(ChatColor.WHITE + "[観戦者]" + target.getDisplayName());
-                target.teleport(target.getWorld().getSpawnLocation());
+                targetTeleport(target);
             }
         } else {
+
             //プレイヤーがゴールにたどり着いた時を想定
             for (Player target : Bukkit.getOnlinePlayers()) {
                 target.playSound(target.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 24);
@@ -67,62 +62,71 @@ public class Stop {
                 //プレイヤーリストを更新。[観戦者]
                 target.setPlayerListName(null);
                 target.setPlayerListName(ChatColor.WHITE + "[観戦者]" + target.getDisplayName());
-                target.teleport(target.getWorld().getSpawnLocation());
+                targetTeleport(target);
 
                 L4D_gamepl.getPlayerList().clear();
             }
         }
 
         if (L4D_gamepl.isGame()) {
-            setRespawn();
+            L4D_gamepl.setGame(false);
         }
 
 
     }
 
-    public void setRespawn() {
-
-        /**
-         * 10秒カウント、プレイヤーの持ち物をリセットする
-         * サーバーリスポーン地点へテレポート
-         */
-
-        Timer timer = new Timer();
-        TimerTask task = new TimerTask() {
-
-            @Override
-            public void run() {
-
-                if (L4D_gamepl.isGame()) {
-
-                    for (int i = 10; i >= 0; i--) {
-
-                        for (Player target : Bukkit.getOnlinePlayers()) {
-                            target.playSound(target.getLocation(), Sound.BLOCK_BONE_BLOCK_BREAK, 1, 24);
-                            pl.getServer().broadcastMessage(ChatColor.AQUA + "ゲーム終了まで" + i + "秒");
-                        }
-
-                        try {
-                            sleep(1000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                    L4D_gamepl.setGame(false);
-
-                    for (Player target : Bukkit.getOnlinePlayers()) {
-                        //アイテム処理
-                        Inventory inventory = target.getInventory();
-                        pl.giveLobbyItem(inventory);
-//                        target.teleport(target.getWorld().getSpawnLocation());
-                        target.setGameMode(GameMode.SURVIVAL);
-                    }
-                } else {
-                    timer.cancel();
-                }
-            }
-        };
-        timer.schedule(task, 0);
+    //オンラインプレイヤー全て初期位置へ移動させる
+    public void targetTeleport(Player target) {
+        Location location = target.getLocation();
+        location.setX(1087);
+        location.setY(11);
+        location.setZ(993);
+        target.teleport(location);
     }
+
+//    public void setRespawn() {
+//
+//        /**
+//         * 10秒カウント、プレイヤーの持ち物をリセットする
+//         * サーバーリスポーン地点へテレポート
+//         */
+//
+//        Timer timer = new Timer();
+//        TimerTask task = new TimerTask() {
+//
+//            @Override
+//            public void run() {
+//
+//                if (L4D_gamepl.isGame()) {
+//
+//                    for (int i = 10; i >= 0; i--) {
+//
+//                        for (Player target : Bukkit.getOnlinePlayers()) {
+//                            target.playSound(target.getLocation(), Sound.BLOCK_BONE_BLOCK_BREAK, 1, 24);
+//                            pl.getServer().broadcastMessage(ChatColor.AQUA + "ゲーム終了まで" + i + "秒");
+//                        }
+//
+//                        try {
+//                            sleep(1000);
+//                        } catch (InterruptedException e) {
+//                            e.printStackTrace();
+//                        }
+//                    }
+//
+//                    L4D_gamepl.setGame(false);
+//
+//                    for (Player target : Bukkit.getOnlinePlayers()) {
+//                        //アイテム処理
+//                        Inventory inventory = target.getInventory();
+//                        pl.giveLobbyItem(inventory);
+////                        target.teleport(target.getWorld().getSpawnLocation());
+//                        target.setGameMode(GameMode.SURVIVAL);
+//                    }
+//                } else {
+//                    timer.cancel();
+//                }
+//            }
+//        };
+//        timer.schedule(task, 0);
+//    }
 }

@@ -43,6 +43,8 @@ public class PlayerEvent implements Listener {
         /*
          * プレイヤーの死亡地点をクローンして、リスポーンイベントに渡す
          * ゲームモードをクリエイティブに変更する
+         *
+         * ゲームプレイヤーが全員死亡すれば初期スポーンへ返す
          */
 
         Player player = event.getEntity();
@@ -54,6 +56,13 @@ public class PlayerEvent implements Listener {
 
         if (L4D_gamepl.getPlayerList().isEmpty()) {
             new Stop(pl).stopGame();
+            player.setGameMode(GameMode.SURVIVAL);
+
+            deathLocation.setX(1087);
+            deathLocation.setY(11);
+            deathLocation.setZ(993);
+
+            player.getWorld().setSpawnLocation(deathLocation);
         }
 
     }
