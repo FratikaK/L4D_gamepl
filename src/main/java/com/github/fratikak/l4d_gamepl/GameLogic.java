@@ -1,15 +1,19 @@
 package com.github.fratikak.l4d_gamepl;
 
+import com.shampaggon.crackshot.CSUtility;
 import org.bukkit.*;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.EntityDropItemEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.SpawnerSpawnEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerToggleSprintEvent;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import java.util.Random;
 
@@ -62,6 +66,12 @@ public class GameLogic implements Listener {
         }
     }
 
+    //敵mobのアイテムドロップを禁止する
+    @EventHandler
+    public void disableDropItem(EntityDropItemEvent event) {
+        event.setCancelled(true);
+    }
+
     @EventHandler
     public void zombieSpawn(SpawnerSpawnEvent event) {
 
@@ -75,14 +85,15 @@ public class GameLogic implements Listener {
         if (L4D_gamepl.isGame()) {
             //スポナーの場所を取得する
             Location location = event.getLocation().clone();
-            event.setCancelled(true);
 
             //プレイヤー数を取得して、プレイヤー数×指定した数のゾンビをスポーンさせる
             World world = event.getSpawner().getWorld();
             int players = L4D_gamepl.getPlayerList().size();
-            for (int i = 0; i < players * 10; i++) {
+            for (int i = 0; i < players * 5; i++) {
                 world.spawnEntity(location, EntityType.ZOMBIE);
             }
+        } else {
+            event.setCancelled(true);
         }
 
 
@@ -95,45 +106,98 @@ public class GameLogic implements Listener {
          * ゾンビが死亡すると、一定確率で特殊なMobが出現する
          * スポーンするMobの挙動は別クラスにて記述する
          */
-
         Random random = new Random();
-        int spawnValue = random.nextInt(10);
-
+        int spawnValue = random.nextInt(8);
         EntityType type = event.getEntity().getType();
+        Location deathLocation = event.getEntity().getLocation().clone();
+        World world = event.getEntity().getWorld();
+
 
         if (L4D_gamepl.isGame()) {
-            if (type == EntityType.ZOMBIE || type == EntityType.ZOMBIE_VILLAGER) {
-                Location deathLocation = event.getEntity().getLocation().clone();
-                Location specialLocation = deathLocation.add(20, 1, 0);
-                World world = event.getEntity().getWorld();
+            if (type == EntityType.ZOMBIE) {
 
-                switch (spawnValue) {
-//                    case 1:
-//                        //ゾンビホース
-//                        world.spawnEntity(specialLocation, EntityType.ZOMBIE_HORSE);
-//                        break;
+                
+                for (Player target:Bukkit.getOnlinePlayers()){
+                    if (target.getGameMode() !=GameMode.SURVIVAL){
+                        return;
+                    }
+                    //プレイヤーとの距離が近ければreturn
+                    if (Math.abs(target.getLocation().getX() - deathLocation.getX()) <= 4 || Math.abs(target.getLocation().getZ() - deathLocation.getZ()) <= 4) {
+                        return;
+                    }
 
-                    case 2:
-                        //クリーパー
-                        world.spawnEntity(specialLocation, EntityType.CREEPER);
-                        break;
+                    switch (spawnValue) {
+                        case 1:
+                            //ピリジャー
+                            world.spawnEntity(deathLocation, EntityType.PILLAGER);
+                            pl.getServer().getLogger().info("ピリジャーがスポーンしました");
+                            break;
 
-                    case 3:
-                        //エヴォーカー
-                        world.spawnEntity(specialLocation, EntityType.EVOKER);
-                        break;
+                        case 2:
+                            //クリーパー
+                            world.spawnEntity(deathLocation, EntityType.CREEPER);
+                            pl.getServer().getLogger().info("クリーパーがスポーンしました");
+                            break;
 
-                    case 4:
-                        //ラヴェジャー
-                        world.spawnEntity(specialLocation, EntityType.RAVAGER);
-                        break;
+                        case 3:
+                            //エヴォーカー
+                            world.spawnEntity(deathLocation, EntityType.EVOKER);
+                            pl.getServer().getLogger().info("エヴォーカーがスポーンしました");
+                            break;
 
-                    case 5:
-                        //スライム
-                        world.spawnEntity(specialLocation, EntityType.SLIME);
-                        break;
+                        case 4:
+                            //ラヴェジャー
+                            world.spawnEntity(deathLocation, EntityType.RAVAGER);
+                            pl.getServer().getLogger().info("ラベンジャーがスポーンしました");
+                            break;
+
+                        case 5:
+                            //マグマキューブ
+                            world.spawnEntity(deathLocation, EntityType.MAGMA_CUBE);
+                            pl.getServer().getLogger().info("マグマキューブがスポーンしました");
+                            break;
+                    }
+                    
                 }
+               
+                
             }
+        }
+    }
+
+    //特殊mobを倒したときに特定のアイテムを付与する
+    @EventHandler
+    public void specialDropItem(EntityDeathEvent event) {
+
+        if (!L4D_gamepl.isGame()) {
+            return;
+        }
+
+        EntityType entityType = event.getEntity().getType();
+        Player player = event.getEntity().getKiller();
+
+        switch (entityType) {
+            case PILLAGER:
+                assert player != null;
+
+                player.addPotionEffect(new PotionEffect(PotionEffectType.HEAL, 30, 2), true);
+                player.sendMessage(ChatColor.AQUA + "回復ブーストを付与しました");
+                break;
+
+            case EVOKER:
+                assert player != null;
+                new CSUtility().giveWeapon(player, "C4", 1);
+                player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 24);
+                player.sendMessage(ChatColor.AQUA + "C4を入手しました");
+                break;
+
+            case MAGMA_CUBE:
+                assert player != null;
+                new CSUtility().giveWeapon(player, "GRENADE", 2);
+                player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 24);
+                player.sendMessage(ChatColor.AQUA + "グレネードを入手しました");
+
+                break;
         }
     }
 }

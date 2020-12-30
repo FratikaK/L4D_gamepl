@@ -1,6 +1,8 @@
 package com.github.fratikak.l4d_gamepl;
 
+import com.shampaggon.crackshot.CSUtility;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -47,7 +49,7 @@ public final class L4D_gamepl extends JavaPlugin {
     }
 
     //ゲーム用アイテムを付与
-    public void giveGameItem(Inventory inventory){
+    public void giveGameItem(Inventory inventory, Player player){
         inventory.clear();
 
         ItemStack food = new ItemStack(Material.BREAD,64);
@@ -55,6 +57,10 @@ public final class L4D_gamepl extends JavaPlugin {
 
         inventory.setItem(1,food);
         inventory.setItem(2,healItem);
+        new CSUtility().giveWeapon(player,"AK-47",1);
+        new CSUtility().giveWeapon(player,"CARBINE",1);
+        new CSUtility().giveWeapon(player,"GRENADE",10);
+
     }
 
 
