@@ -42,7 +42,7 @@ public class PlayerEvent implements Listener {
 
         /*
          * プレイヤーの死亡地点をクローンして、リスポーンイベントに渡す
-         * ゲームモードをクリエイティブに変更する
+         * ゲームモードをスペクテイターに変更する
          *
          * ゲームプレイヤーが全員死亡すれば初期スポーンへ返す
          */
@@ -52,7 +52,7 @@ public class PlayerEvent implements Listener {
         deathLocation = player.getLocation().clone();
 
         L4D_gamepl.getPlayerList().remove(playername);
-        player.setGameMode(GameMode.CREATIVE);
+        player.setGameMode(GameMode.SPECTATOR);
 
         if (L4D_gamepl.getPlayerList().isEmpty()) {
             new Stop(pl).stopGame();
@@ -81,8 +81,7 @@ public class PlayerEvent implements Listener {
 
         event.setRespawnLocation(deathLocation);
 
-        //透明化処理とインベントリ処理
-        player.hidePlayer(pl, player);
+        //インベントリ処理
         pl.giveLobbyItem(inventory);
 
     }

@@ -2,6 +2,7 @@ package com.github.fratikak.l4d_gamepl;
 
 import com.shampaggon.crackshot.CSUtility;
 import org.bukkit.*;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -70,6 +71,7 @@ public class GameLogic implements Listener {
     @EventHandler
     public void disableDropItem(EntityDropItemEvent event) {
         event.setCancelled(true);
+
     }
 
     @EventHandler
@@ -89,7 +91,7 @@ public class GameLogic implements Listener {
             //プレイヤー数を取得して、プレイヤー数×指定した数のゾンビをスポーンさせる
             World world = event.getSpawner().getWorld();
             int players = L4D_gamepl.getPlayerList().size();
-            for (int i = 0; i < players * 5; i++) {
+            for (int i = 0; i < players * 4; i++) {
                 world.spawnEntity(location, EntityType.ZOMBIE);
             }
         } else {
@@ -122,7 +124,7 @@ public class GameLogic implements Listener {
                         return;
                     }
                     //プレイヤーとの距離が近ければreturn
-                    if (Math.abs(target.getLocation().getX() - deathLocation.getX()) <= 4 || Math.abs(target.getLocation().getZ() - deathLocation.getZ()) <= 4) {
+                    if (Math.abs(target.getLocation().getX() - deathLocation.getX()) <= 5 || Math.abs(target.getLocation().getZ() - deathLocation.getZ()) <= 5) {
                         return;
                     }
 
@@ -140,9 +142,9 @@ public class GameLogic implements Listener {
                             break;
 
                         case 3:
-                            //エヴォーカー
-                            world.spawnEntity(deathLocation, EntityType.EVOKER);
-                            pl.getServer().getLogger().info("エヴォーカーがスポーンしました");
+                            //ヴィンディケーター
+                            world.spawnEntity(deathLocation, EntityType.VINDICATOR);
+                            pl.getServer().getLogger().info("ヴィンディケーターがスポーンしました");
                             break;
 
                         case 4:
@@ -179,7 +181,6 @@ public class GameLogic implements Listener {
         switch (entityType) {
             case PILLAGER:
                 assert player != null;
-
                 player.addPotionEffect(new PotionEffect(PotionEffectType.HEAL, 30, 2), true);
                 player.sendMessage(ChatColor.AQUA + "回復ブーストを付与しました");
                 break;
@@ -196,7 +197,6 @@ public class GameLogic implements Listener {
                 new CSUtility().giveWeapon(player, "GRENADE", 2);
                 player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 24);
                 player.sendMessage(ChatColor.AQUA + "グレネードを入手しました");
-
                 break;
         }
     }
