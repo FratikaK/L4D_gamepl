@@ -1,9 +1,6 @@
 package com.github.fratikak.l4d_gamepl;
 
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 
 public class Stop {
@@ -44,11 +41,12 @@ public class Stop {
             for (Player target : Bukkit.getOnlinePlayers()) {
                 target.playSound(target.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 24);
                 target.sendTitle(ChatColor.RED + "GAME OVER!", "", 5, 10, 10);
-                pl.getServer().broadcastMessage(ChatColor.WHITE + "プレイヤーが全員死亡しました。ゲームオーバーです");
+                target.sendMessage(ChatColor.WHITE + "プレイヤーが全員死亡しました。ゲームオーバーです");
 
                 //プレイヤーリストを更新。[観戦者]
                 target.setPlayerListName(null);
                 target.setPlayerListName(ChatColor.WHITE + "[観戦者]" + target.getDisplayName());
+                target.setGameMode(GameMode.SURVIVAL);
                 targetTeleport(target);
             }
         } else {
@@ -57,11 +55,12 @@ public class Stop {
             for (Player target : Bukkit.getOnlinePlayers()) {
                 target.playSound(target.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 24);
                 target.sendTitle(ChatColor.AQUA + "GAME CLEAR!", "", 5, 10, 10);
-                pl.getServer().broadcastMessage(ChatColor.AQUA + "ゴールにたどり着きました！ゲームクリアです！");
+                target.sendMessage(ChatColor.AQUA + "ゴールにたどり着きました！ゲームクリアです！");
 
                 //プレイヤーリストを更新。[観戦者]
                 target.setPlayerListName(null);
                 target.setPlayerListName(ChatColor.WHITE + "[観戦者]" + target.getDisplayName());
+                target.setGameMode(GameMode.SURVIVAL);
                 targetTeleport(target);
 
                 L4D_gamepl.getPlayerList().clear();
