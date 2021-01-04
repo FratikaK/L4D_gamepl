@@ -45,7 +45,9 @@ public class Login implements Listener {
 
         //ゲームモードを固定。サバイバル
         if (player.getGameMode() != GameMode.SURVIVAL) {
-            player.setGameMode(GameMode.SURVIVAL);
+            if (!player.isOp()){
+                player.setGameMode(GameMode.SURVIVAL);
+            }
         }
 
         inventory.clear(); //インベントリ内を削除
