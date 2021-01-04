@@ -21,8 +21,6 @@ import java.util.Objects;
 public final class L4D_gamepl extends JavaPlugin {
 
     private static boolean game = false;
-    private static boolean starting = false;
-    private static int time = 0;
     private static List<String> playerList = new ArrayList<>();
 
     @Override
@@ -71,22 +69,6 @@ public final class L4D_gamepl extends JavaPlugin {
 
     public static void setGame(boolean game) {
         L4D_gamepl.game = game;
-    }
-
-    public static boolean isStarting() {
-        return starting;
-    }
-
-    public static void setStarting(boolean starting) {
-        L4D_gamepl.starting = starting;
-    }
-
-    public static int getTime() {
-        return time;
-    }
-
-    public static void setTime(int time) {
-        L4D_gamepl.time = time;
     }
 
     public static List<String> getPlayerList() {
