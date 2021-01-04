@@ -18,11 +18,6 @@ public class Start {
      * @author FratikaK
      */
 
-    /*
-     * [課題]
-     * カウント終了後に、ゲーム進行用のメソッドを呼び出す
-     * ゲームが始まった時にプレイタイムをカウントするメソッド作成
-     */
 
     private final L4D_gamepl pl;
 
@@ -31,7 +26,14 @@ public class Start {
         this.pl = pl;
     }
 
-    public void startGame(Player player) {
+    public void startGame(Player player,String stageName) {
+
+        //ゲーム中であればreturn
+        if (L4D_gamepl.isGame()){
+            pl.getServer().broadcastMessage(ChatColor.RED + "ゲーム中であるため実行できません！");
+            return;
+        }
+
         //参加するプレイヤーを取得する
         for (Player target : Bukkit.getOnlinePlayers()) {
             if (target.getGameMode() == GameMode.SURVIVAL) {
@@ -48,20 +50,18 @@ public class Start {
             return;
         }
 
-        for (Player target : Bukkit.getOnlinePlayers()) {
-            if (target.getGameMode() == GameMode.SURVIVAL) {
-                Location loc = target.getLocation();
-                loc.setX(1198);
-                loc.setY(4);
-                loc.setZ(1018);
-                target.teleport(loc);
-            }
-        }
+//        for (Player target : Bukkit.getOnlinePlayers()) {
+//            if (target.getGameMode() == GameMode.SURVIVAL) {
+//                Location loc = target.getLocation();
+//                loc.setX(1198);
+//                loc.setY(4);
+//                loc.setZ(1018);
+//                target.teleport(loc);
+//            }
+//        }
 
 
         pl.getLogger().info("ゲームに参加するプレイヤーを表示します...");
-        L4D_gamepl.setStarting(true);
-        L4D_gamepl.setTime(0);
         player.sendMessage("参加者が決まりました");
         player.sendMessage("参加者は" + ChatColor.AQUA + L4D_gamepl.getPlayerList() + ChatColor.WHITE + "です");
         player.sendMessage("5秒後に開始します...");
@@ -86,8 +86,14 @@ public class Start {
             }
         }
 
-        L4D_gamepl.setStarting(false);
+        for (Player target : Bukkit.getOnlinePlayers()) {
+            if (target.getGameMode() == GameMode.SURVIVAL) {
+                new GameWorlds().setTeleportStage(stageName,target);
+            }
+        }
+
         L4D_gamepl.setGame(true);
+        pl.getServer().getLogger().info("ゲームがスタートしました");
 
         //武器などのアイテムを渡す処理
         for (Player target : Bukkit.getOnlinePlayers()) {
