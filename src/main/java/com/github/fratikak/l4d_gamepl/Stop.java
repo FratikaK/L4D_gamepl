@@ -3,6 +3,8 @@ package com.github.fratikak.l4d_gamepl;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 
+import static java.lang.Thread.sleep;
+
 public class Stop {
 
     private final L4D_gamepl pl;
@@ -42,13 +44,8 @@ public class Stop {
                 target.playSound(target.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 24);
                 target.sendTitle(ChatColor.RED + "GAME OVER!", "", 5, 10, 10);
                 target.sendMessage(ChatColor.WHITE + "プレイヤーが全員死亡しました。ゲームオーバーです");
-
-                //プレイヤーリストを更新。[観戦者]
-                target.setPlayerListName(null);
-                target.setPlayerListName(ChatColor.WHITE + "[観戦者]" + target.getDisplayName());
-                target.setGameMode(GameMode.SURVIVAL);
-                targetTeleport(target);
             }
+
         } else {
 
             //プレイヤーがゴールにたどり着いた時を想定
@@ -56,31 +53,37 @@ public class Stop {
                 target.playSound(target.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 24);
                 target.sendTitle(ChatColor.AQUA + "GAME CLEAR!", "", 5, 10, 10);
                 target.sendMessage(ChatColor.AQUA + "ゴールにたどり着きました！ゲームクリアです！");
-
-                //プレイヤーリストを更新。[観戦者]
-                target.setPlayerListName(null);
-                target.setPlayerListName(ChatColor.WHITE + "[観戦者]" + target.getDisplayName());
-                target.setGameMode(GameMode.SURVIVAL);
-                targetTeleport(target);
-
-                L4D_gamepl.getPlayerList().clear();
             }
+        }
+
+        for (int i = 5; i >= 0; i--) {
+
+            pl.getServer().broadcastMessage("ゲーム終了まで" + i + "秒");
+
+            try {
+                sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        //プレイヤーリストを更新。[観戦者]
+        for (Player target : Bukkit.getOnlinePlayers()) {
+            target.setPlayerListName(null);
+            target.setPlayerListName(ChatColor.WHITE + "[観戦者]" + target.getDisplayName());
+            L4D_gamepl.getPlayerList().clear();
+            target.setGameMode(GameMode.SURVIVAL);
+            targetTeleport(target);
         }
 
         if (L4D_gamepl.isGame()) {
             L4D_gamepl.setGame(false);
         }
-
-
     }
 
     //オンラインプレイヤー全て初期位置へ移動させる
     public void targetTeleport(Player target) {
-        Location location = target.getLocation();
-        location.setX(1087);
-        location.setY(11);
-        location.setZ(993);
-        target.teleport(location);
+        target.teleport(target.getWorld().getSpawnLocation());
     }
 
 //    public void setRespawn() {
