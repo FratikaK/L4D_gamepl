@@ -1,10 +1,13 @@
 package com.github.fratikak.l4d_gamepl;
 
-import org.bukkit.GameMode;
-import org.bukkit.Location;
+import org.bukkit.*;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityToggleSwimEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryCreativeEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
@@ -28,15 +31,6 @@ public class PlayerEvent implements Listener {
      * @author FratikaK
      */
 
-    //ゲームカウント中は動けないようにする
-    @EventHandler
-    public void onMove(PlayerMoveEvent event) {
-
-        if (L4D_gamepl.isStarting()) {
-            event.setCancelled(true);
-        }
-    }
-
     @EventHandler
     public void changeGamerule(PlayerDeathEvent event) {
 
@@ -52,17 +46,11 @@ public class PlayerEvent implements Listener {
         deathLocation = player.getLocation().clone();
 
         L4D_gamepl.getPlayerList().remove(playername);
+        player.sendTitle(ChatColor.RED + "あなたは死亡しました", "", 5, 10, 5);
         player.setGameMode(GameMode.SPECTATOR);
 
         if (L4D_gamepl.getPlayerList().isEmpty()) {
             new Stop(pl).stopGame();
-            player.setGameMode(GameMode.SURVIVAL);
-
-            deathLocation.setX(1087);
-            deathLocation.setY(11);
-            deathLocation.setZ(993);
-
-            player.getWorld().setSpawnLocation(deathLocation);
         }
 
     }
@@ -74,6 +62,11 @@ public class PlayerEvent implements Listener {
          * リスポーン位置をデスイベントから受け取り、設定
          * ロビーアイテムを付与
          */
+
+        if (L4D_gamepl.getPlayerList().isEmpty()) {
+
+            return;
+        }
 
         Player player = event.getPlayer();
 
@@ -108,5 +101,21 @@ public class PlayerEvent implements Listener {
         }
     }
 
+//    @EventHandler
+//    public void waterDeath(EntityToggleSwimEvent event) {
+//
+//        Entity entity = event.getEntity();
+//
+//        if (L4D_gamepl.isGame()) {
+//            if (entity instanceof Player){
+//                Player player = (Player) entity;
+//                if (player.isInWater()) {
+//                    player.damage(50);
+//                    pl.getServer().broadcastMessage(player.getDisplayName() + "は溺れてしまった");
+//                }
+//            }
+//
+//        }
+//    }
 
 }
