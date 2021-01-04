@@ -7,7 +7,6 @@ tasks.withType(JavaCompile) {
 }
 
 
-
 group = 'com.github.fratikak'
 version = '1.0-SNAPSHOT'
 
