@@ -67,12 +67,6 @@ public class GameLogic implements Listener {
         }
     }
 
-    //敵mobのアイテムドロップを禁止する
-    @EventHandler
-    public void disableDropItem(EntityDropItemEvent event) {
-        event.setCancelled(true);
-
-    }
 
     @EventHandler
     public void zombieSpawn(SpawnerSpawnEvent event) {
