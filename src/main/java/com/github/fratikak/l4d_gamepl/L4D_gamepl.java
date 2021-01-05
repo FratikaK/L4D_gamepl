@@ -32,6 +32,7 @@ public final class L4D_gamepl extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new DamageOff(this), this);
         getServer().getPluginManager().registerEvents(new GameLogic(this),this);
         getServer().getPluginManager().registerEvents(new L4DMobs(this),this);
+        getServer().getPluginManager().registerEvents(new CheckPoint(this),this);
     }
 
     @Override
@@ -56,7 +57,6 @@ public final class L4D_gamepl extends JavaPlugin {
         inventory.setItem(1,food);
         inventory.setItem(2,healItem);
         new CSUtility().giveWeapon(player,"AK-47",1);
-        new CSUtility().giveWeapon(player,"CARBINE",1);
         new CSUtility().giveWeapon(player,"GRENADE",10);
 
     }
