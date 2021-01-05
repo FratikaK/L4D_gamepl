@@ -50,6 +50,8 @@ public class PlayerEvent implements Listener {
         player.setGameMode(GameMode.SPECTATOR);
 
         if (L4D_gamepl.getPlayerList().isEmpty()) {
+            GameWorlds.setStageId(0);
+            pl.getLogger().info("getStageId = " + GameWorlds.getStageId());
             new Stop(pl).stopGame();
         }
 
@@ -101,21 +103,17 @@ public class PlayerEvent implements Listener {
         }
     }
 
-//    @EventHandler
-//    public void waterDeath(EntityToggleSwimEvent event) {
-//
-//        Entity entity = event.getEntity();
-//
-//        if (L4D_gamepl.isGame()) {
-//            if (entity instanceof Player){
-//                Player player = (Player) entity;
-//                if (player.isInWater()) {
-//                    player.damage(50);
-//                    pl.getServer().broadcastMessage(player.getDisplayName() + "は溺れてしまった");
-//                }
-//            }
-//
-//        }
-//    }
+    //水に触れると死亡
+    @EventHandler
+    public void waterDeath(PlayerMoveEvent event) {
+
+        Player player = event.getPlayer();
+
+        if (L4D_gamepl.isGame()) {
+           if (player.getLocation().getBlock().getType() == Material.WATER){
+               player.setHealth(0);
+           }
+        }
+    }
 
 }
