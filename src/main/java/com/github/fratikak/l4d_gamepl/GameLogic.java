@@ -81,12 +81,13 @@ public class GameLogic implements Listener {
         if (L4D_gamepl.isGame()) {
             //スポナーの場所を取得する
             Location location = event.getLocation().clone();
+            EntityType entityType = event.getSpawner().getSpawnedType();
 
             //プレイヤー数を取得して、プレイヤー数×指定した数のゾンビをスポーンさせる
             World world = event.getSpawner().getWorld();
             int players = L4D_gamepl.getPlayerList().size();
             for (int i = 0; i < players * 4; i++) {
-                world.spawnEntity(location, EntityType.ZOMBIE);
+                world.spawnEntity(location, entityType);
             }
         } else {
             event.setCancelled(true);
