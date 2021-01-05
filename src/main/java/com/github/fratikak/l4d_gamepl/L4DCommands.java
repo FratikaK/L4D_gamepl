@@ -23,7 +23,7 @@ public class L4DCommands implements CommandExecutor {
 
             if (args[0].equalsIgnoreCase("start")) {
                 if (args[1].equalsIgnoreCase("venice")){
-                    new Start(pl).startGame((Player) sender,"venice");
+                    new Start(pl).startGame((Player) sender,1);
                     return true;
                 }
 
