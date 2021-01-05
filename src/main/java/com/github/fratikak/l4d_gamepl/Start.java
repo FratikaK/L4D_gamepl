@@ -26,7 +26,7 @@ public class Start {
         this.pl = pl;
     }
 
-    public void startGame(Player player,String stageName) {
+    public void startGame(Player player,int stageId) {
 
         //ゲーム中であればreturn
         if (L4D_gamepl.isGame()){
@@ -49,17 +49,6 @@ public class Start {
             L4D_gamepl.setGame(false);
             return;
         }
-
-//        for (Player target : Bukkit.getOnlinePlayers()) {
-//            if (target.getGameMode() == GameMode.SURVIVAL) {
-//                Location loc = target.getLocation();
-//                loc.setX(1198);
-//                loc.setY(4);
-//                loc.setZ(1018);
-//                target.teleport(loc);
-//            }
-//        }
-
 
         pl.getLogger().info("ゲームに参加するプレイヤーを表示します...");
         player.sendMessage("参加者が決まりました");
@@ -88,12 +77,13 @@ public class Start {
 
         for (Player target : Bukkit.getOnlinePlayers()) {
             if (target.getGameMode() == GameMode.SURVIVAL) {
-                new GameWorlds().setTeleportStage(stageName,target);
+                new GameWorlds(pl).setTeleportStage(stageId,target);
             }
         }
 
         L4D_gamepl.setGame(true);
-        pl.getServer().getLogger().info("ゲームがスタートしました");
+        new GameWorlds(pl).setStage(stageId);
+        pl.getLogger().info("ゲームがスタートしました");
 
         //武器などのアイテムを渡す処理
         for (Player target : Bukkit.getOnlinePlayers()) {
