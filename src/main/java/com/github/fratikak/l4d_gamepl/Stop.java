@@ -23,6 +23,11 @@ public class Stop {
      * @author FratikaK
      */
 
+    //オンラインプレイヤー全て初期位置へ移動させる
+    public void targetTeleport(Player target) {
+        target.teleport(target.getWorld().getSpawnLocation());
+    }
+
     public void stopGame() {
 
         /**
@@ -71,8 +76,14 @@ public class Stop {
         for (Player target : Bukkit.getOnlinePlayers()) {
             target.setPlayerListName(null);
             target.setPlayerListName(ChatColor.WHITE + "[観戦者]" + target.getDisplayName());
+
+            //リストを空にする
             L4D_gamepl.getPlayerList().clear();
+            L4D_gamepl.getDeathPlayer().clear();
+
+            //ログイン時の状態に戻す
             target.setGameMode(GameMode.SURVIVAL);
+            pl.giveLobbyItem(target.getInventory());
             targetTeleport(target);
         }
 
@@ -81,10 +92,6 @@ public class Stop {
         }
     }
 
-    //オンラインプレイヤー全て初期位置へ移動させる
-    public void targetTeleport(Player target) {
-        target.teleport(target.getWorld().getSpawnLocation());
-    }
 
 //    public void setRespawn() {
 //
