@@ -17,6 +17,7 @@ public class CheckPoint implements Listener {
      * チェックポイントを実装する
      * 特定のブロックの上に乗ったらレストルーム（？）にテレポート
      * テレポートしたプレイヤーの体力と空腹を回復
+     * 死亡したプレイヤーを復活させる
      *
      * @author FratikaK
      */
@@ -35,6 +36,24 @@ public class CheckPoint implements Listener {
         inventory.addItem(new ItemStack(Material.BAKED_POTATO, 64));
 
         new CSUtility().giveWeapon(target, "GRENADE", 10);
+    }
+
+    //死亡プレイヤーを復活させる
+    public void resurrectionPlayer(Player player){
+        if (player.getGameMode() == GameMode.SPECTATOR && L4D_gamepl.isGame()){
+            for (Player target : L4D_gamepl.getDeathPlayer()){
+                if (player == target){
+                    L4D_gamepl.getDeathPlayer().remove(player);
+                    L4D_gamepl.getPlayerList().add(player);
+                    pl.getLogger().info(ChatColor.AQUA + player.getDisplayName() + "が復活しました");
+                    pl.getLogger().info(ChatColor.AQUA + "DeathPlayerList :" + L4D_gamepl.getDeathPlayer());
+                    pl.getLogger().info(ChatColor.AQUA + "PlayerList :" + L4D_gamepl.getPlayerList());
+
+                    player.setGameMode(GameMode.SURVIVAL);
+                    pl.giveGameItem(player.getInventory(),player);
+                }
+            }
+        }
     }
 
     //チェックポイント登録
@@ -59,6 +78,7 @@ public class CheckPoint implements Listener {
                                 target.teleport(targetLoc);
 
                                 target.addPotionEffect(new PotionEffect(PotionEffectType.HEAL, 30, 2), true);
+                                resurrectionPlayer(target);
                                 sendCheckPointItem(target, target.getInventory());
                                 target.playSound(target.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 25);
                                 pl.getServer().broadcastMessage(ChatColor.AQUA + "最初のチェックポイントにたどり着きました！");
@@ -98,6 +118,7 @@ public class CheckPoint implements Listener {
                                 target.teleport(targetLoc);
 
                                 target.addPotionEffect(new PotionEffect(PotionEffectType.HEAL, 30, 2), true);
+                                resurrectionPlayer(target);
                                 sendCheckPointItem(target, target.getInventory());
                                 target.playSound(target.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 25);
                                 pl.getServer().broadcastMessage(ChatColor.AQUA + "2のチェックポイントにたどり着きました！");
@@ -130,6 +151,7 @@ public class CheckPoint implements Listener {
                     new Stop(pl).stopGame();
                     GameWorlds.setStageId(0);
                 }
+
             }
         }
     }
