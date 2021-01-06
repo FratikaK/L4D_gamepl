@@ -12,6 +12,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryCreativeEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.Inventory;
 
@@ -31,6 +32,28 @@ public class PlayerEvent implements Listener {
      * @author FratikaK
      */
 
+    //プレイヤーがログアウトした場合の処理
+    @EventHandler
+    public void logoutPlayer(PlayerQuitEvent event){
+        Player player = event.getPlayer();
+        event.setQuitMessage(ChatColor.AQUA + player.getDisplayName() + "がログアウトしました");
+        pl.getLogger().info(ChatColor.AQUA + player.getDisplayName() + "がログアウトしました");
+        if (L4D_gamepl.isGame()){
+            //リストから削除
+            L4D_gamepl.getPlayerList().remove(player);
+            L4D_gamepl.getDeathPlayer().remove(player);
+
+            pl.getLogger().info("playerList: " + L4D_gamepl.getPlayerList());
+            pl.getLogger().info("deathList: " + L4D_gamepl.getDeathPlayer());
+
+            //ゲームプレイヤーが全員いなくなった場合、ゲームを終了
+            if (L4D_gamepl.getPlayerList().isEmpty()){
+                new Stop(pl).stopGame();
+            }
+
+        }
+    }
+
     @EventHandler
     public void changeGamerule(PlayerDeathEvent event) {
 
@@ -42,10 +65,10 @@ public class PlayerEvent implements Listener {
          */
 
         Player player = event.getEntity();
-        String playername = player.getDisplayName();
         deathLocation = player.getLocation().clone();
 
-        L4D_gamepl.getPlayerList().remove(playername);
+        L4D_gamepl.getPlayerList().remove(player);
+        L4D_gamepl.getDeathPlayer().add(player);
         player.sendTitle(ChatColor.RED + "あなたは死亡しました", "", 5, 10, 5);
         player.setGameMode(GameMode.SPECTATOR);
 
@@ -64,11 +87,6 @@ public class PlayerEvent implements Listener {
          * リスポーン位置をデスイベントから受け取り、設定
          * ロビーアイテムを付与
          */
-
-        if (L4D_gamepl.getPlayerList().isEmpty()) {
-
-            return;
-        }
 
         Player player = event.getPlayer();
 
