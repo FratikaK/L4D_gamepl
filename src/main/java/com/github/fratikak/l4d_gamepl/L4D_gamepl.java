@@ -21,7 +21,8 @@ import java.util.Objects;
 public final class L4D_gamepl extends JavaPlugin {
 
     private static boolean game = false;
-    private static List<String> playerList = new ArrayList<>();
+    private static List<Player> playerList = new ArrayList<>();
+    private static List<Player> deathPlayer = new ArrayList<>();
 
     @Override
     public void onEnable() {
@@ -30,9 +31,9 @@ public final class L4D_gamepl extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new Login(this), this);
         getServer().getPluginManager().registerEvents(new PlayerEvent(this), this);
         getServer().getPluginManager().registerEvents(new DamageOff(this), this);
-        getServer().getPluginManager().registerEvents(new GameLogic(this),this);
-        getServer().getPluginManager().registerEvents(new L4DMobs(this),this);
-        getServer().getPluginManager().registerEvents(new CheckPoint(this),this);
+        getServer().getPluginManager().registerEvents(new GameLogic(this), this);
+        getServer().getPluginManager().registerEvents(new L4DMobs(this), this);
+        getServer().getPluginManager().registerEvents(new CheckPoint(this), this);
     }
 
     @Override
@@ -48,19 +49,18 @@ public final class L4D_gamepl extends JavaPlugin {
     }
 
     //ゲーム用アイテムを付与
-    public void giveGameItem(Inventory inventory, Player player){
+    public void giveGameItem(Inventory inventory, Player player) {
         inventory.clear();
 
-        ItemStack food = new ItemStack(Material.BREAD,64);
-        ItemStack healItem = new ItemStack(Material.GOLDEN_APPLE,10);
+        ItemStack food = new ItemStack(Material.BREAD, 64);
+        ItemStack healItem = new ItemStack(Material.GOLDEN_APPLE, 10);
 
-        inventory.setItem(1,food);
-        inventory.setItem(2,healItem);
-        new CSUtility().giveWeapon(player,"AK-47",1);
-        new CSUtility().giveWeapon(player,"GRENADE",10);
+        inventory.setItem(1, food);
+        inventory.setItem(2, healItem);
+        new CSUtility().giveWeapon(player, "AK-47", 1);
+        new CSUtility().giveWeapon(player, "GRENADE", 10);
 
     }
-
 
     //ゲッターセッター
     public static boolean isGame() {
@@ -71,8 +71,11 @@ public final class L4D_gamepl extends JavaPlugin {
         L4D_gamepl.game = game;
     }
 
-    public static List<String> getPlayerList() {
+    public static List<Player> getPlayerList() {
         return playerList;
     }
 
+    public static List<Player> getDeathPlayer() {
+        return deathPlayer;
+    }
 }
