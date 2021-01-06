@@ -32,7 +32,6 @@ public class GameLogic implements Listener {
      * <p>
      * ・プレイヤーが死亡した場合にstaticプレイヤーリストから削除
      * ・同じくプレイヤーが死亡した場合にプレイヤーリストネームタグを変更する
-     * ・サバイバルモードのみスプリント処理を無効化（クリエイティブは可）
      * ・イベント内容がPlayerEventと被る所があるので統一するかもしれない
      * ・敵mobを沸かせる処理を実装する
      * ・mobスポーンを沸かせる条件に確率でRandom関数を採用しているが、
@@ -47,7 +46,8 @@ public class GameLogic implements Listener {
         Player player = event.getEntity();
 
         if (player.getGameMode() == GameMode.SURVIVAL) {
-            L4D_gamepl.getPlayerList().remove(player.getDisplayName());
+            L4D_gamepl.getPlayerList().remove(player);
+            L4D_gamepl.getDeathPlayer().add(player);
             player.setPlayerListName("[" + ChatColor.RED + "死亡" + ChatColor.WHITE + "]" + player.getDisplayName());
 
             pl.getLogger().info(ChatColor.GREEN + player.getDisplayName() + ChatColor.WHITE + "が死亡しました");
@@ -55,18 +55,6 @@ public class GameLogic implements Listener {
         }
 
     }
-
-    //ゲーム参加者のみスプリントを禁止する
-    @EventHandler
-    public void dontSplint(PlayerToggleSprintEvent event) {
-        Player player = event.getPlayer();
-
-        if (player.getGameMode() == GameMode.SURVIVAL && L4D_gamepl.isGame()) {
-            event.setCancelled(true);
-            player.setSprinting(false);
-        }
-    }
-
 
     @EventHandler
     public void zombieSpawn(SpawnerSpawnEvent event) {
@@ -86,7 +74,7 @@ public class GameLogic implements Listener {
             //プレイヤー数を取得して、プレイヤー数×指定した数のゾンビをスポーンさせる
             World world = event.getSpawner().getWorld();
             int players = L4D_gamepl.getPlayerList().size();
-            for (int i = 0; i < players * 4; i++) {
+            for (int i = 0; i < players * 6; i++) {
                 world.spawnEntity(location, entityType);
             }
         } else {
@@ -104,7 +92,7 @@ public class GameLogic implements Listener {
          * スポーンするMobの挙動は別クラスにて記述する
          */
         Random random = new Random();
-        int spawnValue = random.nextInt(8);
+        int spawnValue = random.nextInt(7);
         EntityType type = event.getEntity().getType();
         Location deathLocation = event.getEntity().getLocation().clone();
         World world = event.getEntity().getWorld();
@@ -119,7 +107,7 @@ public class GameLogic implements Listener {
                         return;
                     }
                     //プレイヤーとの距離が近ければreturn
-                    if (Math.abs(target.getLocation().getX() - deathLocation.getX()) <= 5 || Math.abs(target.getLocation().getZ() - deathLocation.getZ()) <= 5) {
+                    if (Math.abs(target.getLocation().getX() - deathLocation.getX()) <= 4 || Math.abs(target.getLocation().getZ() - deathLocation.getZ()) <= 4) {
                         return;
                     }
 
