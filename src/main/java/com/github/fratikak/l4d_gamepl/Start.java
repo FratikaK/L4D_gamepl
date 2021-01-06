@@ -26,20 +26,31 @@ public class Start {
         this.pl = pl;
     }
 
-    public void startGame(Player player,int stageId) {
+    public void startGame(Player player, int stageId) {
 
         //ゲーム中であればreturn
-        if (L4D_gamepl.isGame()){
+        if (L4D_gamepl.isGame()) {
             pl.getServer().broadcastMessage(ChatColor.RED + "ゲーム中であるため実行できません！");
+            return;
+        }
+
+        //ステージIdが0であることを確認
+        if (GameWorlds.getStageId() != 0) {
+            pl.getServer().broadcastMessage(ChatColor.RED + "ステージIdがデフォルトではありません！");
+            return;
+        }
+
+        //プレイヤーリスト、死亡者リストが空であることを確認
+        if (!L4D_gamepl.getPlayerList().isEmpty() && !L4D_gamepl.getDeathPlayer().isEmpty()) {
+            pl.getServer().broadcastMessage(ChatColor.RED + "各リストが空ではありません！");
             return;
         }
 
         //参加するプレイヤーを取得する
         for (Player target : Bukkit.getOnlinePlayers()) {
             if (target.getGameMode() == GameMode.SURVIVAL) {
-                String playerName = target.getDisplayName();
-                L4D_gamepl.getPlayerList().add(playerName);
-                pl.getLogger().info(ChatColor.AQUA + playerName);
+                L4D_gamepl.getPlayerList().add(target);
+                pl.getLogger().info(ChatColor.AQUA + target.getDisplayName());
             }
         }
 
@@ -53,6 +64,7 @@ public class Start {
         pl.getLogger().info("ゲームに参加するプレイヤーを表示します...");
         player.sendMessage("参加者が決まりました");
         player.sendMessage("参加者は" + ChatColor.AQUA + L4D_gamepl.getPlayerList() + ChatColor.WHITE + "です");
+        pl.getLogger().info("参加者は" + ChatColor.AQUA + L4D_gamepl.getPlayerList());
         player.sendMessage("5秒後に開始します...");
 
         for (int i = 5; i >= 0; i--) {
@@ -77,7 +89,7 @@ public class Start {
 
         for (Player target : Bukkit.getOnlinePlayers()) {
             if (target.getGameMode() == GameMode.SURVIVAL) {
-                new GameWorlds(pl).setTeleportStage(stageId,target);
+                new GameWorlds(pl).setTeleportStage(stageId, target);
             }
         }
 
