@@ -62,8 +62,6 @@ public class Start {
         }
 
         pl.getLogger().info("ゲームに参加するプレイヤーを表示します...");
-        player.sendMessage("参加者が決まりました");
-        player.sendMessage("参加者は" + ChatColor.AQUA + L4D_gamepl.getPlayerList() + ChatColor.WHITE + "です");
         pl.getLogger().info("参加者は" + ChatColor.AQUA + L4D_gamepl.getPlayerList());
         player.sendMessage("5秒後に開始します...");
 
