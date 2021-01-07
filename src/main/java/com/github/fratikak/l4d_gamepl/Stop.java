@@ -47,7 +47,7 @@ public class Stop {
 
             for (Player target : Bukkit.getOnlinePlayers()) {
                 target.playSound(target.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 24);
-                target.sendTitle(ChatColor.RED + "GAME OVER!", "", 5, 10, 10);
+                target.sendTitle(ChatColor.RED + "GAME OVER!", "", 5, 30, 10);
                 target.sendMessage(ChatColor.WHITE + "プレイヤーが全員死亡しました。ゲームオーバーです");
             }
 
@@ -56,7 +56,7 @@ public class Stop {
             //プレイヤーがゴールにたどり着いた時を想定
             for (Player target : Bukkit.getOnlinePlayers()) {
                 target.playSound(target.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 24);
-                target.sendTitle(ChatColor.AQUA + "GAME CLEAR!", "", 5, 10, 10);
+                target.sendTitle(ChatColor.AQUA + "GAME CLEAR!", "", 5, 30, 10);
                 target.sendMessage(ChatColor.AQUA + "ゴールにたどり着きました！ゲームクリアです！");
             }
         }
@@ -77,15 +77,16 @@ public class Stop {
             target.setPlayerListName(null);
             target.setPlayerListName(ChatColor.WHITE + "[観戦者]" + target.getDisplayName());
 
-            //リストを空にする
-            L4D_gamepl.getPlayerList().clear();
-            L4D_gamepl.getDeathPlayer().clear();
-
             //ログイン時の状態に戻す
             target.setGameMode(GameMode.SURVIVAL);
             pl.giveLobbyItem(target.getInventory());
             targetTeleport(target);
         }
+
+        //リストを空にする
+        L4D_gamepl.getPlayerList().clear();
+        L4D_gamepl.getDeathPlayer().clear();
+        GameWorlds.setStageId(0);
 
         if (L4D_gamepl.isGame()) {
             L4D_gamepl.setGame(false);
