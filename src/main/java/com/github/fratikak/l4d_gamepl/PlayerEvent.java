@@ -69,7 +69,7 @@ public class PlayerEvent implements Listener {
 
         L4D_gamepl.getPlayerList().remove(player);
         L4D_gamepl.getDeathPlayer().add(player);
-        player.sendTitle(ChatColor.RED + "あなたは死亡しました", "", 5, 10, 5);
+        player.sendTitle(ChatColor.RED + "あなたは死亡しました", "", 5, 40, 5);
         player.setGameMode(GameMode.SPECTATOR);
 
         if (L4D_gamepl.getPlayerList().isEmpty()) {
@@ -77,7 +77,6 @@ public class PlayerEvent implements Listener {
             pl.getLogger().info("getStageId = " + GameWorlds.getStageId());
             new Stop(pl).stopGame();
         }
-
     }
 
     @EventHandler
@@ -92,22 +91,13 @@ public class PlayerEvent implements Listener {
 
         Inventory inventory = player.getInventory();
 
-        event.setRespawnLocation(deathLocation);
+        if (!L4D_gamepl.getPlayerList().isEmpty()){
+            event.setRespawnLocation(deathLocation);
+        }
 
         //インベントリ処理
         pl.giveLobbyItem(inventory);
 
-    }
-
-    //クリエイティブ時にアイテム取り出しを禁止
-    @EventHandler
-    public void onCreativeItems(InventoryCreativeEvent event) {
-        Player player = (Player) event.getWhoClicked();
-
-        //opじゃなければ無効化
-        if (!player.isOp()) {
-            event.setCancelled(true);
-        }
     }
 
     //アイテムドロップ（アイテムを捨てる）を禁止
@@ -127,7 +117,7 @@ public class PlayerEvent implements Listener {
 
         Player player = event.getPlayer();
 
-        if (L4D_gamepl.isGame()) {
+        if (L4D_gamepl.isGame() && player.getGameMode() == GameMode.SURVIVAL) {
            if (player.getLocation().getBlock().getType() == Material.WATER){
                player.setHealth(0);
            }
