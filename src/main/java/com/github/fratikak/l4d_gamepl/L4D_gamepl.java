@@ -40,15 +40,15 @@ public final class L4D_gamepl extends JavaPlugin {
     public void onDisable() {
     }
 
-    //ロビーアイテムを付与
+    //ロビーアイテムを付与 今はインベントリ削除のみ
     public void giveLobbyItem(Inventory inventory) {
 
-        ItemStack diamond = new ItemStack(Material.DIAMOND);
+//        ItemStack diamond = new ItemStack(Material.DIAMOND);
         inventory.clear();
-        inventory.setItem(0, diamond);
+//        inventory.setItem(0, diamond);
     }
 
-    //ゲーム用アイテムを付与
+    //ゲーム用初期アイテムを付与
     public void giveGameItem(Inventory inventory, Player player) {
         inventory.clear();
 
@@ -57,7 +57,9 @@ public final class L4D_gamepl extends JavaPlugin {
 
         inventory.setItem(1, food);
         inventory.setItem(2, healItem);
-        new CSUtility().giveWeapon(player, "AK-47", 1);
+
+
+        new CSUtility().giveWeapon(player, "MAC10", 1);
         new CSUtility().giveWeapon(player, "GRENADE", 10);
 
     }
