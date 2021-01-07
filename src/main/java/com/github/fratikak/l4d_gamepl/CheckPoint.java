@@ -81,8 +81,8 @@ public class CheckPoint implements Listener {
                                 resurrectionPlayer(target);
                                 sendCheckPointItem(target, target.getInventory());
                                 target.playSound(target.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 25);
-                                pl.getServer().broadcastMessage(ChatColor.AQUA + "最初のチェックポイントにたどり着きました！");
-                                pl.getServer().broadcastMessage(ChatColor.AQUA + "ゴールドブロックを踏むとゲームが再開します！");
+                                target.sendMessage(ChatColor.AQUA + "最初のチェックポイントにたどり着きました！");
+                                target.sendMessage(ChatColor.AQUA + "ゴールドブロックを踏むとゲームが再開します！");
 
                         }
                     }
@@ -99,8 +99,8 @@ public class CheckPoint implements Listener {
                                 targetLoc.setZ(918);
                                 target.teleport(targetLoc);
 
-                                pl.getServer().broadcastMessage(ChatColor.AQUA + "チェックポイントから出ました");
-                                pl.getServer().broadcastMessage(ChatColor.AQUA + "ゲームを再開します");
+                                target.sendMessage(ChatColor.AQUA + "チェックポイントから出ました");
+                                target.sendMessage(ChatColor.AQUA + "ゲームを再開します");
 
                         }
                     }
@@ -121,8 +121,8 @@ public class CheckPoint implements Listener {
                                 resurrectionPlayer(target);
                                 sendCheckPointItem(target, target.getInventory());
                                 target.playSound(target.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 25);
-                                pl.getServer().broadcastMessage(ChatColor.AQUA + "2のチェックポイントにたどり着きました！");
-                                pl.getServer().broadcastMessage(ChatColor.AQUA + "レッドストーンブロックを踏むとゲームが再開します！");
+                                target.sendMessage(ChatColor.AQUA + "2のチェックポイントにたどり着きました！");
+                                target.sendMessage(ChatColor.AQUA + "レッドストーンブロックを踏むとゲームが再開します！");
 
                         }
                     }
@@ -138,9 +138,8 @@ public class CheckPoint implements Listener {
                                 targetLoc.setY(42);
                                 targetLoc.setZ(877);
                                 target.teleport(targetLoc);
-
-                                pl.getServer().broadcastMessage(ChatColor.AQUA + "チェックポイントから出ました");
-                                pl.getServer().broadcastMessage(ChatColor.AQUA + "ゲームを再開します");
+                                target.sendMessage(ChatColor.AQUA + "チェックポイントから出ました");
+                                target.sendMessage(ChatColor.AQUA + "ゲームを再開します");
 
                         }
                     }
