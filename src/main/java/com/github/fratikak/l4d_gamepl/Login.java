@@ -50,8 +50,6 @@ public class Login implements Listener {
             }
         }
 
-        inventory.clear(); //インベントリ内を削除
-
         pl.giveLobbyItem(inventory); //ロビーアイテム追加
 
         player.teleport(location, PlayerTeleportEvent.TeleportCause.PLUGIN); //スポーン地点固定
