@@ -142,10 +142,7 @@ public class GameLogic implements Listener {
                             pl.getServer().getLogger().info("マグマキューブがスポーンしました");
                             break;
                     }
-                    
                 }
-               
-                
             }
         }
     }
