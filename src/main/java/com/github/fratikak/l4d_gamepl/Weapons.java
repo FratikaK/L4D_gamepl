@@ -2,13 +2,11 @@ package com.github.fratikak.l4d_gamepl;
 
 import com.shampaggon.crackshot.CSUtility;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockDamageEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 
 public class Weapons implements Listener {
@@ -21,7 +19,7 @@ public class Weapons implements Listener {
     public void setPrimaryWeapon(Player player, String weaponName) {
         Inventory inventory = player.getInventory();
         inventory.clear(0);
-
+        player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 24);
         switch (weaponName) {
             case "AK47":
                 new CSUtility().giveWeapon(player, weaponName, 1);
@@ -42,9 +40,18 @@ public class Weapons implements Listener {
                 new CSUtility().giveWeapon(player, weaponName, 1);
                 player.sendMessage(ChatColor.AQUA + "Mac10を装備しました");
                 break;
+
+            case "SPAS12":
+                new CSUtility().giveWeapon(player,weaponName,1);
+                player.sendMessage(ChatColor.AQUA + "SPAS12を装備しました");
+
+            case "SCARL":
+                new CSUtility().giveWeapon(player,weaponName,1);
+                player.sendMessage(ChatColor.AQUA + "SCARLを装備しました");
         }
     }
 
+    //特定のブロックを叩くとそれに対応した武器を装備する
     @EventHandler
     public void getWeaponInteract(BlockDamageEvent event) {
         Player player = event.getPlayer();
@@ -63,6 +70,14 @@ public class Weapons implements Listener {
 
                 case EMERALD_ORE:
                     setPrimaryWeapon(player, "Chopper");
+                    break;
+
+                case NETHER_GOLD_ORE:
+                    setPrimaryWeapon(player,"SPAS12");
+                    break;
+
+                case DIAMOND_ORE:
+                    setPrimaryWeapon(player,"SCARL");
                     break;
         }
     }
