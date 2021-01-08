@@ -162,6 +162,7 @@ public class GameLogic implements Listener {
             case PILLAGER:
                 assert player != null;
                 player.addPotionEffect(new PotionEffect(PotionEffectType.HEAL, 30, 2), true);
+                player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 24);
                 player.sendMessage(ChatColor.AQUA + "回復ブーストを付与しました");
                 break;
 
