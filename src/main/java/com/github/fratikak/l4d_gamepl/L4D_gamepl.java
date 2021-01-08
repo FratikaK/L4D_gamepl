@@ -34,6 +34,7 @@ public final class L4D_gamepl extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new GameLogic(this), this);
         getServer().getPluginManager().registerEvents(new L4DMobs(this), this);
         getServer().getPluginManager().registerEvents(new CheckPoint(this), this);
+        getServer().getPluginManager().registerEvents(new Weapons(),this);
     }
 
     @Override
