@@ -40,6 +40,7 @@ public class CheckPoint implements Listener {
 
     //死亡プレイヤーを復活させる
     public void resurrectionPlayer(Player player){
+
         if (player.getGameMode() == GameMode.SPECTATOR && L4D_gamepl.isGame()){
             for (Player target : L4D_gamepl.getDeathPlayer()){
                 if (player == target){
@@ -83,7 +84,6 @@ public class CheckPoint implements Listener {
                                 target.playSound(target.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 25);
                                 target.sendMessage(ChatColor.AQUA + "最初のチェックポイントにたどり着きました！");
                                 target.sendMessage(ChatColor.AQUA + "ゴールドブロックを踏むとゲームが再開します！");
-
                         }
                     }
                 }

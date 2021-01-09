@@ -74,7 +74,7 @@ public class GameLogic implements Listener {
             //プレイヤー数を取得して、プレイヤー数×指定した数のゾンビをスポーンさせる
             World world = event.getSpawner().getWorld();
             int players = L4D_gamepl.getPlayerList().size();
-            for (int i = 0; i < players * 6; i++) {
+            for (int i = 0; i < players * 4; i++) {
                 world.spawnEntity(location, entityType);
             }
         } else {
@@ -92,7 +92,7 @@ public class GameLogic implements Listener {
          * スポーンするMobの挙動は別クラスにて記述する
          */
         Random random = new Random();
-        int spawnValue = random.nextInt(7);
+        int spawnValue = random.nextInt(10);
         EntityType type = event.getEntity().getType();
         Location deathLocation = event.getEntity().getLocation().clone();
         World world = event.getEntity().getWorld();

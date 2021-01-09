@@ -69,6 +69,12 @@ public class PlayerEvent implements Listener {
 
         L4D_gamepl.getPlayerList().remove(player);
         L4D_gamepl.getDeathPlayer().add(player);
+
+        for (Player target : Bukkit.getOnlinePlayers()){
+            target.playSound(target.getLocation(),Sound.ENTITY_WOLF_HOWL,1,24);
+            target.sendMessage(player.getDisplayName() + "が死亡しました");
+        }
+
         player.sendTitle(ChatColor.RED + "あなたは死亡しました", "", 5, 40, 5);
         player.setGameMode(GameMode.SPECTATOR);
 

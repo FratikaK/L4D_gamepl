@@ -5,8 +5,11 @@ import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDamageEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 
 public class Weapons implements Listener {
@@ -44,15 +47,17 @@ public class Weapons implements Listener {
             case "SPAS12":
                 new CSUtility().giveWeapon(player,weaponName,1);
                 player.sendMessage(ChatColor.AQUA + "SPAS12を装備しました");
+                break;
 
             case "SCARL":
                 new CSUtility().giveWeapon(player,weaponName,1);
                 player.sendMessage(ChatColor.AQUA + "SCARLを装備しました");
+                break;
         }
     }
 
     //特定のブロックを叩くとそれに対応した武器を装備する
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGH)
     public void getWeaponInteract(BlockDamageEvent event) {
         Player player = event.getPlayer();
             switch (event.getBlock().getType()) {

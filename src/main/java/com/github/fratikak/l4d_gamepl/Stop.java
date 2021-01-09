@@ -81,6 +81,8 @@ public class Stop {
             target.setGameMode(GameMode.SURVIVAL);
             pl.giveLobbyItem(target.getInventory());
             targetTeleport(target);
+            target.setHealth(20);
+            target.setFoodLevel(20);
         }
 
         //リストを空にする

@@ -1,9 +1,6 @@
 package com.github.fratikak.l4d_gamepl;
 
-import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -50,7 +47,12 @@ public class Login implements Listener {
             }
         }
 
+        //ステータスリセット
+        player.setHealth(20);
+        player.setFoodLevel(20);
+
         pl.giveLobbyItem(inventory); //ロビーアイテム追加
+        player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP,1,24);
 
         player.teleport(location, PlayerTeleportEvent.TeleportCause.PLUGIN); //スポーン地点固定
 
