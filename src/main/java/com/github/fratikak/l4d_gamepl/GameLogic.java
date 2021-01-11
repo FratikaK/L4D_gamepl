@@ -2,17 +2,14 @@ package com.github.fratikak.l4d_gamepl;
 
 import com.shampaggon.crackshot.CSUtility;
 import org.bukkit.*;
-import org.bukkit.entity.Entity;
+import org.bukkit.block.CreatureSpawner;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.entity.EntityDropItemEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.SpawnerSpawnEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerToggleSprintEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -29,7 +26,6 @@ public class GameLogic implements Listener {
 
     /**
      * ゲーム開始後から修了までの処理を記述する
-     * <p>
      * ・プレイヤーが死亡した場合にstaticプレイヤーリストから削除
      * ・同じくプレイヤーが死亡した場合にプレイヤーリストネームタグを変更する
      * ・イベント内容がPlayerEventと被る所があるので統一するかもしれない
@@ -67,21 +63,26 @@ public class GameLogic implements Listener {
          */
 
         if (L4D_gamepl.isGame()) {
-            //スポナーの場所を取得する
-            Location location = event.getLocation().clone();
-            EntityType entityType = event.getSpawner().getSpawnedType();
+            //プレイヤー数 * 任意の数字分沸かせる
+            int mobNum = L4D_gamepl.getPlayerList().size() * 4;
+            Location spawnerLocation = event.getSpawner().getLocation().clone();
+            spawnerLocation.add(0,1,0);
 
-            //プレイヤー数を取得して、プレイヤー数×指定した数のゾンビをスポーンさせる
-            World world = event.getSpawner().getWorld();
-            int players = L4D_gamepl.getPlayerList().size();
-            for (int i = 0; i < players * 4; i++) {
-                world.spawnEntity(location, entityType);
+            CreatureSpawner spawner = event.getSpawner();
+            spawner.setSpawnCount(1);
+            spawner.setSpawnRange(0);
+            spawner.setRequiredPlayerRange(30);
+            spawner.setMaxNearbyEntities(30);
+            spawner.setDelay(1);
+            spawner.setMaxSpawnDelay(3600);
+            spawner.setMinSpawnDelay(3500);
+            spawner.update();
+
+            for (int i = 0; i<mobNum; i++){
+                event.getSpawner().getWorld().spawnEntity(spawnerLocation,event.getSpawner().getSpawnedType());
             }
-        } else {
-            event.setCancelled(true);
+
         }
-
-
     }
 
     @EventHandler
@@ -101,9 +102,9 @@ public class GameLogic implements Listener {
         if (L4D_gamepl.isGame()) {
             if (type == EntityType.ZOMBIE) {
 
-                
-                for (Player target:Bukkit.getOnlinePlayers()){
-                    if (target.getGameMode() !=GameMode.SURVIVAL){
+
+                for (Player target : Bukkit.getOnlinePlayers()) {
+                    if (target.getGameMode() != GameMode.SURVIVAL) {
                         return;
                     }
                     //プレイヤーとの距離が近ければreturn

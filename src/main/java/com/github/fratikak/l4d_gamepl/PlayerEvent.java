@@ -1,12 +1,16 @@
 package com.github.fratikak.l4d_gamepl;
 
 import org.bukkit.*;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
+import org.bukkit.block.CreatureSpawner;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityToggleSwimEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryCreativeEvent;
@@ -127,6 +131,23 @@ public class PlayerEvent implements Listener {
            if (player.getLocation().getBlock().getType() == Material.WATER){
                player.setHealth(0);
            }
+        }
+    }
+    
+    @EventHandler
+    public void createSpawners(BlockPlaceEvent event){
+        Player player = event.getPlayer();
+        BlockState blockState = event.getBlockReplacedState();
+        if (blockState.getType() == Material.SPAWNER){
+            CreatureSpawner  spawner = (CreatureSpawner) blockState;
+            spawner.setSpawnCount(1);
+            spawner.setSpawnRange(0);
+            spawner.setRequiredPlayerRange(30);
+            spawner.setMaxNearbyEntities(30);
+            spawner.setDelay(1);
+            spawner.setMaxSpawnDelay(3600);
+            spawner.setMinSpawnDelay(3500);
+            spawner.update();
         }
     }
 

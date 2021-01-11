@@ -24,10 +24,15 @@ public final class L4D_gamepl extends JavaPlugin {
     private static List<Player> playerList = new ArrayList<>();
     private static List<Player> deathPlayer = new ArrayList<>();
 
+
     @Override
     public void onEnable() {
         getLogger().info("L4DGame START!");
+
+        //コマンドを扱うクラスの登録
         Objects.requireNonNull(getCommand("l4d")).setExecutor(new L4DCommands(this));
+
+        //イベントリスナの登録
         getServer().getPluginManager().registerEvents(new Login(this), this);
         getServer().getPluginManager().registerEvents(new PlayerEvent(this), this);
         getServer().getPluginManager().registerEvents(new DamageOff(this), this);
@@ -37,6 +42,9 @@ public final class L4D_gamepl extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new Weapons(),this);
     }
 
+    private void db(String msg){
+        getLogger().info(msg);
+    }
     @Override
     public void onDisable() {
     }
