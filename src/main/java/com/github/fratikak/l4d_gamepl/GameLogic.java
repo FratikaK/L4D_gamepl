@@ -64,7 +64,7 @@ public class GameLogic implements Listener {
 
         if (L4D_gamepl.isGame()) {
             //プレイヤー数 * 任意の数字分沸かせる
-            int mobNum = L4D_gamepl.getPlayerList().size() * 4;
+            int mobNum = L4D_gamepl.getPlayerList().size() * 2;
             Location spawnerLocation = event.getSpawner().getLocation().clone();
             spawnerLocation.add(0,1,0);
 
@@ -72,11 +72,10 @@ public class GameLogic implements Listener {
             spawner.setSpawnCount(1);
             spawner.setSpawnRange(0);
             spawner.setRequiredPlayerRange(30);
-            spawner.setMaxNearbyEntities(30);
-            spawner.setDelay(1);
-            spawner.setMaxSpawnDelay(3600);
-            spawner.setMinSpawnDelay(3500);
-            spawner.update();
+            spawner.setMaxNearbyEntities(3);
+            spawner.setDelay(0);
+            spawner.setMinSpawnDelay(10);
+            spawner.setMaxSpawnDelay(10);
 
             for (int i = 0; i<mobNum; i++){
                 event.getSpawner().getWorld().spawnEntity(spawnerLocation,event.getSpawner().getSpawnedType());

@@ -133,22 +133,6 @@ public class PlayerEvent implements Listener {
            }
         }
     }
-    
-    @EventHandler
-    public void createSpawners(BlockPlaceEvent event){
-        Player player = event.getPlayer();
-        BlockState blockState = event.getBlockReplacedState();
-        if (blockState.getType() == Material.SPAWNER){
-            CreatureSpawner  spawner = (CreatureSpawner) blockState;
-            spawner.setSpawnCount(1);
-            spawner.setSpawnRange(0);
-            spawner.setRequiredPlayerRange(30);
-            spawner.setMaxNearbyEntities(30);
-            spawner.setDelay(1);
-            spawner.setMaxSpawnDelay(3600);
-            spawner.setMinSpawnDelay(3500);
-            spawner.update();
-        }
-    }
+
 
 }
