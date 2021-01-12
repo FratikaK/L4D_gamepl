@@ -55,6 +55,7 @@ public class GameLogic implements Listener {
     @EventHandler
     public void zombieSpawn(SpawnerSpawnEvent event) {
 
+        event.setCancelled(true);
         /*
          * 基本となるゾンビがスポーンするロジックを記述する
          * スポナーが稼働した場合、追加でプレイヤー一人につき10匹程度追加でゾンビをスポーンさせる
@@ -64,7 +65,7 @@ public class GameLogic implements Listener {
 
         if (L4D_gamepl.isGame()) {
             //プレイヤー数 * 任意の数字分沸かせる
-            int mobNum = L4D_gamepl.getPlayerList().size() * 2;
+            int mobNum = L4D_gamepl.getPlayerList().size() * 3;
             Location spawnerLocation = event.getSpawner().getLocation().clone();
             spawnerLocation.add(0,1,0);
 
