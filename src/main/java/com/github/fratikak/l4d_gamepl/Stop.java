@@ -42,6 +42,8 @@ public class Stop {
             return;
         }
 
+        L4D_gamepl.setGame(false);
+
         //プレイヤーが全員死亡している場合
         if (L4D_gamepl.getPlayerList().isEmpty()) {
 
@@ -90,9 +92,6 @@ public class Stop {
         L4D_gamepl.getDeathPlayer().clear();
         GameWorlds.setStageId(0);
 
-        if (L4D_gamepl.isGame()) {
-            L4D_gamepl.setGame(false);
-        }
     }
 
 

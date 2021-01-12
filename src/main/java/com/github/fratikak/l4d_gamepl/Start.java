@@ -107,7 +107,8 @@ public class Start {
                  */
                 pl.giveGameItem(target.getInventory(), target);
                 target.setPlayerListName("[" + ChatColor.AQUA + "生存者" + ChatColor.WHITE + "]" + target.getDisplayName());
-
+                target.setFoodLevel(6);
+                target.setHealth(20);
             }
         }
     }
