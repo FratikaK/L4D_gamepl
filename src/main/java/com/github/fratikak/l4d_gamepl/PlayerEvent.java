@@ -12,12 +12,11 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityToggleSwimEvent;
+import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCreativeEvent;
-import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.inventory.Inventory;
 
 public class PlayerEvent implements Listener {
@@ -38,11 +37,11 @@ public class PlayerEvent implements Listener {
 
     //プレイヤーがログアウトした場合の処理
     @EventHandler
-    public void logoutPlayer(PlayerQuitEvent event){
+    public void logoutPlayer(PlayerQuitEvent event) {
         Player player = event.getPlayer();
         event.setQuitMessage(ChatColor.AQUA + player.getDisplayName() + "がログアウトしました");
         pl.getLogger().info(ChatColor.AQUA + player.getDisplayName() + "がログアウトしました");
-        if (L4D_gamepl.isGame()){
+        if (L4D_gamepl.isGame()) {
             //リストから削除
             L4D_gamepl.getPlayerList().remove(player);
             L4D_gamepl.getDeathPlayer().remove(player);
@@ -51,22 +50,22 @@ public class PlayerEvent implements Listener {
             pl.getLogger().info("deathList: " + L4D_gamepl.getDeathPlayer());
 
             //ゲームプレイヤーが全員いなくなった場合、ゲームを終了
-            if (L4D_gamepl.getPlayerList().isEmpty()){
+            if (L4D_gamepl.getPlayerList().isEmpty()) {
                 new Stop(pl).stopGame();
             }
 
         }
     }
 
+    /**
+     * プレイヤーの死亡地点をクローンして、リスポーンイベントに渡す
+     * ゲームモードをスペクテイターに変更する
+     * ゲームプレイヤーが全員死亡すれば初期スポーンへ返す
+     *
+     * @param event
+     */
     @EventHandler
     public void changeGamerule(PlayerDeathEvent event) {
-
-        /*
-         * プレイヤーの死亡地点をクローンして、リスポーンイベントに渡す
-         * ゲームモードをスペクテイターに変更する
-         *
-         * ゲームプレイヤーが全員死亡すれば初期スポーンへ返す
-         */
 
         Player player = event.getEntity();
         deathLocation = player.getLocation().clone();
@@ -74,8 +73,8 @@ public class PlayerEvent implements Listener {
         L4D_gamepl.getPlayerList().remove(player);
         L4D_gamepl.getDeathPlayer().add(player);
 
-        for (Player target : Bukkit.getOnlinePlayers()){
-            target.playSound(target.getLocation(),Sound.ENTITY_WOLF_HOWL,1,24);
+        for (Player target : Bukkit.getOnlinePlayers()) {
+            target.playSound(target.getLocation(), Sound.ENTITY_WOLF_HOWL, 1, 24);
             target.sendMessage(player.getDisplayName() + "が死亡しました");
         }
 
@@ -89,20 +88,21 @@ public class PlayerEvent implements Listener {
         }
     }
 
+    /**
+     * ゲーム中であれば観戦者として、死亡地点からリスポーンする
+     *
+     * @param event
+     */
     @EventHandler
     public void setSpectator(PlayerRespawnEvent event) {
 
-        /*
-         * リスポーン位置をデスイベントから受け取り、設定
-         * ロビーアイテムを付与
-         */
-
         Player player = event.getPlayer();
-
         Inventory inventory = player.getInventory();
 
-        if (!L4D_gamepl.getPlayerList().isEmpty()){
+        if (L4D_gamepl.isGame()) {
             event.setRespawnLocation(deathLocation);
+        }else {
+            event.setRespawnLocation(player.getWorld().getSpawnLocation());
         }
 
         //インベントリ処理
@@ -110,14 +110,51 @@ public class PlayerEvent implements Listener {
 
     }
 
-    //アイテムドロップ（アイテムを捨てる）を禁止
+    /**
+     * アイテムドロップ（アイテムを捨てる）を禁止。0,1番目のスロットのみ
+     *
+     * @param event
+     */
     @EventHandler
     public void onDropItems(PlayerDropItemEvent event) {
+
         Player player = event.getPlayer();
 
-        //opじゃなければ無効化
-        if (!player.isOp()) {
+        if (player.getInventory().getItem(0) != null &&
+                player.getInventory().getItem(1) != null) {
+
+            player.sendMessage(ChatColor.RED + "武器のスロットを弄ることはできません");
             event.setCancelled(true);
+        }
+    }
+
+
+    /**
+     * 武器スロットを弄れないようにする
+     *
+     * @param event
+     */
+    @EventHandler
+    public void setWeaponInventory(InventoryClickEvent event) {
+        Player player = (Player) event.getWhoClicked();
+
+        if (player.getInventory().getItem(0) != null && player.getInventory().getItem(1) != null) {
+            player.sendMessage(ChatColor.RED + "武器スロットを弄ることはできません");
+            event.setCancelled(true);
+        }
+    }
+
+    /**
+     * 同様に武器スロットを弄れないようにする
+     * @param event
+     */
+    @EventHandler
+    public void setCreativeInventory(InventoryCreativeEvent event) {
+        Player player = (Player) event.getCursor();
+
+        if (event.getHotbarButton() == 0 && event.getHotbarButton() == 1) {
+            event.setCancelled(true);
+            player.sendMessage(ChatColor.RED + "武器スロットを弄ることは出来ません！");
         }
     }
 
@@ -128,11 +165,21 @@ public class PlayerEvent implements Listener {
         Player player = event.getPlayer();
 
         if (L4D_gamepl.isGame() && player.getGameMode() == GameMode.SURVIVAL) {
-           if (player.getLocation().getBlock().getType() == Material.WATER){
-               player.setHealth(0);
-           }
+            if (player.getLocation().getBlock().getType() == Material.WATER) {
+                player.setHealth(0);
+            }
         }
     }
 
+    //道具、武器の耐久度減少を禁止
+    @EventHandler
+    public void setItemDamege(PlayerItemDamageEvent event) {
+        event.setCancelled(true);
+    }
 
+    //空腹度増減を禁止
+    @EventHandler
+    public void setFoodLevel(FoodLevelChangeEvent event) {
+        event.setCancelled(true);
+    }
 }
