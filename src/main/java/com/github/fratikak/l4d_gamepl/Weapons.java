@@ -9,13 +9,16 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDamageEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
 public class Weapons implements Listener {
 
     /**
      * 武器の種類クラス
+     * @author FratikaK
      */
 
     //プライマリ武器を変更する
@@ -84,6 +87,19 @@ public class Weapons implements Listener {
                 case DIAMOND_ORE:
                     setPrimaryWeapon(player,"SCARL");
                     break;
+        }
+    }
+
+    /**
+     * 武器交換の為に交換用の武器を削除する
+     * @param playerInventory 対象プレイヤーのインベントリ
+     */
+    @EventHandler
+    public void removePrimaryWeapon(Inventory playerInventory){
+        for (ItemStack item : playerInventory){
+            switch (item.getType()){
+
+            }
         }
     }
 }
