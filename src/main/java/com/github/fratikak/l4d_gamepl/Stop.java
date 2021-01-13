@@ -38,7 +38,6 @@ public class Stop {
 
         //ゲーム中ではないならreturn
         if (!L4D_gamepl.isGame()) {
-            pl.getServer().broadcastMessage(ChatColor.RED + "ゲーム中ではありません！");
             return;
         }
 

@@ -72,6 +72,7 @@ public class PlayerEvent implements Listener {
 
         L4D_gamepl.getPlayerList().remove(player);
         L4D_gamepl.getDeathPlayer().add(player);
+        player.setPlayerListName("[" + ChatColor.RED + "死亡" + ChatColor.WHITE + "]" + player.getDisplayName());
 
         for (Player target : Bukkit.getOnlinePlayers()) {
             target.playSound(target.getLocation(), Sound.ENTITY_WOLF_HOWL, 1, 24);
@@ -99,13 +100,15 @@ public class PlayerEvent implements Listener {
         Player player = event.getPlayer();
         Inventory inventory = player.getInventory();
 
-        if (L4D_gamepl.isGame()) {
-            event.setRespawnLocation(deathLocation);
-        }else {
+        //ゲーム終了しているならばロビーへ戻る
+        if (!L4D_gamepl.isGame()){
             event.setRespawnLocation(player.getWorld().getSpawnLocation());
+            player.setGameMode(GameMode.SURVIVAL);
+            return;
         }
 
-        //インベントリ処理
+        //死亡した地点にリスポーン、インベントリ整理
+        event.setRespawnLocation(deathLocation);
         pl.giveLobbyItem(inventory);
 
     }
