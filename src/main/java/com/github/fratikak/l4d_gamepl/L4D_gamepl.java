@@ -1,10 +1,12 @@
 package com.github.fratikak.l4d_gamepl;
 
 import com.shampaggon.crackshot.CSUtility;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
@@ -39,12 +41,10 @@ public final class L4D_gamepl extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new GameLogic(this), this);
         getServer().getPluginManager().registerEvents(new L4DMobs(this), this);
         getServer().getPluginManager().registerEvents(new CheckPoint(this), this);
-        getServer().getPluginManager().registerEvents(new Weapons(),this);
+        getServer().getPluginManager().registerEvents(new Weapons(), this);
+        getServer().getPluginManager().registerEvents(new Items(), this);
     }
 
-    private void db(String msg){
-        getLogger().info(msg);
-    }
     @Override
     public void onDisable() {
     }
@@ -57,19 +57,30 @@ public final class L4D_gamepl extends JavaPlugin {
 //        inventory.setItem(0, diamond);
     }
 
-    //ゲーム用初期アイテムを付与
+    /**
+     * ゲーム用初期アイテムを付与する
+     *
+     * @param inventory 対象プレイヤーのインベントリ
+     * @param player    対象プレイヤー
+     */
     public void giveGameItem(Inventory inventory, Player player) {
         inventory.clear();
+        ItemStack firework = new ItemStack(Material.FIREWORK_STAR, 5);
+        ItemStack clayball = new ItemStack(Material.CLAY_BALL, 5);
 
-        ItemStack food = new ItemStack(Material.BREAD, 64);
-        ItemStack healItem = new ItemStack(Material.GOLDEN_APPLE, 10);
-
-        inventory.setItem(1, food);
-        inventory.setItem(2, healItem);
-
+        ItemMeta fwmeta = firework.getItemMeta();
+        ItemMeta cbmeta = clayball.getItemMeta();
+        fwmeta.setDisplayName(ChatColor.YELLOW + "グレネード");
+        cbmeta.setDisplayName(ChatColor.YELLOW + "フラッシュバン");
+        firework.setItemMeta(fwmeta);
+        clayball.setItemMeta(cbmeta);
 
         new CSUtility().giveWeapon(player, "MAC10", 1);
-        new CSUtility().giveWeapon(player, "GRENADE", 10);
+        new CSUtility().giveWeapon(player, "P226", 1);
+
+        inventory.addItem(firework);
+        inventory.addItem(clayball);
+        inventory.addItem(new ItemStack(Material.COOKED_BEEF, 3));
 
     }
 
