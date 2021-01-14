@@ -51,115 +51,58 @@ public class PlayerEvent implements Listener {
 
             //ゲームプレイヤーが全員いなくなった場合、ゲームを終了
             if (L4D_gamepl.getPlayerList().isEmpty()) {
-                new Stop(pl).stopGame();
+                new Stop(pl).runTaskTimer(pl,0, 20);
             }
-
         }
     }
 
-    /**
-     * プレイヤーの死亡地点をクローンして、リスポーンイベントに渡す
-     * ゲームモードをスペクテイターに変更する
-     * ゲームプレイヤーが全員死亡すれば初期スポーンへ返す
-     *
-     * @param event
-     */
-    @EventHandler
-    public void changeGamerule(PlayerDeathEvent event) {
-
-        Player player = event.getEntity();
-        deathLocation = player.getLocation().clone();
-
-        L4D_gamepl.getPlayerList().remove(player);
-        L4D_gamepl.getDeathPlayer().add(player);
-        player.setPlayerListName("[" + ChatColor.RED + "死亡" + ChatColor.WHITE + "]" + player.getDisplayName());
-
-        for (Player target : Bukkit.getOnlinePlayers()) {
-            target.playSound(target.getLocation(), Sound.ENTITY_WOLF_HOWL, 1, 24);
-            target.sendMessage(player.getDisplayName() + "が死亡しました");
-        }
-
-        player.sendTitle(ChatColor.RED + "あなたは死亡しました", "", 5, 40, 5);
-        player.setGameMode(GameMode.SPECTATOR);
-
-        if (L4D_gamepl.getPlayerList().isEmpty()) {
-            GameWorlds.setStageId(0);
-            pl.getLogger().info("getStageId = " + GameWorlds.getStageId());
-            new Stop(pl).stopGame();
-        }
-    }
-
-    /**
-     * ゲーム中であれば観戦者として、死亡地点からリスポーンする
-     *
-     * @param event
-     */
-    @EventHandler
-    public void setSpectator(PlayerRespawnEvent event) {
-
-        Player player = event.getPlayer();
-        Inventory inventory = player.getInventory();
-
-        //ゲーム終了しているならばロビーへ戻る
-        if (!L4D_gamepl.isGame()){
-            event.setRespawnLocation(player.getWorld().getSpawnLocation());
-            player.setGameMode(GameMode.SURVIVAL);
-            return;
-        }
-
-        //死亡した地点にリスポーン、インベントリ整理
-        event.setRespawnLocation(deathLocation);
-        pl.giveLobbyItem(inventory);
-
-    }
-
-    /**
-     * アイテムドロップ（アイテムを捨てる）を禁止。0,1番目のスロットのみ
-     *
-     * @param event
-     */
-    @EventHandler
-    public void onDropItems(PlayerDropItemEvent event) {
-
-        Player player = event.getPlayer();
-
-        if (player.getInventory().getItem(0) != null &&
-                player.getInventory().getItem(1) != null) {
-
-            player.sendMessage(ChatColor.RED + "武器のスロットを弄ることはできません");
-            event.setCancelled(true);
-        }
-    }
+//    /**
+//     * アイテムドロップ（アイテムを捨てる）を禁止。0,1番目のスロットのみ
+//     *
+//     * @param event
+//     */
+//    @EventHandler
+//    public void onDropItems(PlayerDropItemEvent event) {
+//
+//        Player player = event.getPlayer();
+//
+//        if (player.getInventory().getItem(0) != null &&
+//                player.getInventory().getItem(1) != null) {
+//
+//            player.sendMessage(ChatColor.RED + "武器のスロットを弄ることはできません");
+//            event.setCancelled(true);
+//        }
+//    }
 
 
-    /**
-     * 武器スロットを弄れないようにする
-     *
-     * @param event
-     */
-    @EventHandler
-    public void setWeaponInventory(InventoryClickEvent event) {
-        Player player = (Player) event.getWhoClicked();
+//    /**
+//     * 武器スロットを弄れないようにする
+//     *
+//     * @param event
+//     */
+//    @EventHandler
+//    public void setWeaponInventory(InventoryClickEvent event) {
+//        Player player = (Player) event.getWhoClicked();
+//
+//        if (player.getInventory().getItem(0) != null && player.getInventory().getItem(1) != null) {
+//            player.sendMessage(ChatColor.RED + "武器スロットを弄ることはできません");
+//            event.setCancelled(true);
+//        }
+//    }
 
-        if (player.getInventory().getItem(0) != null && player.getInventory().getItem(1) != null) {
-            player.sendMessage(ChatColor.RED + "武器スロットを弄ることはできません");
-            event.setCancelled(true);
-        }
-    }
-
-    /**
-     * 同様に武器スロットを弄れないようにする
-     * @param event
-     */
-    @EventHandler
-    public void setCreativeInventory(InventoryCreativeEvent event) {
-        Player player = (Player) event.getCursor();
-
-        if (event.getHotbarButton() == 0 && event.getHotbarButton() == 1) {
-            event.setCancelled(true);
-            player.sendMessage(ChatColor.RED + "武器スロットを弄ることは出来ません！");
-        }
-    }
+//    /**
+//     * 同様に武器スロットを弄れないようにする
+//     * @param event
+//     */
+//    @EventHandler
+//    public void setCreativeInventory(InventoryCreativeEvent event) {
+//        Player player = (Player) event.getCursor();
+//
+//        if (event.getHotbarButton() == 0 && event.getHotbarButton() == 1) {
+//            event.setCancelled(true);
+//            player.sendMessage(ChatColor.RED + "武器スロットを弄ることは出来ません！");
+//        }
+//    }
 
     //水に触れると死亡
     @EventHandler
@@ -170,6 +113,7 @@ public class PlayerEvent implements Listener {
         if (L4D_gamepl.isGame() && player.getGameMode() == GameMode.SURVIVAL) {
             if (player.getLocation().getBlock().getType() == Material.WATER) {
                 player.setHealth(0);
+                Bukkit.getLogger().info(player.getDisplayName() + "がwaterdeathで死亡しました");
             }
         }
     }
