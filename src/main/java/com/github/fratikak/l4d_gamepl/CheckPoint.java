@@ -8,8 +8,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
+import org.bukkit.inventory.meta.ItemMeta;
 
 public class CheckPoint implements Listener {
 
@@ -31,30 +30,65 @@ public class CheckPoint implements Listener {
 
     //補充アイテム
     public void sendCheckPointItem(Player target, Inventory inventory) {
+        ItemStack firework = new ItemStack(Material.FIREWORK_STAR,5);
+        ItemStack clayball = new ItemStack(Material.CLAY_BALL,5);
 
-        inventory.addItem(new ItemStack(Material.GOLDEN_APPLE, 32));
-        inventory.addItem(new ItemStack(Material.BAKED_POTATO, 64));
-
-        new CSUtility().giveWeapon(target, "GRENADE", 10);
+        ItemMeta fwmeta = firework.getItemMeta();
+        ItemMeta cbmeta = clayball.getItemMeta();
+        fwmeta.setDisplayName(ChatColor.YELLOW + "グレネード");
+        cbmeta.setDisplayName(ChatColor.YELLOW + "フラッシュバン");
+        firework.setItemMeta(fwmeta);
+        clayball.setItemMeta(cbmeta);
+        
+        inventory.addItem(firework);
+        inventory.addItem(clayball);
+        inventory.addItem(new ItemStack(Material.COOKED_BEEF,3));
     }
 
     //死亡プレイヤーを復活させる
-    public void resurrectionPlayer(Player player){
+    public void resurrectionPlayer(Player player) {
 
-        if (player.getGameMode() == GameMode.SPECTATOR && L4D_gamepl.isGame()){
-            for (Player target : L4D_gamepl.getDeathPlayer()){
-                if (player == target){
+        if (player.getGameMode() == GameMode.SPECTATOR && L4D_gamepl.isGame()) {
+            for (Player target : L4D_gamepl.getDeathPlayer()) {
+                if (player == target) {
                     L4D_gamepl.getDeathPlayer().remove(player);
                     L4D_gamepl.getPlayerList().add(player);
+
                     pl.getLogger().info(ChatColor.AQUA + player.getDisplayName() + "が復活しました");
                     pl.getLogger().info(ChatColor.AQUA + "DeathPlayerList :" + L4D_gamepl.getDeathPlayer());
                     pl.getLogger().info(ChatColor.AQUA + "PlayerList :" + L4D_gamepl.getPlayerList());
 
                     player.setGameMode(GameMode.SURVIVAL);
-                    pl.giveGameItem(player.getInventory(),player);
+                    player.setFoodLevel(6);
+                    pl.giveGameItem(player.getInventory(), player);
                 }
             }
         }
+    }
+
+    /**
+     * チェックポイント到達時のタスクを実行する
+     *
+     * @param target 対象プレイヤー
+     * @param checkPoint 何番目のチェックポイントか
+     */
+    public void checkPointTask(Player target, int checkPoint) {
+        target.setHealth(20);
+        resurrectionPlayer(target);
+        sendCheckPointItem(target, target.getInventory());
+        target.playSound(target.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 25);
+
+        switch (checkPoint){
+            case 1:
+                target.sendMessage(ChatColor.AQUA + "1番目のチェックポイントにたどり着きました！");
+                target.sendMessage(ChatColor.AQUA + "ゴールドブロックを踏むとゲームが再開します！");
+                break;
+            case 2:
+                target.sendMessage(ChatColor.AQUA + "2番目のチェックポイントにたどり着きました！");
+                target.sendMessage(ChatColor.AQUA + "レッドストーンブロックを踏むとゲームが再開します！");
+                break;
+        }
+
     }
 
     //チェックポイント登録
@@ -78,12 +112,7 @@ public class CheckPoint implements Listener {
                                 targetLoc.setZ(928);
                                 target.teleport(targetLoc);
 
-                                target.addPotionEffect(new PotionEffect(PotionEffectType.HEAL, 30, 2), true);
-                                resurrectionPlayer(target);
-                                sendCheckPointItem(target, target.getInventory());
-                                target.playSound(target.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 25);
-                                target.sendMessage(ChatColor.AQUA + "最初のチェックポイントにたどり着きました！");
-                                target.sendMessage(ChatColor.AQUA + "ゴールドブロックを踏むとゲームが再開します！");
+                                checkPointTask(target,1);
                         }
                     }
                 }
@@ -105,7 +134,7 @@ public class CheckPoint implements Listener {
                         }
                     }
                 }
-                
+
                 //チェックポイントに入る（2回目）
                 if (loc.getBlock().getType().equals(Material.EMERALD_BLOCK)) {
                     for (Player target : Bukkit.getOnlinePlayers()) {
@@ -117,13 +146,7 @@ public class CheckPoint implements Listener {
                                 targetLoc.setZ(895);
                                 target.teleport(targetLoc);
 
-                                target.addPotionEffect(new PotionEffect(PotionEffectType.HEAL, 30, 2), true);
-                                resurrectionPlayer(target);
-                                sendCheckPointItem(target, target.getInventory());
-                                target.playSound(target.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 25);
-                                target.sendMessage(ChatColor.AQUA + "2のチェックポイントにたどり着きました！");
-                                target.sendMessage(ChatColor.AQUA + "レッドストーンブロックを踏むとゲームが再開します！");
-
+                                checkPointTask(target,2);
                         }
                     }
                 }
@@ -147,8 +170,9 @@ public class CheckPoint implements Listener {
 
                 //ゴールする
                 if (loc.getBlock().getType().equals(Material.LAPIS_BLOCK)) {
-                    new Stop(pl).stopGame();
-                    GameWorlds.setStageId(0);
+                    Bukkit.getOnlinePlayers().forEach(p -> p.playSound(p.getLocation(),Sound.ENTITY_PLAYER_LEVELUP,2,1));
+                    Bukkit.getOnlinePlayers().forEach(p -> p.sendTitle(ChatColor.AQUA + "GAME CLEAR!",null,5,100,5));
+                    new Stop(pl).runTaskTimer(pl, 0, 20);
                 }
 
             }
