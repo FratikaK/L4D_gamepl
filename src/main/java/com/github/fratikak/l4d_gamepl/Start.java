@@ -94,6 +94,7 @@ public class Start {
         L4D_gamepl.setGame(true);
         new GameWorlds(pl).setStage(stageId);
         pl.getLogger().info("ゲームがスタートしました");
+        Bukkit.broadcastMessage(ChatColor.AQUA + "ゲームがスタートしました");
 
         //武器などのアイテムを渡す処理
         for (Player target : Bukkit.getOnlinePlayers()) {
