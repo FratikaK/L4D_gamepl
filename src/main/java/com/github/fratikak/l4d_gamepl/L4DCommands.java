@@ -22,13 +22,13 @@ public class L4DCommands implements CommandExecutor {
             if (args.length == 0) return false;
 
             if (args[0].equalsIgnoreCase("start")) {
-                if (args[1].equalsIgnoreCase("venice")){
-                    new Start(pl).startGame((Player) sender,1);
+                if (args[1].equalsIgnoreCase("venice")) {
+                    new Start(pl).startGame((Player) sender, 1);
                     return true;
                 }
 
             } else if (args[0].equalsIgnoreCase("stop")) {
-                new Stop(pl).stopGame();
+                new Stop(pl).runTaskTimer(pl,0, 20);
                 return true;
             }
         }
