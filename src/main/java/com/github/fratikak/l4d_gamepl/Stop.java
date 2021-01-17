@@ -35,12 +35,12 @@ public class Stop extends BukkitRunnable {
     public void run() {
 
         //ゲーム中であればreturn
-        if (!L4D_gamepl.isGame()){
+        if (!L4D_gamepl.isGame()) {
             return;
         }
 
         //0でロビーへテレポート
-        if (timeLeft <= 0){
+        if (timeLeft <= 0) {
 
             //プレイヤーリストを更新。[観戦者]
             for (Player target : Bukkit.getOnlinePlayers()) {
@@ -64,15 +64,21 @@ public class Stop extends BukkitRunnable {
             GameWorlds.setStageId(0);
 
             this.cancel();
+
+            Bukkit.reload();
         }
 
-        if (timeLeft == 10){
+        if (timeLeft == 10) {
             Bukkit.broadcastMessage(ChatColor.AQUA + "10秒後にゲームを終了します");
         }
 
-        if (timeLeft <= 5){
-            Bukkit.broadcastMessage(ChatColor.AQUA + "ゲーム終了まで" + timeLeft + "秒");
-            Bukkit.getOnlinePlayers().forEach(player -> player.playSound(player.getLocation(),Sound.BLOCK_NOTE_BLOCK_HAT,1f,1f));
+        if (timeLeft <= 5) {
+            if (timeLeft > 0) {
+                Bukkit.broadcastMessage(ChatColor.AQUA + "ゲーム終了まで" + timeLeft + "秒");
+                Bukkit.getOnlinePlayers().forEach(player -> player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_HAT, 1f, 1f));
+            }else if (timeLeft == 0){
+                Bukkit.broadcastMessage("ゲームを終了しました");
+            }
         }
 
         timeLeft--;
