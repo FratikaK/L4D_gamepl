@@ -1,9 +1,7 @@
 package com.github.fratikak.l4d_gamepl;
 
-import com.shampaggon.crackshot.events.WeaponDamageEntityEvent;
 import org.bukkit.*;
 import org.bukkit.block.CreatureSpawner;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -51,21 +49,23 @@ public class GameLogic implements Listener {
         Player player = event.getEntity();
         deathLocation = player.getLocation().clone().add(0, 1, 0);
 
-        if (player.getGameMode() == GameMode.SURVIVAL) {
+        if (L4D_gamepl.isGame()) {
+            if (player.getGameMode() == GameMode.SURVIVAL) {
 
-            //プレイヤーリストから該当のプレイヤーを削除、死亡者リストに追加
-            L4D_gamepl.getPlayerList().remove(player);
-            L4D_gamepl.getDeathPlayer().add(player);
-            player.setPlayerListName("[" + ChatColor.RED + "死亡" + ChatColor.WHITE + "]" + player.getDisplayName());
+                //プレイヤーリストから該当のプレイヤーを削除、死亡者リストに追加
+                L4D_gamepl.getPlayerList().remove(player);
+                L4D_gamepl.getDeathPlayer().add(player);
+                player.setPlayerListName("[" + ChatColor.RED + "死亡" + ChatColor.WHITE + "]" + player.getDisplayName());
 
-            Bukkit.broadcastMessage(ChatColor.RED + player.getDisplayName() + "が死亡しました");
-            Bukkit.broadcastMessage(ChatColor.WHITE + "プレイヤー数残り" + L4D_gamepl.getPlayerList().size() + "人です");
-            Bukkit.getOnlinePlayers().forEach(p -> p.playSound(p.getLocation(), Sound.ENTITY_WOLF_HOWL, 1, 15));
-            player.sendTitle(ChatColor.RED + "あなたは死亡しました", "", 5, 40, 5);
+                Bukkit.broadcastMessage(ChatColor.RED + player.getDisplayName() + "が死亡しました");
+                Bukkit.broadcastMessage(ChatColor.WHITE + "プレイヤー数残り" + L4D_gamepl.getPlayerList().size() + "人です");
+                Bukkit.getOnlinePlayers().forEach(p -> p.playSound(p.getLocation(), Sound.ENTITY_WOLF_HOWL, 1, 15));
+                player.sendTitle(ChatColor.RED + "あなたは死亡しました", "", 5, 40, 5);
 
-            //プレイヤーが全員死亡した場合
-            if (L4D_gamepl.getPlayerList().isEmpty()) {
-                new Stop(pl).runTaskTimer(pl, 0, 20);
+                //プレイヤーが全員死亡した場合
+                if (L4D_gamepl.getPlayerList().isEmpty()) {
+                    new Stop(pl).runTaskTimer(pl, 0, 20);
+                }
             }
         }
     }
@@ -108,6 +108,10 @@ public class GameLogic implements Listener {
         if (L4D_gamepl.isGame()) {
             //プレイヤー数 * 任意の数字分沸かせる
             int mobNum = L4D_gamepl.getPlayerList().size() * 3;
+            if (mobNum > 10){
+                mobNum = 10;
+            }
+
             Location spawnerLocation = event.getSpawner().getLocation().clone();
             spawnerLocation.add(0, 1, 0);
 
