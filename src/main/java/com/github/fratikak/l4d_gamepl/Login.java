@@ -54,7 +54,7 @@ public class Login implements Listener {
         pl.giveLobbyItem(inventory); //ロビーアイテム追加
         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP,1,24);
 
-        player.teleport(location, PlayerTeleportEvent.TeleportCause.PLUGIN); //スポーン地点固定
+        player.teleport(location); //スポーン地点固定
 
     }
 
