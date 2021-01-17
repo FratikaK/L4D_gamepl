@@ -1,5 +1,6 @@
 package com.github.fratikak.l4d_gamepl;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -22,10 +23,19 @@ public class L4DCommands implements CommandExecutor {
             if (args.length == 0) return false;
 
             if (args[0].equalsIgnoreCase("start")) {
-                if (args[1].equalsIgnoreCase("venice")) {
-                    new Start(pl).startGame((Player) sender, 1);
-                    return true;
+
+                switch (args[1]){
+                    case "venice":
+                        new Start(pl).startGame((Player) sender, 1);
+                        Bukkit.getLogger().info("veniceが選択されました");
+                        return true;
+
+                    case "town":
+                        new Start(pl).startGame((Player) sender,2);
+                        Bukkit.getLogger().info("townが選択されました");
+                        return true;
                 }
+
 
             } else if (args[0].equalsIgnoreCase("stop")) {
                 new Stop(pl).runTaskTimer(pl,0, 20);
