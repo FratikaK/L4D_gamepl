@@ -1,15 +1,10 @@
 package com.github.fratikak.l4d_gamepl;
 
-import org.bukkit.GameMode;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
 public class DamageOff implements Listener {
 
@@ -28,28 +23,28 @@ public class DamageOff implements Listener {
      */
 
 
+//    @EventHandler
+//    public void dmOffEvent(EntityDamageByEntityEvent event) {
+//
+//        /*
+//         * 観戦者がダメージを与えてもそれをキャンセルさせる
+//         * ただし、op権限がないプレイヤーのみ
+//         */
+//
+//        Entity damager = event.getDamager();
+//
+//        if (damager.getType() == EntityType.PLAYER) {
+//            Player spectator = (Player) damager;
+//
+//            if (!spectator.isOp()) {
+//                if (spectator.getGameMode() != GameMode.SURVIVAL) {
+//                    event.setCancelled(true);
+//                }
+//            }
+//        }
+//    }
+
     @EventHandler
-    public void dmOffEvent(EntityDamageByEntityEvent event) {
-
-        /*
-         * 観戦者がダメージを与えてもそれをキャンセルさせる
-         * ただし、op権限がないプレイヤーのみ
-         */
-
-        Entity damager = event.getDamager();
-
-        if (damager.getType() == EntityType.PLAYER) {
-            Player spectator = (Player) damager;
-
-            if (!spectator.isOp()) {
-                if (spectator.getGameMode() != GameMode.SURVIVAL) {
-                    event.setCancelled(true);
-                }
-            }
-        }
-    }
-
-    @EventHandler(priority = EventPriority.LOW)
     public void blockBreakEvent(BlockBreakEvent event) {
 
         /*
