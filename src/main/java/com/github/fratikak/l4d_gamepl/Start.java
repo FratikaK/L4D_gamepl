@@ -87,12 +87,12 @@ public class Start {
 
         for (Player target : Bukkit.getOnlinePlayers()) {
             if (target.getGameMode() == GameMode.SURVIVAL) {
-                new GameWorlds(pl).setTeleportStage(stageId, target);
+                new GameWorlds().setTeleportStage(stageId, target);
             }
         }
 
         L4D_gamepl.setGame(true);
-        new GameWorlds(pl).setStage(stageId);
+        new GameWorlds().setStage(stageId);
         pl.getLogger().info("ゲームがスタートしました");
         Bukkit.broadcastMessage(ChatColor.AQUA + "ゲームがスタートしました");
 
