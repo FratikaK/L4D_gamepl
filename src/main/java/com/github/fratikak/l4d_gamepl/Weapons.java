@@ -82,6 +82,10 @@ public class Weapons implements Listener {
                 setPrimaryWeapon(player, "SCARL");
                 break;
 
+            case IRON_ORE:
+                setPrimaryWeapon(player,"M16A1");
+                break;
+
                 /*
                 ここからセカンダリ武器
                  */
@@ -104,6 +108,7 @@ public class Weapons implements Listener {
         playerInventory.remove(Material.CARROT_ON_A_STICK);
         playerInventory.remove(Material.DIAMOND_HORSE_ARMOR);
         playerInventory.remove(Material.BONE);
+        playerInventory.remove(Material.DIAMOND_AXE);
     }
 
     /**
