@@ -10,6 +10,7 @@ public class GameWorlds {
     /**
      * コマンドで入力したステージへテレポートする
      * 複数ステージに対応
+     * ステージを増やした場合、checkpointクラスも編集すること
      *
      * @author FratikaK
      */
@@ -73,7 +74,7 @@ public class GameWorlds {
                 break;
 
             case 2:
-                if (getStageId() == 2){
+                if (getStageId() == 2) {
                     setStageId(0);
                     Bukkit.getLogger().info("townがfalseになりました");
                     break;
