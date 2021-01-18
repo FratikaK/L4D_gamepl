@@ -1,5 +1,7 @@
-package com.github.fratikak.l4d_gamepl;
+package com.github.fratikak.l4d_gamepl.listener;
 
+import com.github.fratikak.l4d_gamepl.L4D_gamepl;
+import com.github.fratikak.l4d_gamepl.Stop;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -11,6 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityPotionEffectEvent;
 import org.bukkit.event.entity.EntityToggleSwimEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -18,11 +21,13 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCreativeEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.potion.PotionEffectType;
+
+import java.util.Objects;
 
 public class PlayerEvent implements Listener {
 
     private final L4D_gamepl pl;
-    private static Location deathLocation;
 
     //コンストラクタ
     public PlayerEvent(L4D_gamepl pl) {
@@ -35,7 +40,12 @@ public class PlayerEvent implements Listener {
      * @author FratikaK
      */
 
-    //プレイヤーがログアウトした場合の処理
+    /**
+     * プレイヤーがログアウトした場合の処理
+     * ゲーム中にログアウトする場合、リストから削除する
+     *
+     * @param event
+     */
     @EventHandler
     public void logoutPlayer(PlayerQuitEvent event) {
         Player player = event.getPlayer();
@@ -51,10 +61,73 @@ public class PlayerEvent implements Listener {
 
             //ゲームプレイヤーが全員いなくなった場合、ゲームを終了
             if (L4D_gamepl.getPlayerList().isEmpty()) {
-                new Stop(pl).runTaskTimer(pl,0, 20);
+                new Stop(pl).runTaskTimer(pl, 0, 20);
             }
         }
     }
+
+    /**
+     * 水に触れると死亡する処理
+     *
+     * @param event
+     */
+    @EventHandler
+    public void waterDeath(PlayerMoveEvent event) {
+
+        Player player = event.getPlayer();
+
+        if (L4D_gamepl.isGame() && player.getGameMode() == GameMode.SURVIVAL) {
+            if (player.getLocation().getBlock().getType() == Material.WATER) {
+                player.setHealth(0);
+                Bukkit.getLogger().info(player.getDisplayName() + "がwaterdeathで死亡しました");
+            }
+        }
+    }
+
+    /**
+     * プレイヤーに特定のポーション効果を付与する時、それをキャンセルする
+     * 主にフラッシュバンによるフレンドリーファイア対策
+     *
+     * @param event
+     */
+    @EventHandler
+    public void noPlayerEffect(EntityPotionEffectEvent event) {
+
+        Entity entity = event.getEntity();
+
+        if (entity instanceof Player) {
+            Player player = (Player) entity;
+
+            if (Objects.requireNonNull(event.getNewEffect()).getType() == PotionEffectType.SLOW) {
+                event.setCancelled(true);
+            } else if (event.getNewEffect().getType() == PotionEffectType.BAD_OMEN) {
+                event.setCancelled(true);
+            }
+        }
+    }
+
+    /**
+     * 道具類の耐久減少をキャンセルする
+     *
+     * @param event
+     */
+    @EventHandler
+    public void setItemDamege(PlayerItemDamageEvent event) {
+        event.setCancelled(true);
+    }
+
+    /**
+     * 空腹度の増減をキャンセルする
+     *
+     * @param event
+     */
+    @EventHandler
+    public void setFoodLevel(FoodLevelChangeEvent event) {
+        event.setCancelled(true);
+    }
+
+}
+
 
 //    /**
 //     * アイテムドロップ（アイテムを捨てる）を禁止。0,1番目のスロットのみ
@@ -104,29 +177,3 @@ public class PlayerEvent implements Listener {
 //        }
 //    }
 
-    //水に触れると死亡
-    @EventHandler
-    public void waterDeath(PlayerMoveEvent event) {
-
-        Player player = event.getPlayer();
-
-        if (L4D_gamepl.isGame() && player.getGameMode() == GameMode.SURVIVAL) {
-            if (player.getLocation().getBlock().getType() == Material.WATER) {
-                player.setHealth(0);
-                Bukkit.getLogger().info(player.getDisplayName() + "がwaterdeathで死亡しました");
-            }
-        }
-    }
-
-    //道具、武器の耐久度減少を禁止
-    @EventHandler
-    public void setItemDamege(PlayerItemDamageEvent event) {
-        event.setCancelled(true);
-    }
-
-    //空腹度増減を禁止
-    @EventHandler
-    public void setFoodLevel(FoodLevelChangeEvent event) {
-        event.setCancelled(true);
-    }
-}

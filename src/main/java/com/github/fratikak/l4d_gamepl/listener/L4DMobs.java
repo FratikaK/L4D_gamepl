@@ -1,5 +1,6 @@
-package com.github.fratikak.l4d_gamepl;
+package com.github.fratikak.l4d_gamepl.listener;
 
+import com.github.fratikak.l4d_gamepl.L4D_gamepl;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;

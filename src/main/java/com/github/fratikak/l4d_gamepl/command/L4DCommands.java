@@ -1,5 +1,8 @@
-package com.github.fratikak.l4d_gamepl;
+package com.github.fratikak.l4d_gamepl.command;
 
+import com.github.fratikak.l4d_gamepl.L4D_gamepl;
+import com.github.fratikak.l4d_gamepl.Start;
+import com.github.fratikak.l4d_gamepl.Stop;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

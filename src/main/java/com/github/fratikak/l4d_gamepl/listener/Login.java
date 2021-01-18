@@ -1,5 +1,6 @@
-package com.github.fratikak.l4d_gamepl;
+package com.github.fratikak.l4d_gamepl.listener;
 
+import com.github.fratikak.l4d_gamepl.L4D_gamepl;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -52,7 +53,7 @@ public class Login implements Listener {
         player.setFoodLevel(20);
 
         pl.giveLobbyItem(inventory); //ロビーアイテム追加
-        player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP,1,24);
+        player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP,1,1);
 
         player.teleport(location); //スポーン地点固定
 

@@ -1,4 +1,4 @@
-package com.github.fratikak.l4d_gamepl;
+package com.github.fratikak.l4d_gamepl.listener;
 
 import com.shampaggon.crackshot.CSUtility;
 import org.bukkit.ChatColor;

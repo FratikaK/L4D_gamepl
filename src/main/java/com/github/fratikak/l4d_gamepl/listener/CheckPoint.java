@@ -1,5 +1,8 @@
-package com.github.fratikak.l4d_gamepl;
+package com.github.fratikak.l4d_gamepl.listener;
 
+import com.github.fratikak.l4d_gamepl.GameWorlds;
+import com.github.fratikak.l4d_gamepl.L4D_gamepl;
+import com.github.fratikak.l4d_gamepl.Stop;
 import com.shampaggon.crackshot.CSUtility;
 import org.bukkit.*;
 import org.bukkit.entity.EntityType;
@@ -252,8 +255,6 @@ public class CheckPoint implements Listener {
 
                         spawnFireworks(targetLoc,1);
                     }
-
-
 
                     Bukkit.getOnlinePlayers().forEach(p -> p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 2, 1));
                     Bukkit.getOnlinePlayers().forEach(p -> p.sendTitle(ChatColor.AQUA + "GAME CLEAR!", null, 5, 100, 5));
