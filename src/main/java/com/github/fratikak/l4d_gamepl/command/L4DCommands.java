@@ -3,11 +3,11 @@ package com.github.fratikak.l4d_gamepl.command;
 import com.github.fratikak.l4d_gamepl.L4D_gamepl;
 import com.github.fratikak.l4d_gamepl.Start;
 import com.github.fratikak.l4d_gamepl.Stop;
+import com.github.fratikak.l4d_gamepl.task.PreparationTask;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 public class L4DCommands implements CommandExecutor {
 
@@ -29,12 +29,12 @@ public class L4DCommands implements CommandExecutor {
 
                 switch (args[1]){
                     case "venice":
-                        new Start(pl).startGame((Player) sender, 1);
+                        new PreparationTask(pl,1).runTaskTimer(pl,0,20);
                         Bukkit.getLogger().info("veniceが選択されました");
                         return true;
 
                     case "town":
-                        new Start(pl).startGame((Player) sender,2);
+                        new PreparationTask(pl,2).runTaskTimer(pl,0,20);
                         Bukkit.getLogger().info("townが選択されました");
                         return true;
                 }
