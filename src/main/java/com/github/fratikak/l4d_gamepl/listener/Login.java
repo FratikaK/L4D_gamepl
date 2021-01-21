@@ -9,6 +9,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.potion.PotionEffectType;
 
 public class Login implements Listener {
 
@@ -43,7 +44,7 @@ public class Login implements Listener {
 
         //ゲームモードを固定。サバイバル
         if (player.getGameMode() != GameMode.SURVIVAL) {
-            if (!player.isOp()){
+            if (!player.isOp()) {
                 player.setGameMode(GameMode.SURVIVAL);
             }
         }
@@ -52,8 +53,13 @@ public class Login implements Listener {
         player.setHealth(20);
         player.setFoodLevel(20);
 
+        //ゲームで付与される暗視効果が残っていれば削除
+        if (player.hasPotionEffect(PotionEffectType.NIGHT_VISION)) {
+            player.removePotionEffect(PotionEffectType.NIGHT_VISION);
+        }
+
         pl.giveLobbyItem(inventory); //ロビーアイテム追加
-        player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP,1,1);
+        player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
 
         player.teleport(location); //スポーン地点固定
 
