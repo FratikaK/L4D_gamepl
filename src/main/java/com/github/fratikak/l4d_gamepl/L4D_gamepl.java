@@ -2,6 +2,7 @@ package com.github.fratikak.l4d_gamepl;
 
 import com.github.fratikak.l4d_gamepl.command.L4DCommands;
 import com.github.fratikak.l4d_gamepl.listener.*;
+import com.github.fratikak.l4d_gamepl.task.LagFixTask;
 import com.shampaggon.crackshot.CSUtility;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -10,6 +11,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +28,9 @@ import java.util.Objects;
 public final class L4D_gamepl extends JavaPlugin {
 
     private static boolean game = false;
+    private static boolean preparation = false;
     private static List<Player> playerList = new ArrayList<>();
+    private static List<Player> survivor = new ArrayList<>();
     private static List<Player> deathPlayer = new ArrayList<>();
 
 
@@ -45,18 +50,35 @@ public final class L4D_gamepl extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new CheckPoint(this), this);
         getServer().getPluginManager().registerEvents(new Weapons(), this);
         getServer().getPluginManager().registerEvents(new Items(), this);
+        getServer().getPluginManager().registerEvents(new LobbyItemListener(this), this);
+
+        //タスクの実行
+        new LagFixTask().runTaskTimer(this, 0, 20 * 60);
     }
 
     @Override
     public void onDisable() {
     }
 
-    //ロビーアイテムを付与 今はインベントリ削除のみ
+    //ロビーアイテムを付与
     public void giveLobbyItem(Inventory inventory) {
 
-//        ItemStack diamond = new ItemStack(Material.DIAMOND);
+        //ステージ選択のダイアモンド
+        ItemStack diamond = new ItemStack(Material.DIAMOND);
+        ItemMeta diamondMeta = diamond.getItemMeta();
+        diamondMeta.setDisplayName(ChatColor.AQUA + "ステージ選択");
+        diamond.setItemMeta(diamondMeta);
+
+        //途中参加ができるエメラルド
+        ItemStack emerald = new ItemStack(Material.EMERALD);
+        ItemMeta emeraldMeta = emerald.getItemMeta();
+        emeraldMeta.setDisplayName(ChatColor.GREEN + "ゲームに参加する");
+        emerald.setItemMeta(emeraldMeta);
+
+        //メタデータをつけたアイテムを付与
         inventory.clear();
-//        inventory.setItem(0, diamond);
+        inventory.setItem(0, diamond);
+        inventory.setItem(8, emerald);
     }
 
     /**
@@ -73,7 +95,7 @@ public final class L4D_gamepl extends JavaPlugin {
         ItemMeta fwmeta = firework.getItemMeta();
         ItemMeta cbmeta = clayball.getItemMeta();
         fwmeta.setDisplayName(ChatColor.YELLOW + "グレネード");
-        cbmeta.setDisplayName(ChatColor.YELLOW + "フラッシュバン");
+        cbmeta.setDisplayName(ChatColor.YELLOW + "火炎瓶");
         firework.setItemMeta(fwmeta);
         clayball.setItemMeta(cbmeta);
 
@@ -83,6 +105,9 @@ public final class L4D_gamepl extends JavaPlugin {
         inventory.addItem(firework);
         inventory.addItem(clayball);
         inventory.addItem(new ItemStack(Material.COOKED_BEEF, 3));
+        player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 1000000, 0, true));
+
+        player.setPlayerListName("[" + ChatColor.AQUA + "生存者" + ChatColor.WHITE + "]" + player.getDisplayName());
 
     }
 
@@ -95,11 +120,23 @@ public final class L4D_gamepl extends JavaPlugin {
         L4D_gamepl.game = game;
     }
 
+    public static boolean isPreparation() {
+        return preparation;
+    }
+
+    public static void setPreparation(boolean preparation) {
+        L4D_gamepl.preparation = preparation;
+    }
+
     public static List<Player> getPlayerList() {
         return playerList;
     }
 
-    public static List<Player> getDeathPlayer() {
+    public static List<Player> getSurvivorList() {
+        return survivor;
+    }
+
+    public static List<Player> getDeathPlayerList() {
         return deathPlayer;
     }
 }
