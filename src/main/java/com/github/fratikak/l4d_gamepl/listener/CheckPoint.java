@@ -3,7 +3,6 @@ package com.github.fratikak.l4d_gamepl.listener;
 import com.github.fratikak.l4d_gamepl.GameWorlds;
 import com.github.fratikak.l4d_gamepl.L4D_gamepl;
 import com.github.fratikak.l4d_gamepl.Stop;
-import com.shampaggon.crackshot.CSUtility;
 import org.bukkit.*;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Firework;
@@ -15,6 +14,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 public class CheckPoint implements Listener {
 
@@ -42,29 +43,30 @@ public class CheckPoint implements Listener {
         ItemMeta fwmeta = firework.getItemMeta();
         ItemMeta cbmeta = clayball.getItemMeta();
         fwmeta.setDisplayName(ChatColor.YELLOW + "グレネード");
-        cbmeta.setDisplayName(ChatColor.YELLOW + "フラッシュバン");
+        cbmeta.setDisplayName(ChatColor.YELLOW + "火炎瓶");
         firework.setItemMeta(fwmeta);
         clayball.setItemMeta(cbmeta);
 
         inventory.addItem(firework);
         inventory.addItem(clayball);
         inventory.addItem(new ItemStack(Material.COOKED_BEEF, 3));
+        target.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION,1000000,0,true));
     }
 
     //死亡プレイヤーを復活させる
     public void resurrectionPlayer(Player player) {
 
         if (player.getGameMode() == GameMode.SPECTATOR && L4D_gamepl.isGame()) {
-            for (Player target : L4D_gamepl.getDeathPlayer()) {
+            for (Player target : L4D_gamepl.getDeathPlayerList()) {
                 if (player == target) {
-                    L4D_gamepl.getDeathPlayer().remove(target);
-                    L4D_gamepl.getPlayerList().add(target);
+                    L4D_gamepl.getDeathPlayerList().remove(target);
+                    L4D_gamepl.getSurvivorList().add(target);
 
                     target.setPlayerListName("[" + ChatColor.AQUA + "生存者" + ChatColor.WHITE + "]" + target.getDisplayName());
 
                     pl.getLogger().info(ChatColor.AQUA + player.getDisplayName() + "が復活しました");
-                    pl.getLogger().info(ChatColor.AQUA + "DeathPlayerList :" + L4D_gamepl.getDeathPlayer());
-                    pl.getLogger().info(ChatColor.AQUA + "PlayerList :" + L4D_gamepl.getPlayerList());
+                    pl.getLogger().info(ChatColor.AQUA + "DeathPlayerList :" + L4D_gamepl.getDeathPlayerList());
+                    pl.getLogger().info(ChatColor.AQUA + "PlayerList :" + L4D_gamepl.getSurvivorList());
 
                     target.setGameMode(GameMode.SURVIVAL);
                     target.setFoodLevel(6);
@@ -135,7 +137,7 @@ public class CheckPoint implements Listener {
 
                 //チェックポイントに入る（1回目）
                 if (loc.getBlock().getType().equals(Material.DIAMOND_BLOCK)) {
-                    for (Player target : Bukkit.getOnlinePlayers()) {
+                    for (Player target : L4D_gamepl.getPlayerList()) {
                         Location targetLoc = target.getLocation().clone();
                         switch (GameWorlds.getStageId()) {
                             case 1:
@@ -163,7 +165,7 @@ public class CheckPoint implements Listener {
 
                 //チェックポイントから出る（1回目）
                 if (loc.getBlock().getType().equals(Material.GOLD_BLOCK)) {
-                    for (Player target : Bukkit.getOnlinePlayers()) {
+                    for (Player target : L4D_gamepl.getPlayerList()) {
                         Location targetLoc = target.getLocation().clone();
                         switch (GameWorlds.getStageId()) {
                             case 1:
@@ -191,7 +193,7 @@ public class CheckPoint implements Listener {
 
                 //チェックポイントに入る（2回目）
                 if (loc.getBlock().getType().equals(Material.EMERALD_BLOCK)) {
-                    for (Player target : Bukkit.getOnlinePlayers()) {
+                    for (Player target : L4D_gamepl.getPlayerList()) {
                         Location targetLoc = target.getLocation().clone();
                         switch (GameWorlds.getStageId()) {
                             case 1:
@@ -219,7 +221,7 @@ public class CheckPoint implements Listener {
 
                 //チェックポイントから出る（2回目）
                 if (loc.getBlock().getType().equals(Material.REDSTONE_BLOCK)) {
-                    for (Player target : Bukkit.getOnlinePlayers()) {
+                    for (Player target : L4D_gamepl.getPlayerList()) {
                         Location targetLoc = target.getLocation().clone();
                         switch (GameWorlds.getStageId()) {
                             case 1:
@@ -246,7 +248,7 @@ public class CheckPoint implements Listener {
 
                 //ゴールする
                 if (loc.getBlock().getType().equals(Material.LAPIS_BLOCK)) {
-                    for (Player target : Bukkit.getOnlinePlayers()) {
+                    for (Player target : L4D_gamepl.getPlayerList()) {
                         Location targetLoc = target.getLocation().clone();
                         targetLoc.setX(914);
                         targetLoc.setY(156);
@@ -256,7 +258,7 @@ public class CheckPoint implements Listener {
                         spawnFireworks(targetLoc,1);
                     }
 
-                    Bukkit.getOnlinePlayers().forEach(p -> p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 2, 1));
+                    Bukkit.getOnlinePlayers().forEach(p -> p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 2, 0));
                     Bukkit.getOnlinePlayers().forEach(p -> p.sendTitle(ChatColor.AQUA + "GAME CLEAR!", null, 5, 100, 5));
                     new Stop(pl).runTaskTimer(pl, 0, 20);
                 }
