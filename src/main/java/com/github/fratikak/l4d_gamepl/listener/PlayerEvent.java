@@ -3,24 +3,15 @@ package com.github.fratikak.l4d_gamepl.listener;
 import com.github.fratikak.l4d_gamepl.L4D_gamepl;
 import com.github.fratikak.l4d_gamepl.Stop;
 import org.bukkit.*;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
-import org.bukkit.block.CreatureSpawner;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityPotionEffectEvent;
-import org.bukkit.event.entity.EntityToggleSwimEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryCreativeEvent;
 import org.bukkit.event.player.*;
-import org.bukkit.inventory.Inventory;
+import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.Objects;
@@ -54,13 +45,14 @@ public class PlayerEvent implements Listener {
         if (L4D_gamepl.isGame()) {
             //リストから削除
             L4D_gamepl.getPlayerList().remove(player);
-            L4D_gamepl.getDeathPlayer().remove(player);
+            L4D_gamepl.getSurvivorList().remove(player);
+            L4D_gamepl.getDeathPlayerList().remove(player);
 
-            pl.getLogger().info("playerList: " + L4D_gamepl.getPlayerList());
-            pl.getLogger().info("deathList: " + L4D_gamepl.getDeathPlayer());
+            pl.getLogger().info("survivorList: " + L4D_gamepl.getSurvivorList());
+            pl.getLogger().info("deathList: " + L4D_gamepl.getDeathPlayerList());
 
             //ゲームプレイヤーが全員いなくなった場合、ゲームを終了
-            if (L4D_gamepl.getPlayerList().isEmpty()) {
+            if (L4D_gamepl.getSurvivorList().isEmpty()) {
                 new Stop(pl).runTaskTimer(pl, 0, 20);
             }
         }
@@ -78,8 +70,7 @@ public class PlayerEvent implements Listener {
 
         if (L4D_gamepl.isGame() && player.getGameMode() == GameMode.SURVIVAL) {
             if (player.getLocation().getBlock().getType() == Material.WATER) {
-                player.setHealth(0);
-                Bukkit.getLogger().info(player.getDisplayName() + "がwaterdeathで死亡しました");
+                player.addPotionEffect(new PotionEffect(PotionEffectType.WITHER,20,10000,true));
             }
         }
     }
@@ -95,12 +86,11 @@ public class PlayerEvent implements Listener {
 
         Entity entity = event.getEntity();
 
-        if (entity instanceof Player) {
-            Player player = (Player) entity;
+        if (entity.getType() == EntityType.PLAYER) {
 
-            if (Objects.requireNonNull(event.getNewEffect()).getType() == PotionEffectType.SLOW) {
+            if (event.getModifiedType() == PotionEffectType.SLOW) {
                 event.setCancelled(true);
-            } else if (event.getNewEffect().getType() == PotionEffectType.BAD_OMEN) {
+            } else if (event.getModifiedType() == PotionEffectType.BAD_OMEN) {
                 event.setCancelled(true);
             }
         }
