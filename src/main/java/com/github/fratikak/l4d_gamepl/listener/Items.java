@@ -30,7 +30,6 @@ public class Items implements Listener {
             case APPLE:
                 player.addPotionEffect(new PotionEffect(PotionEffectType.HEAL,1,1,false));
                 player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 24);
-                player.getInventory().remove(Material.HONEY_BOTTLE);
                 player.sendMessage(ChatColor.GOLD + "リンゴを食べたことにより体力が少量回復しました");
                 break;
         }
