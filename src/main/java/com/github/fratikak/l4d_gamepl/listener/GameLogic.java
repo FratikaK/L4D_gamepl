@@ -2,10 +2,14 @@ package com.github.fratikak.l4d_gamepl.listener;
 
 import com.github.fratikak.l4d_gamepl.L4D_gamepl;
 import com.github.fratikak.l4d_gamepl.Stop;
+import com.github.fratikak.l4d_gamepl.util.ScoreboardSystem;
 import org.bukkit.*;
 import org.bukkit.block.CreatureSpawner;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -14,6 +18,9 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scoreboard.*;
 
 import java.util.Random;
 
@@ -54,18 +61,18 @@ public class GameLogic implements Listener {
         if (L4D_gamepl.isGame()) {
             if (player.getGameMode() == GameMode.SURVIVAL) {
 
-                //プレイヤーリストから該当のプレイヤーを削除、死亡者リストに追加
-                L4D_gamepl.getPlayerList().remove(player);
-                L4D_gamepl.getDeathPlayer().add(player);
+                //生存プレイヤーリストから該当のプレイヤーを削除、死亡者リストに追加
+                L4D_gamepl.getSurvivorList().remove(player);
+                L4D_gamepl.getDeathPlayerList().add(player);
                 player.setPlayerListName("[" + ChatColor.RED + "死亡" + ChatColor.WHITE + "]" + player.getDisplayName());
 
                 Bukkit.broadcastMessage(ChatColor.RED + player.getDisplayName() + "が死亡しました");
-                Bukkit.broadcastMessage(ChatColor.WHITE + "プレイヤー数残り" + L4D_gamepl.getPlayerList().size() + "人です");
+                Bukkit.broadcastMessage(ChatColor.WHITE + "プレイヤー数残り" + L4D_gamepl.getSurvivorList().size() + "人です");
                 Bukkit.getOnlinePlayers().forEach(p -> p.playSound(p.getLocation(), Sound.ENTITY_WOLF_HOWL, 1, 15));
                 player.sendTitle(ChatColor.RED + "あなたは死亡しました", "", 5, 40, 5);
 
                 //プレイヤーが全員死亡した場合
-                if (L4D_gamepl.getPlayerList().isEmpty()) {
+                if (L4D_gamepl.getSurvivorList().isEmpty()) {
                     new Stop(pl).runTaskTimer(pl, 0, 20);
                 }
             }
@@ -92,6 +99,7 @@ public class GameLogic implements Listener {
 
         //死亡した地点にリスポーン、インベントリ整理
         player.setGameMode(GameMode.SPECTATOR);
+        player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION,1000000,0,true));
         event.setRespawnLocation(deathLocation);
         pl.giveLobbyItem(inventory);
     }
@@ -109,13 +117,10 @@ public class GameLogic implements Listener {
 
         if (L4D_gamepl.isGame()) {
             //プレイヤー数 * 任意の数字分沸かせる
-            int mobNum = L4D_gamepl.getPlayerList().size() * 3;
-            if (mobNum > 10){
-                mobNum = 10;
-            }
+            int mobNum = L4D_gamepl.getSurvivorList().size() * 3;
 
             Location spawnerLocation = event.getSpawner().getLocation().clone();
-            spawnerLocation.add(0, 1, 0);
+            spawnerLocation.add(0.5, 1, 0.5);
 
             CreatureSpawner spawner = event.getSpawner();
             spawner.setSpawnCount(1);
@@ -133,6 +138,26 @@ public class GameLogic implements Listener {
         }
     }
 
+
+//    @EventHandler(priority = EventPriority.HIGH)
+//    public void plusKillCount(EntityDeathEvent event){
+//        LivingEntity livingEntity = event.getEntity();
+//        if (livingEntity.getKiller() != null){
+//
+//            ScoreboardManager manager = Bukkit.getScoreboardManager();
+//            Scoreboard scoreboard = manager.getNewScoreboard();
+//
+//            Player player = livingEntity.getKiller();
+//            //プレイヤーのスコアボードを取得する
+//            Objective objective = scoreboard.getObjective("showKillCount");
+//
+//            for (Player target : Bukkit.getOnlinePlayers()){
+//                objective.getScore(player).setScore();
+//            }
+//
+//
+//        }
+//    }
     /**
      * mobを倒したときに確率でアイテムをドロップする
      *
@@ -161,7 +186,7 @@ public class GameLogic implements Listener {
             case 1:
                 ItemStack clayball = new ItemStack(Material.CLAY_BALL);
                 ItemMeta cbmeta = clayball.getItemMeta();
-                cbmeta.setDisplayName(ChatColor.YELLOW + "フラッシュバン");
+                cbmeta.setDisplayName(ChatColor.YELLOW + "火炎瓶");
                 clayball.setItemMeta(cbmeta);
                 entityLocation.getWorld().dropItem(entityLocation, clayball);
                 break;
