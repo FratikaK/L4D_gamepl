@@ -5,6 +5,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class Stop extends BukkitRunnable {
@@ -53,6 +54,7 @@ public class Stop extends BukkitRunnable {
                 targetTeleport(target);
                 target.setHealth(20);
                 target.setFoodLevel(20);
+                target.removePotionEffect(PotionEffectType.NIGHT_VISION);
             }
 
             L4D_gamepl.setGame(false);
@@ -60,11 +62,11 @@ public class Stop extends BukkitRunnable {
 
             //リストを空にする
             L4D_gamepl.getPlayerList().clear();
-            L4D_gamepl.getDeathPlayer().clear();
+            L4D_gamepl.getSurvivorList().clear();
+            L4D_gamepl.getDeathPlayerList().clear();
             GameWorlds.setStageId(0);
 
             this.cancel();
-
             Bukkit.reload();
         }
 
