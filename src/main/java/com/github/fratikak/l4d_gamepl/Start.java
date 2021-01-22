@@ -106,8 +106,7 @@ public class Start {
         pl.getLogger().info("ゲームがスタートしました");
         Bukkit.broadcastMessage("[L4D]" + ChatColor.AQUA + "ゲームがスタートしました");
 
-        //スコアボードをアップデート
-        new ScoreboardSystem().showScoreboard();
+        new ScoreboardSystem(pl).setKillScoreBoard();
 
         //武器などのアイテムを渡す処理
         for (Player target : L4D_gamepl.getPlayerList()) {
@@ -119,7 +118,6 @@ public class Start {
                  * 参加プレイヤーのステータスを設定
                  * アイテム付与
                  */
-
 
                 pl.giveGameItem(target.getInventory(), target);
                 target.setPlayerListName("[" + ChatColor.AQUA + "生存者" + ChatColor.WHITE + "]" + target.getDisplayName());
