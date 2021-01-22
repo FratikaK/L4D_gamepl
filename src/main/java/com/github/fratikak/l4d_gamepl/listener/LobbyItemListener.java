@@ -2,6 +2,7 @@ package com.github.fratikak.l4d_gamepl.listener;
 
 import com.github.fratikak.l4d_gamepl.L4D_gamepl;
 import com.github.fratikak.l4d_gamepl.task.PreparationTask;
+import com.github.fratikak.l4d_gamepl.util.ScoreboardSystem;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -14,10 +15,6 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
-
-import java.util.Objects;
 
 /**
  * ロビーアイテムをインタラクトした場合、
@@ -174,13 +171,17 @@ public class LobbyItemListener implements Listener {
                 L4D_gamepl.getPlayerList().add(player);
                 L4D_gamepl.getSurvivorList().add(player);
                 pl.giveGameItem(player.getInventory(), player);
+
+                //スコアボード登録
+                new ScoreboardSystem(pl).addBoard(player);
+
                 return;
             }
 
             //PreparationTask中の場合はプレイヤーリストに格納するだけ
             if (L4D_gamepl.isPreparation()){
 
-                //ゲームに参加していた
+                //ゲームに参加していた場合はreturn
                 if (L4D_gamepl.getPlayerList().contains(player)){
                     player.sendMessage("[L4D]" + ChatColor.RED + "すでにゲームに参加しています");
                     return;
@@ -189,6 +190,7 @@ public class LobbyItemListener implements Listener {
                 Bukkit.broadcastMessage("[L4D]" + ChatColor.AQUA + player.getDisplayName() + "がゲームに参加します");
                 Bukkit.getOnlinePlayers().forEach(p -> p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 24));
 
+                //ゲームプレイヤーとして登録
                 L4D_gamepl.getPlayerList().add(player);
 
             }else {
