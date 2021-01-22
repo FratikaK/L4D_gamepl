@@ -2,13 +2,12 @@ package com.github.fratikak.l4d_gamepl.util;
 
 
 import com.github.fratikak.l4d_gamepl.L4D_gamepl;
-import com.google.common.base.Preconditions;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
-import org.bukkit.scoreboard.*;
-
-import java.util.List;
+import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.ScoreboardManager;
 
 /**
  * スコアボードのシステムを司るクラス
@@ -18,24 +17,47 @@ import java.util.List;
  */
 public class ScoreboardSystem {
 
-    ScoreboardManager manager = Bukkit.getScoreboardManager();
-    Scoreboard scoreboard = manager.getNewScoreboard();
+    private final static String integer_KEY = "MOB_KILL_COUNT";
+    private final L4D_gamepl plugin;
 
+    private final ScoreboardManager manager = Bukkit.getScoreboardManager();
+    private final Scoreboard board = manager.getMainScoreboard();
 
-    public void showScoreboard() {
-        ScoreboardManager manager = Bukkit.getScoreboardManager();
-        Scoreboard board = manager.getNewScoreboard();
+    public ScoreboardSystem(L4D_gamepl plugin) {
+        this.plugin = plugin;
+    }
 
-        Objective objective = board.registerNewObjective("test", "mobkills");
-        objective.setDisplaySlot(DisplaySlot.SIDEBAR);
-        objective.setDisplayName("ScoreBoard");
-        Score score = objective.getScore(Bukkit.getOfflinePlayer(ChatColor.GREEN + "Kills:"));
-        score.setScore(0);
+    /**
+     * 新しいキルカウントのスコアボードを作成する
+     */
+    public void setKillScoreBoard(){
 
-        for (Player current : Bukkit.getOnlinePlayers()) {
-            current.setScoreboard(board);
+        //Objectiveがあるか確認、なければ登録する
+        Objective objective = board.getObjective(integer_KEY);
+        if (objective == null){
+            objective = board.registerNewObjective(integer_KEY, "totalKillCount");
+            objective.setDisplaySlot(DisplaySlot.SIDEBAR);
+            objective.setDisplayName("Kills debug");
         }
 
+        //全プレイヤーの現在のキル数を反映(初期は0)
+        for (Player target : L4D_gamepl.getPlayerList()){
+            objective.getScore(target).setScore(0);
+        }
+    }
 
+    //途中参加プレイヤーのスコアを追加する
+    public void addBoard(Player player){
+
+        //Objectiveがあるのが前提
+        Objective objective = board.getObjective(integer_KEY);
+
+        //後参加のプレイヤーの初期値を設定
+        objective.getScore(player).setScore(0);
+
+        //現在のスコアボードを更新する
+        for (Player target : L4D_gamepl.getPlayerList()){
+            objective.getScore(target).setScore(objective.getScore(target).getScore());
+        }
     }
 }
