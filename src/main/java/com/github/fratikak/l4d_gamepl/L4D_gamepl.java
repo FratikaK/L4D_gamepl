@@ -29,9 +29,9 @@ public final class L4D_gamepl extends JavaPlugin {
 
     private static boolean game = false;
     private static boolean preparation = false;
-    private static List<Player> playerList = new ArrayList<>();
-    private static List<Player> survivor = new ArrayList<>();
-    private static List<Player> deathPlayer = new ArrayList<>();
+    private static final List<Player> playerList = new ArrayList<>();
+    private static final List<Player> survivor = new ArrayList<>();
+    private static final List<Player> deathPlayer = new ArrayList<>();
 
 
     @Override
