@@ -1,7 +1,7 @@
 package com.github.fratikak.l4d_gamepl.listener;
 
 import com.github.fratikak.l4d_gamepl.L4D_gamepl;
-import com.github.fratikak.l4d_gamepl.Stop;
+import com.github.fratikak.l4d_gamepl.task.StopTask;
 import org.bukkit.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -13,8 +13,6 @@ import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-
-import java.util.Objects;
 
 public class PlayerEvent implements Listener {
 
@@ -53,7 +51,7 @@ public class PlayerEvent implements Listener {
 
             //ゲームプレイヤーが全員いなくなった場合、ゲームを終了
             if (L4D_gamepl.getSurvivorList().isEmpty()) {
-                new Stop(pl).runTaskTimer(pl, 0, 20);
+                new StopTask(pl).runTaskTimer(pl, 0, 20);
             }
         }
     }
