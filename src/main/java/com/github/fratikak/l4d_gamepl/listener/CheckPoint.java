@@ -1,8 +1,8 @@
 package com.github.fratikak.l4d_gamepl.listener;
 
-import com.github.fratikak.l4d_gamepl.GameWorlds;
+import com.github.fratikak.l4d_gamepl.util.GameWorlds;
 import com.github.fratikak.l4d_gamepl.L4D_gamepl;
-import com.github.fratikak.l4d_gamepl.Stop;
+import com.github.fratikak.l4d_gamepl.task.StopTask;
 import org.bukkit.*;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Firework;
@@ -50,29 +50,38 @@ public class CheckPoint implements Listener {
         inventory.addItem(firework);
         inventory.addItem(clayball);
         inventory.addItem(new ItemStack(Material.COOKED_BEEF, 3));
-        target.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION,1000000,0,true));
+        target.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 1000000, 0, true));
     }
 
-    //死亡プレイヤーを復活させる
+    /**
+     * 死亡プレイヤーを復活させる
+     *
+     * @param player 　対象プレイヤー
+     */
     public void resurrectionPlayer(Player player) {
 
-        if (player.getGameMode() == GameMode.SPECTATOR && L4D_gamepl.isGame()) {
-            for (Player target : L4D_gamepl.getDeathPlayerList()) {
-                if (player == target) {
-                    L4D_gamepl.getDeathPlayerList().remove(target);
-                    L4D_gamepl.getSurvivorList().add(target);
+        //生存プレイヤーならreturn
+        if (L4D_gamepl.getSurvivorList().contains(player)) {
+            return;
+        }
 
-                    target.setPlayerListName("[" + ChatColor.AQUA + "生存者" + ChatColor.WHITE + "]" + target.getDisplayName());
+        //死亡プレイヤーリストにあれば復帰処理
+        if (L4D_gamepl.getDeathPlayerList().contains(player)) {
 
-                    pl.getLogger().info(ChatColor.AQUA + player.getDisplayName() + "が復活しました");
-                    pl.getLogger().info(ChatColor.AQUA + "DeathPlayerList :" + L4D_gamepl.getDeathPlayerList());
-                    pl.getLogger().info(ChatColor.AQUA + "PlayerList :" + L4D_gamepl.getSurvivorList());
+            //リスト整理
+            L4D_gamepl.getSurvivorList().add(player);
+            L4D_gamepl.getDeathPlayerList().remove(player);
 
-                    target.setGameMode(GameMode.SURVIVAL);
-                    target.setFoodLevel(6);
-                    pl.giveGameItem(target.getInventory(), target);
-                }
-            }
+            player.setPlayerListName("[" + ChatColor.AQUA + "生存者" + ChatColor.WHITE + "]" + player.getDisplayName());
+
+            pl.getLogger().info(ChatColor.AQUA + player.getDisplayName() + "が復活しました");
+            pl.getLogger().info(ChatColor.AQUA + "DeathPlayerList :" + L4D_gamepl.getDeathPlayerList());
+            pl.getLogger().info(ChatColor.AQUA + "PlayerList :" + L4D_gamepl.getSurvivorList());
+
+            //初期状態に戻す
+            player.setGameMode(GameMode.SURVIVAL);
+            player.setFoodLevel(6);
+            pl.giveGameItem(player.getInventory(), player);
         }
     }
 
@@ -159,6 +168,15 @@ public class CheckPoint implements Listener {
                                 resurrectionPlayer(target);
                                 checkPointTask(target, 1);
                                 break;
+
+                            case 3:
+                                targetLoc.setX(913);
+                                targetLoc.setY(29);
+                                targetLoc.setZ(1415);
+                                target.teleport(targetLoc);
+
+                                resurrectionPlayer(target);
+                                checkPointTask(target,1);
                         }
                     }
                 }
@@ -182,6 +200,16 @@ public class CheckPoint implements Listener {
                                 targetLoc.setX(571);
                                 targetLoc.setY(94);
                                 targetLoc.setZ(1009);
+                                target.teleport(targetLoc);
+
+                                target.sendMessage(ChatColor.AQUA + "チェックポイントから出ました");
+                                target.sendMessage(ChatColor.AQUA + "ゲームを再開します");
+                                break;
+
+                            case 3:
+                                targetLoc.setX(986);
+                                targetLoc.setY(29);
+                                targetLoc.setZ(1482);
                                 target.teleport(targetLoc);
 
                                 target.sendMessage(ChatColor.AQUA + "チェックポイントから出ました");
@@ -215,6 +243,15 @@ public class CheckPoint implements Listener {
                                 resurrectionPlayer(target);
                                 checkPointTask(target, 2);
                                 break;
+
+                            case 3:
+                                targetLoc.setX(1403);
+                                targetLoc.setY(28);
+                                targetLoc.setZ(1530);
+                                target.teleport(targetLoc);
+
+                                resurrectionPlayer(target);
+                                checkPointTask(target,2);
                         }
                     }
                 }
@@ -242,6 +279,15 @@ public class CheckPoint implements Listener {
                                 target.sendMessage(ChatColor.AQUA + "ゲームを再開します");
                                 break;
 
+                            case 3:
+                                targetLoc.setX(1343);
+                                targetLoc.setY(4);
+                                targetLoc.setZ(1575);
+                                target.teleport(targetLoc);
+                                target.sendMessage(ChatColor.AQUA + "チェックポイントから出ました");
+                                target.sendMessage(ChatColor.AQUA + "ゲームを再開します");
+                                break;
+
                         }
                     }
                 }
@@ -255,12 +301,12 @@ public class CheckPoint implements Listener {
                         targetLoc.setZ(1033);
                         target.teleport(targetLoc);
 
-                        spawnFireworks(targetLoc,1);
+                        spawnFireworks(targetLoc, 1);
                     }
 
                     Bukkit.getOnlinePlayers().forEach(p -> p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 2, 0));
                     Bukkit.getOnlinePlayers().forEach(p -> p.sendTitle(ChatColor.AQUA + "GAME CLEAR!", null, 5, 100, 5));
-                    new Stop(pl).runTaskTimer(pl, 0, 20);
+                    new StopTask(pl).runTaskTimer(pl, 0, 20);
                 }
 
             }
