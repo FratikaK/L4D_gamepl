@@ -1,8 +1,7 @@
 package com.github.fratikak.l4d_gamepl.command;
 
 import com.github.fratikak.l4d_gamepl.L4D_gamepl;
-import com.github.fratikak.l4d_gamepl.Start;
-import com.github.fratikak.l4d_gamepl.Stop;
+import com.github.fratikak.l4d_gamepl.task.StopTask;
 import com.github.fratikak.l4d_gamepl.task.PreparationTask;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -37,11 +36,16 @@ public class L4DCommands implements CommandExecutor {
                         new PreparationTask(pl,2).runTaskTimer(pl,0,20);
                         Bukkit.getLogger().info("townが選択されました");
                         return true;
+
+                    case "novigrad":
+                        new PreparationTask(pl,3).runTaskTimer(pl,0,20);
+                        Bukkit.getLogger().info("novigradが選択されました");
+                        return true;
                 }
 
 
             } else if (args[0].equalsIgnoreCase("stop")) {
-                new Stop(pl).runTaskTimer(pl,0, 20);
+                new StopTask(pl).runTaskTimer(pl,0, 20);
                 return true;
             }
         }
