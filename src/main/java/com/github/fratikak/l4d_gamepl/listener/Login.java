@@ -1,6 +1,7 @@
 package com.github.fratikak.l4d_gamepl.listener;
 
 import com.github.fratikak.l4d_gamepl.L4D_gamepl;
+import com.github.fratikak.l4d_gamepl.util.ScoreboardSystem;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -57,6 +58,9 @@ public class Login implements Listener {
         if (player.hasPotionEffect(PotionEffectType.NIGHT_VISION)) {
             player.removePotionEffect(PotionEffectType.NIGHT_VISION);
         }
+
+        //体力表示スコアボードの登録
+        new ScoreboardSystem(pl).viewHealthBoard();
 
         pl.giveLobbyItem(inventory); //ロビーアイテム追加
         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
