@@ -1,5 +1,6 @@
 package com.github.fratikak.l4d_gamepl;
 
+import com.github.fratikak.l4d_gamepl.util.GameWorlds;
 import com.github.fratikak.l4d_gamepl.util.ScoreboardSystem;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
@@ -43,20 +44,6 @@ public class Start {
             return;
         }
 
-//        //プレイヤーリスト、死亡者リストが空であることを確認
-//        if (!L4D_gamepl.getPlayerList().isEmpty() && !L4D_gamepl.getDeathPlayer().isEmpty()) {
-//            pl.getServer().broadcastMessage("[L4D]" + ChatColor.RED + "各リストが空ではありません！");
-//            return;
-//        }
-//
-//        //参加するプレイヤーを取得する
-//        for (Player target : Bukkit.getOnlinePlayers()) {
-//            if (target.getGameMode() == GameMode.SURVIVAL) {
-//                L4D_gamepl.getPlayerList().add(target);
-//                pl.getLogger().info(ChatColor.AQUA + target.getDisplayName());
-//            }
-//        }
-
         //参加プレイヤーがいなければreturn
         if (L4D_gamepl.getPlayerList().isEmpty()) {
             Bukkit.broadcastMessage("[L4D]" + ChatColor.RED + "参加するプレイヤーが存在しません");
@@ -77,8 +64,7 @@ public class Start {
             //プレイヤーにカウントを表示。不参加者にも表示
             for (Player target : Bukkit.getOnlinePlayers()) {
                 target.playSound(target.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 24);
-                target.sendTitle(ChatColor.WHITE + "ゲーム開始まで" + i + "秒", "", 5, 10, 5);
-                target.sendMessage(ChatColor.GOLD + "ゲーム開始まで" + i + "秒");
+                target.sendTitle(ChatColor.GOLD + String.valueOf(i) , "", 5, 10, 5);
 
                 if (i == 0) {
                     target.playSound(target.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1, 24);
