@@ -53,12 +53,18 @@ public class LobbyItemListener implements Listener {
         white_wool.setDisplayName(ChatColor.AQUA + "Town");
         town.setItemMeta(white_wool);
 
+        ItemStack novigrad = new ItemStack(Material.COBBLESTONE);
+        ItemMeta cobblestone = novigrad.getItemMeta();
+        cobblestone.setDisplayName(ChatColor.AQUA + "Novigrad");
+        novigrad.setItemMeta(cobblestone);
+
         //インベントリ作成、メタデータのあるアイテムをセットする
         Inventory inventory;
         inventory = Bukkit.createInventory(null, 9, "ステージを選択してください");
 
         inventory.setItem(0, venice);
         inventory.setItem(1, town);
+        inventory.setItem(2,novigrad);
 
         //インベントリ表示
         player.openInventory(inventory);
@@ -101,27 +107,27 @@ public class LobbyItemListener implements Listener {
      */
     @EventHandler
     public void stageClick(InventoryClickEvent event) {
-        
+
+        //preparationタスク中はreturn
+        if(L4D_gamepl.isPreparation()){
+            return;
+        }
+
         //どのアイテム（ステージ）をクリックしたか
         switch (event.getCurrentItem().getType()) {
             case BRICKS: //Venice
                 event.setCancelled(true);
-
-                if(L4D_gamepl.isPreparation()){
-                    return;
-                }
-
                 new PreparationTask(pl, 1).runTaskTimer(pl, 0, 20);
                 break;
 
             case WHITE_WOOL: //Town
                 event.setCancelled(true);
-
-                if(L4D_gamepl.isPreparation()){
-                    return;
-                }
-
                 new PreparationTask(pl, 2).runTaskTimer(pl, 0, 20);
+                break;
+
+            case COBBLESTONE:
+                event.setCancelled(true);
+                new PreparationTask(pl,3).runTaskTimer(pl,0,20);
                 break;
 
             default:
@@ -171,6 +177,9 @@ public class LobbyItemListener implements Listener {
                 L4D_gamepl.getPlayerList().add(player);
                 L4D_gamepl.getSurvivorList().add(player);
                 pl.giveGameItem(player.getInventory(), player);
+
+                player.setFoodLevel(6);
+                player.setHealth(20);
 
                 //スコアボード登録
                 new ScoreboardSystem(pl).addBoard(player);
