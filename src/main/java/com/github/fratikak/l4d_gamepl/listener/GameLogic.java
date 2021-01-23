@@ -1,26 +1,26 @@
 package com.github.fratikak.l4d_gamepl.listener;
 
 import com.github.fratikak.l4d_gamepl.L4D_gamepl;
-import com.github.fratikak.l4d_gamepl.Stop;
-import com.github.fratikak.l4d_gamepl.util.ScoreboardSystem;
+import com.github.fratikak.l4d_gamepl.task.StopTask;
 import org.bukkit.*;
 import org.bukkit.block.CreatureSpawner;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Raider;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.EntitySpawnEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.SpawnerSpawnEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.scoreboard.*;
 
 import java.util.Random;
 
@@ -73,7 +73,7 @@ public class GameLogic implements Listener {
 
                 //プレイヤーが全員死亡した場合
                 if (L4D_gamepl.getSurvivorList().isEmpty()) {
-                    new Stop(pl).runTaskTimer(pl, 0, 20);
+                    new StopTask(pl).runTaskTimer(pl, 0, 20);
                 }
             }
         }
@@ -99,11 +99,25 @@ public class GameLogic implements Listener {
 
         //死亡した地点にリスポーン、インベントリ整理
         player.setGameMode(GameMode.SPECTATOR);
-        player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION,1000000,0,true));
+        player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 1000000, 0, true));
         event.setRespawnLocation(deathLocation);
-        pl.giveLobbyItem(inventory);
+        player.sendMessage("[L4D]" + ChatColor.RED + "あなたは死亡しました。他のプレイヤーがチェックポイントにたどり着けば復帰できます");
+        inventory.clear();
     }
 
+    /**
+     * mobをkillした時に対象プレイヤーに音をならす
+     *
+     * @param event
+     */
+    @EventHandler
+    public void playerKillMobs(EntityDeathEvent event) {
+        if (event.getEntity().getKiller() != null) {
+            Player player = event.getEntity().getKiller();
+            //音をならす
+            player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 0);
+        }
+    }
 
     /**
      * スポナーから沸くmobを調整する
@@ -124,9 +138,9 @@ public class GameLogic implements Listener {
 
             CreatureSpawner spawner = event.getSpawner();
             spawner.setSpawnCount(1);
-            spawner.setSpawnRange(6);
-            spawner.setRequiredPlayerRange(30);
-            spawner.setMaxNearbyEntities(4);
+            spawner.setSpawnRange(20);
+            spawner.setRequiredPlayerRange(40);
+            spawner.setMaxNearbyEntities(10);
             spawner.setDelay(0);
             spawner.setMinSpawnDelay(200);
             spawner.setMaxSpawnDelay(200);
@@ -138,26 +152,18 @@ public class GameLogic implements Listener {
         }
     }
 
+    /**
+     * 不吉のポーションエフェクトを解除する
+     *
+     * @param event
+     */
+    @EventHandler
+    public void removeRaid(PlayerMoveEvent event) {
+        if (event.getPlayer().hasPotionEffect(PotionEffectType.BAD_OMEN)) {
+            event.getPlayer().removePotionEffect(PotionEffectType.BAD_OMEN);
+        }
+    }
 
-//    @EventHandler(priority = EventPriority.HIGH)
-//    public void plusKillCount(EntityDeathEvent event){
-//        LivingEntity livingEntity = event.getEntity();
-//        if (livingEntity.getKiller() != null){
-//
-//            ScoreboardManager manager = Bukkit.getScoreboardManager();
-//            Scoreboard scoreboard = manager.getNewScoreboard();
-//
-//            Player player = livingEntity.getKiller();
-//            //プレイヤーのスコアボードを取得する
-//            Objective objective = scoreboard.getObjective("showKillCount");
-//
-//            for (Player target : Bukkit.getOnlinePlayers()){
-//                objective.getScore(player).setScore();
-//            }
-//
-//
-//        }
-//    }
     /**
      * mobを倒したときに確率でアイテムをドロップする
      *
