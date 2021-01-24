@@ -8,6 +8,8 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityPotionEffectEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.*;
@@ -57,6 +59,21 @@ public class PlayerEvent implements Listener {
     }
 
     /**
+     * プレイヤーが謎の一撃死バグで死ぬのを防ぐ処理
+     * ヴィンディゲーターなど強力なmobからのダメージも軽減する
+     *
+     * @param event
+     */
+    @EventHandler
+    public void noOverDamage(EntityDamageEvent event) {
+        Entity entity = event.getEntity();
+
+        if (entity.getType() == EntityType.PLAYER) {
+            event.setDamage(4);
+        }
+    }
+
+    /**
      * 水に触れると死亡する処理
      *
      * @param event
@@ -68,7 +85,7 @@ public class PlayerEvent implements Listener {
 
         if (L4D_gamepl.isGame() && player.getGameMode() == GameMode.SURVIVAL) {
             if (player.getLocation().getBlock().getType() == Material.WATER) {
-                player.addPotionEffect(new PotionEffect(PotionEffectType.WITHER,20,10000,true));
+                player.addPotionEffect(new PotionEffect(PotionEffectType.WITHER, 20, 10000, true));
             }
         }
     }
