@@ -43,7 +43,7 @@ public class CheckPoint implements Listener {
         ItemMeta fwmeta = firework.getItemMeta();
         ItemMeta cbmeta = clayball.getItemMeta();
         fwmeta.setDisplayName(ChatColor.YELLOW + "グレネード");
-        cbmeta.setDisplayName(ChatColor.YELLOW + "火炎瓶");
+        cbmeta.setDisplayName(ChatColor.YELLOW + "コンカッション");
         firework.setItemMeta(fwmeta);
         clayball.setItemMeta(cbmeta);
 
