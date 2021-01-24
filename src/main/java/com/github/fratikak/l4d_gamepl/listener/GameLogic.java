@@ -58,6 +58,8 @@ public class GameLogic implements Listener {
         Player player = event.getEntity();
         deathLocation = player.getLocation().clone().add(0, 1, 0);
 
+        pl.getLogger().info(event.getDeathMessage());
+
         if (L4D_gamepl.isGame()) {
             if (player.getGameMode() == GameMode.SURVIVAL) {
 
@@ -154,6 +156,7 @@ public class GameLogic implements Listener {
 
     /**
      * 不吉のポーションエフェクトを解除する
+     * 速度低下エフェクトも削除する
      *
      * @param event
      */
@@ -161,6 +164,10 @@ public class GameLogic implements Listener {
     public void removeRaid(PlayerMoveEvent event) {
         if (event.getPlayer().hasPotionEffect(PotionEffectType.BAD_OMEN)) {
             event.getPlayer().removePotionEffect(PotionEffectType.BAD_OMEN);
+        }
+
+        if (event.getPlayer().hasPotionEffect(PotionEffectType.SLOW)){
+            event.getPlayer().removePotionEffect(PotionEffectType.SLOW);
         }
     }
 
@@ -192,7 +199,7 @@ public class GameLogic implements Listener {
             case 1:
                 ItemStack clayball = new ItemStack(Material.CLAY_BALL);
                 ItemMeta cbmeta = clayball.getItemMeta();
-                cbmeta.setDisplayName(ChatColor.YELLOW + "火炎瓶");
+                cbmeta.setDisplayName(ChatColor.YELLOW + "コンカッション");
                 clayball.setItemMeta(cbmeta);
                 entityLocation.getWorld().dropItem(entityLocation, clayball);
                 break;
