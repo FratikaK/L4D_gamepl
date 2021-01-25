@@ -10,6 +10,7 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
@@ -153,7 +154,7 @@ public class LobbyItemListener implements Listener {
         Player player = event.getPlayer();
 
         //エメラルドでインタラクトした
-        if (player.getItemInHand().getType() == Material.EMERALD) {
+        if (player.getItemInHand().getType() == Material.EMERALD && event.getAction() == Action.RIGHT_CLICK_AIR) {
 
             //ゲーム中の場合は途中参加。
             if (L4D_gamepl.isGame()) {
