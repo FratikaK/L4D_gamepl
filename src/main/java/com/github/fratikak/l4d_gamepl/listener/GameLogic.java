@@ -2,26 +2,28 @@ package com.github.fratikak.l4d_gamepl.listener;
 
 import com.github.fratikak.l4d_gamepl.L4D_gamepl;
 import com.github.fratikak.l4d_gamepl.task.StopTask;
+import com.github.fratikak.l4d_gamepl.util.PerkDecks;
 import org.bukkit.*;
 import org.bukkit.block.CreatureSpawner;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Raider;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.entity.EntitySpawnEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.entity.SpawnerSpawnEvent;
+import org.bukkit.event.entity.*;
+import org.bukkit.event.inventory.InventoryCreativeEvent;
+import org.bukkit.event.player.PlayerGameModeChangeEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.metadata.MetadataValue;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import java.util.List;
 import java.util.Random;
 
 public class GameLogic implements Listener {
@@ -100,11 +102,60 @@ public class GameLogic implements Listener {
         }
 
         //死亡した地点にリスポーン、インベントリ整理
-        player.setGameMode(GameMode.SPECTATOR);
-        player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 1000000, 0, true));
+        player.setGameMode(GameMode.CREATIVE);
         event.setRespawnLocation(deathLocation);
         player.sendMessage("[L4D]" + ChatColor.RED + "あなたは死亡しました。他のプレイヤーがチェックポイントにたどり着けば復帰できます");
         inventory.clear();
+    }
+
+    /**
+     * プレイヤーがクリエイティブモードの時、透明になる
+     *
+     * @param event
+     */
+    @EventHandler
+    public void setSpectatorEffect(PlayerMoveEvent event) {
+        Player player = event.getPlayer();
+        if (player.getGameMode() == GameMode.CREATIVE) {
+            player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 1000000, 0, true));
+            player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 1000000, 0, true));
+        }
+    }
+
+    /**
+     * クリエイティブからサバイバルに変更時、透明化を削除
+     *
+     * @param event
+     */
+    @EventHandler
+    public void changeGamemode(PlayerGameModeChangeEvent event) {
+        if (event.getNewGameMode() == GameMode.SURVIVAL) {
+            event.getPlayer().removePotionEffect(PotionEffectType.INVISIBILITY);
+        }
+    }
+
+    /**
+     * クリエイティブを禁止する
+     *
+     * @param event
+     */
+    @EventHandler
+    public void noCreativeInventory(InventoryCreativeEvent event) {
+        if (!event.getWhoClicked().isOp()) {
+            event.setCancelled(true);
+        }
+    }
+
+    /**
+     * プレイヤー同士の押し合いを禁止する
+     *
+     * @param event
+     */
+    @EventHandler
+    public void noentityInteract(EntityInteractEvent event) {
+        if (event.getEntityType() == EntityType.PLAYER) {
+            event.setCancelled(true);
+        }
     }
 
     /**
@@ -114,10 +165,49 @@ public class GameLogic implements Listener {
      */
     @EventHandler
     public void playerKillMobs(EntityDeathEvent event) {
-        if (event.getEntity().getKiller() != null) {
-            Player player = event.getEntity().getKiller();
+
+        //プレイヤーが死亡の場合はreturn
+        if (event.getEntity().getType() == EntityType.PLAYER) {
+            return;
+        }
+
+        Player player = event.getEntity().getKiller();
+
+        if (player != null) {
             //音をならす
             player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 0);
+        }
+
+        //体力が19以上であればreturn
+        assert player != null;
+        if (player.getHealth() >= 19) {
+            return;
+        }
+
+        //メタデータを持ってるか
+        if (player.hasMetadata(PerkDecks.getPeekKey())) {
+
+            //メタデータはリスト型として返ってくるので、for文で取得する必要がある
+            List<MetadataValue> peeks = player.getMetadata(PerkDecks.getPeekKey());
+
+            MetadataValue value = null;
+
+            for (MetadataValue v : peeks) {
+                if (v.getOwningPlugin().getName() == pl.getName()) {
+                    value = v;
+                    break;
+                }
+            }
+
+            //メタデータが見つからなかった場合はreturn
+            if (value == null) {
+                return;
+            }
+
+            //体力を1ポイント回復する
+            if (value.asString().equals("GRINDER")) {
+                player.setHealth(player.getHealth() + 1);
+            }
         }
     }
 
@@ -133,7 +223,7 @@ public class GameLogic implements Listener {
 
         if (L4D_gamepl.isGame()) {
             //プレイヤー数 * 任意の数字分沸かせる
-            int mobNum = L4D_gamepl.getSurvivorList().size() * 3;
+            int mobNum = L4D_gamepl.getSurvivorList().size() * 4;
 
             Location spawnerLocation = event.getSpawner().getLocation().clone();
             spawnerLocation.add(0.5, 1, 0.5);
@@ -166,7 +256,7 @@ public class GameLogic implements Listener {
             event.getPlayer().removePotionEffect(PotionEffectType.BAD_OMEN);
         }
 
-        if (event.getPlayer().hasPotionEffect(PotionEffectType.SLOW)){
+        if (event.getPlayer().hasPotionEffect(PotionEffectType.SLOW)) {
             event.getPlayer().removePotionEffect(PotionEffectType.SLOW);
         }
     }
@@ -184,7 +274,7 @@ public class GameLogic implements Listener {
         }
 
         Random random = new Random();
-        int randomValue = random.nextInt(15);
+        int randomValue = random.nextInt(22);
         Location entityLocation = event.getEntity().getLocation().clone();
 
         switch (randomValue) {
@@ -215,6 +305,14 @@ public class GameLogic implements Listener {
             case 3:
                 ItemStack potion = new ItemStack(Material.APPLE);
                 entityLocation.getWorld().dropItem(entityLocation, potion);
+                break;
+
+            case 4:
+                ItemStack minecart = new ItemStack(Material.FURNACE_MINECART);
+                ItemMeta minemeta = minecart.getItemMeta();
+                minemeta.setDisplayName(ChatColor.YELLOW + "Landmine");
+                minecart.setItemMeta(minemeta);
+                entityLocation.getWorld().dropItem(entityLocation, minecart);
                 break;
 
 
