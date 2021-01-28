@@ -2,19 +2,22 @@ package com.github.fratikak.l4d_gamepl.listener;
 
 import com.github.fratikak.l4d_gamepl.L4D_gamepl;
 import com.github.fratikak.l4d_gamepl.task.StopTask;
+import com.github.fratikak.l4d_gamepl.util.PerkDecks;
 import org.bukkit.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityPotionEffectEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.*;
+import org.bukkit.metadata.MetadataValue;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+
+import java.util.List;
 
 public class PlayerEvent implements Listener {
 
@@ -51,6 +54,9 @@ public class PlayerEvent implements Listener {
             pl.getLogger().info("survivorList: " + L4D_gamepl.getSurvivorList());
             pl.getLogger().info("deathList: " + L4D_gamepl.getDeathPlayerList());
 
+            //peakの効果は削除
+            new PerkDecks(player,pl).removePotion();
+
             //ゲームプレイヤーが全員いなくなった場合、ゲームを終了
             if (L4D_gamepl.getSurvivorList().isEmpty()) {
                 new StopTask(pl).runTaskTimer(pl, 0, 20);
@@ -66,9 +72,48 @@ public class PlayerEvent implements Listener {
      */
     @EventHandler
     public void noOverDamage(EntityDamageEvent event) {
+
+        //落下ダメージは無効
+        if (event.getCause() == EntityDamageEvent.DamageCause.FALL) {
+            event.setCancelled(true);
+            return;
+        }
+
         Entity entity = event.getEntity();
 
         if (entity.getType() == EntityType.PLAYER) {
+            Player player = (Player) entity;
+            //メタデータを持ってるか
+            if (player.hasMetadata(PerkDecks.getPeekKey())) {
+
+                //体力満タンであればreturn
+                if (player.getHealth() == 20) {
+                    return;
+                }
+
+                //メタデータはリスト型として返ってくるので、for文で取得する必要がある
+                List<MetadataValue> peeks = player.getMetadata(PerkDecks.getPeekKey());
+
+                MetadataValue value = null;
+
+                for (MetadataValue v : peeks) {
+                    if (v.getOwningPlugin().getName() == pl.getName()) {
+                        value = v;
+                        break;
+                    }
+                }
+
+                //メタデータが見つからなかった場合はreturn
+                if (value == null) {
+                    return;
+                }
+
+                //グラインダーかスカウトであればダメージ増加
+                if (value.asString() == "GRINDER" || value.asString() == "SCOUT") {
+                    event.setDamage(6);
+                    return;
+                }
+            }
             event.setDamage(4);
         }
     }
@@ -130,7 +175,6 @@ public class PlayerEvent implements Listener {
     public void setFoodLevel(FoodLevelChangeEvent event) {
         event.setCancelled(true);
     }
-
 }
 
 
