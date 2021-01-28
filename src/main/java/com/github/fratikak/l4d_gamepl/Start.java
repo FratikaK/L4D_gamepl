@@ -55,7 +55,7 @@ public class Start {
         pl.getLogger().info("参加者は" + ChatColor.AQUA + L4D_gamepl.getSurvivorList());
 
         Bukkit.broadcastMessage("[L4D]ゲーム参加者を表示します");
-        for (Player p : L4D_gamepl.getPlayerList()){
+        for (Player p : L4D_gamepl.getPlayerList()) {
             Bukkit.broadcastMessage(ChatColor.AQUA + p.getDisplayName());
         }
 
@@ -64,7 +64,7 @@ public class Start {
             //プレイヤーにカウントを表示。不参加者にも表示
             for (Player target : Bukkit.getOnlinePlayers()) {
                 target.playSound(target.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 24);
-                target.sendTitle(ChatColor.GOLD + String.valueOf(i) , "", 5, 10, 5);
+                target.sendTitle(ChatColor.GOLD + String.valueOf(i), "", 5, 10, 5);
 
                 if (i == 0) {
                     target.playSound(target.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1, 24);
@@ -91,6 +91,15 @@ public class Start {
         new GameWorlds().setStage(stageId);
         pl.getLogger().info("ゲームがスタートしました");
         Bukkit.broadcastMessage("[L4D]" + ChatColor.AQUA + "ゲームがスタートしました");
+
+        //プレイヤーに勝利条件をだすだけ
+        Bukkit.broadcastMessage(ChatColor.GOLD + "------------------------------------------------");
+        Bukkit.broadcastMessage("");
+        Bukkit.broadcastMessage("[" + ChatColor.AQUA + "勝利条件" + ChatColor.WHITE + "]ラピスラズリブロックまで辿り着く");
+        Bukkit.broadcastMessage("[L4D]チェックポイントブロックは" + ChatColor.AQUA + "ダイアモンドブロック" + ChatColor.WHITE + "と"
+                + ChatColor.GREEN + "エメラルドブロック" + ChatColor.WHITE + "です");
+        Bukkit.broadcastMessage("");
+        Bukkit.broadcastMessage(ChatColor.GOLD + "------------------------------------------------");
 
         new ScoreboardSystem(pl).setKillScoreBoard();
 
