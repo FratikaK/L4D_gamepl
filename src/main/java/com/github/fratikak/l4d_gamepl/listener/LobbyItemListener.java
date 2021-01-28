@@ -65,7 +65,7 @@ public class LobbyItemListener implements Listener {
 
         inventory.setItem(0, venice);
         inventory.setItem(1, town);
-        inventory.setItem(2,novigrad);
+        inventory.setItem(2, novigrad);
 
         //インベントリ表示
         player.openInventory(inventory);
@@ -81,7 +81,7 @@ public class LobbyItemListener implements Listener {
         Player player = event.getPlayer();
 
         //ダイアモンドでインタラクトした
-        if (player.getItemInHand().getType() == Material.DIAMOND) {
+        if (player.getItemInHand().getType() == Material.DIAMOND && event.getAction() == Action.RIGHT_CLICK_AIR) {
 
             //ゲーム中の場合はreturn
             if (L4D_gamepl.isGame()) {
@@ -110,7 +110,7 @@ public class LobbyItemListener implements Listener {
     public void stageClick(InventoryClickEvent event) {
 
         //preparationタスク中はreturn
-        if(L4D_gamepl.isPreparation()){
+        if (L4D_gamepl.isPreparation()) {
             return;
         }
 
@@ -119,16 +119,19 @@ public class LobbyItemListener implements Listener {
             case BRICKS: //Venice
                 event.setCancelled(true);
                 new PreparationTask(pl, 1).runTaskTimer(pl, 0, 20);
+                event.getWhoClicked().closeInventory();
                 break;
 
             case WHITE_WOOL: //Town
                 event.setCancelled(true);
                 new PreparationTask(pl, 2).runTaskTimer(pl, 0, 20);
+                event.getWhoClicked().closeInventory();
                 break;
 
             case COBBLESTONE:
                 event.setCancelled(true);
-                new PreparationTask(pl,3).runTaskTimer(pl,0,20);
+                new PreparationTask(pl, 3).runTaskTimer(pl, 0, 20);
+                event.getWhoClicked().closeInventory();
                 break;
 
             default:
@@ -136,7 +139,7 @@ public class LobbyItemListener implements Listener {
         }
 
         //イベントがキャンセルされた（ステージ選択に成功した）
-        if (event.isCancelled()){
+        if (event.isCancelled()) {
             L4D_gamepl.getPlayerList().add((Player) event.getWhoClicked());
         }
     }
@@ -150,7 +153,7 @@ public class LobbyItemListener implements Listener {
      * @param event
      */
     @EventHandler
-    public void EmeraldInteract(PlayerInteractEvent event) {
+    public void emeraldInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
 
         //エメラルドでインタラクトした
@@ -160,7 +163,7 @@ public class LobbyItemListener implements Listener {
             if (L4D_gamepl.isGame()) {
 
                 //ゲームに参加しているならばreturn
-                if (L4D_gamepl.getPlayerList().contains(player)){
+                if (L4D_gamepl.getPlayerList().contains(player)) {
                     player.sendMessage("[L4D]" + ChatColor.RED + "すでにゲームに参加しています");
                     return;
                 }
@@ -189,10 +192,10 @@ public class LobbyItemListener implements Listener {
             }
 
             //PreparationTask中の場合はプレイヤーリストに格納するだけ
-            if (L4D_gamepl.isPreparation()){
+            if (L4D_gamepl.isPreparation()) {
 
                 //ゲームに参加していた場合はreturn
-                if (L4D_gamepl.getPlayerList().contains(player)){
+                if (L4D_gamepl.getPlayerList().contains(player)) {
                     player.sendMessage("[L4D]" + ChatColor.RED + "すでにゲームに参加しています");
                     return;
                 }
@@ -203,7 +206,7 @@ public class LobbyItemListener implements Listener {
                 //ゲームプレイヤーとして登録
                 L4D_gamepl.getPlayerList().add(player);
 
-            }else {
+            } else {
                 player.sendMessage("[L4D]" + ChatColor.RED + "ステージを選択してください");
             }
         }
