@@ -54,10 +54,11 @@ public class Login implements Listener {
         player.setHealth(20);
         player.setFoodLevel(20);
 
-        //ゲームで付与される暗視効果が残っていれば削除
-        if (player.hasPotionEffect(PotionEffectType.NIGHT_VISION)) {
-            player.removePotionEffect(PotionEffectType.NIGHT_VISION);
-        }
+        //ゲームで付与されるポーション効果が残っていれば削除
+
+        player.removePotionEffect(PotionEffectType.NIGHT_VISION);
+        player.removePotionEffect(PotionEffectType.INVISIBILITY);
+
 
         //体力表示スコアボードの登録
         new ScoreboardSystem(pl).viewHealthBoard();
