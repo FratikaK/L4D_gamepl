@@ -3,6 +3,7 @@ package com.github.fratikak.l4d_gamepl;
 import com.github.fratikak.l4d_gamepl.command.L4DCommands;
 import com.github.fratikak.l4d_gamepl.listener.*;
 import com.github.fratikak.l4d_gamepl.task.LagFixTask;
+import com.github.fratikak.l4d_gamepl.util.PerkDecks;
 import com.shampaggon.crackshot.CSUtility;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -51,6 +52,7 @@ public final class L4D_gamepl extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new Weapons(), this);
         getServer().getPluginManager().registerEvents(new Items(), this);
         getServer().getPluginManager().registerEvents(new LobbyItemListener(this), this);
+        getServer().getPluginManager().registerEvents(new SetPeekDeckListener(this), this);
 
         //タスクの実行
         new LagFixTask().runTaskTimer(this, 0, 20 * 60);
@@ -75,10 +77,17 @@ public final class L4D_gamepl extends JavaPlugin {
         emeraldMeta.setDisplayName(ChatColor.GREEN + "ゲームに参加する");
         emerald.setItemMeta(emeraldMeta);
 
+        //PEEKDECKを選択できるエンドクリスタル
+        ItemStack end = new ItemStack(Material.END_CRYSTAL);
+        ItemMeta endMeta = end.getItemMeta();
+        endMeta.setDisplayName(ChatColor.GOLD + "PEEK選択");
+        end.setItemMeta(endMeta);
+
         //メタデータをつけたアイテムを付与
         inventory.clear();
         inventory.setItem(0, diamond);
         inventory.setItem(8, emerald);
+        inventory.setItem(1, end);
     }
 
     /**
@@ -107,6 +116,10 @@ public final class L4D_gamepl extends JavaPlugin {
         inventory.addItem(new ItemStack(Material.COOKED_BEEF, 3));
         player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 1000000, 0, true));
 
+        //対応したメタデータの能力を付与する
+        new PerkDecks(player, this).setPeekDeck();
+
+        //tabリストを変更
         player.setPlayerListName("[" + ChatColor.AQUA + "生存者" + ChatColor.WHITE + "]" + player.getDisplayName());
 
     }
