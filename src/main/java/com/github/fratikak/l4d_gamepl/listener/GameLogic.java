@@ -147,12 +147,13 @@ public class GameLogic implements Listener {
     }
 
     /**
+     *
      * プレイヤー同士の押し合いを禁止する
      *
      * @param event
      */
     @EventHandler
-    public void noentityInteract(EntityInteractEvent event) {
+    public void noEntityInteract(EntityInteractEvent event) {
         if (event.getEntityType() == EntityType.PLAYER) {
             event.setCancelled(true);
         }
@@ -173,13 +174,15 @@ public class GameLogic implements Listener {
 
         Player player = event.getEntity().getKiller();
 
-        if (player != null) {
-            //音をならす
-            player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 0);
+        //爆発等による死亡はnullが渡されるのでreturnする
+        if (player == null){
+            return;
         }
 
+        //音をならす
+        player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 0);
+
         //体力が19以上であればreturn
-        assert player != null;
         if (player.getHealth() >= 19) {
             return;
         }
