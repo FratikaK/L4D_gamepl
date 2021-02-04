@@ -62,26 +62,21 @@ public final class L4D_gamepl extends JavaPlugin {
     public void onDisable() {
     }
 
-    //ロビーアイテムを付与
+    /**
+     * 引数のプレイヤーインベントリにロビーアイテムを付与する
+     *
+     * @param inventory 対象プレイヤーのインベントリ
+     */
     public void giveLobbyItem(Inventory inventory) {
 
         //ステージ選択のダイアモンド
-        ItemStack diamond = new ItemStack(Material.DIAMOND);
-        ItemMeta diamondMeta = diamond.getItemMeta();
-        diamondMeta.setDisplayName(ChatColor.AQUA + "ステージ選択");
-        diamond.setItemMeta(diamondMeta);
+        ItemStack diamond = setDisplayMetaItem(new ItemStack(Material.DIAMOND),ChatColor.AQUA,"ステージ選択");
 
         //途中参加ができるエメラルド
-        ItemStack emerald = new ItemStack(Material.EMERALD);
-        ItemMeta emeraldMeta = emerald.getItemMeta();
-        emeraldMeta.setDisplayName(ChatColor.GREEN + "ゲームに参加する");
-        emerald.setItemMeta(emeraldMeta);
+        ItemStack emerald = setDisplayMetaItem(new ItemStack(Material.EMERALD),ChatColor.GREEN,"ゲームに参加する");
 
         //PEEKDECKを選択できるエンドクリスタル
-        ItemStack end = new ItemStack(Material.END_CRYSTAL);
-        ItemMeta endMeta = end.getItemMeta();
-        endMeta.setDisplayName(ChatColor.GOLD + "PEEK選択");
-        end.setItemMeta(endMeta);
+        ItemStack end = setDisplayMetaItem(new ItemStack(Material.END_CRYSTAL),ChatColor.GOLD,"PERK選択");
 
         //メタデータをつけたアイテムを付与
         inventory.clear();
@@ -98,15 +93,9 @@ public final class L4D_gamepl extends JavaPlugin {
      */
     public void giveGameItem(Inventory inventory, Player player) {
         inventory.clear();
-        ItemStack firework = new ItemStack(Material.FIREWORK_STAR, 5);
-        ItemStack clayball = new ItemStack(Material.CLAY_BALL, 5);
 
-        ItemMeta fwmeta = firework.getItemMeta();
-        ItemMeta cbmeta = clayball.getItemMeta();
-        fwmeta.setDisplayName(ChatColor.YELLOW + "グレネード");
-        cbmeta.setDisplayName(ChatColor.YELLOW + "コンカッション");
-        firework.setItemMeta(fwmeta);
-        clayball.setItemMeta(cbmeta);
+        ItemStack firework = setDisplayMetaItem(new ItemStack(Material.FIREWORK_STAR,3),ChatColor.YELLOW,"グレネード");
+        ItemStack clayball = setDisplayMetaItem(new ItemStack(Material.CLAY_BALL,3),ChatColor.YELLOW,"コンカッション");
 
         new CSUtility().giveWeapon(player, "MAC10", 1);
         new CSUtility().giveWeapon(player, "P226", 1);
@@ -122,6 +111,21 @@ public final class L4D_gamepl extends JavaPlugin {
         //tabリストを変更
         player.setPlayerListName("[" + ChatColor.AQUA + "生存者" + ChatColor.WHITE + "]" + player.getDisplayName());
 
+    }
+
+    /**
+     * メタデータを付与したアイテムを返す
+     *
+     * @param item  メタデータを付与したいアイテム
+     * @param color 名前につけたい色
+     * @param name  付与したい名前
+     * @return　メタデータをセットしたアイテム
+     */
+    private ItemStack setDisplayMetaItem(ItemStack item, ChatColor color, String name) {
+        ItemMeta itemMeta = item.getItemMeta();
+        itemMeta.setDisplayName(color + name);
+        item.setItemMeta(itemMeta);
+        return item;
     }
 
     //ゲッターセッター
