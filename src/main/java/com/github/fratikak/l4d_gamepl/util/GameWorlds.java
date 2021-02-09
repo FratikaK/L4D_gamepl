@@ -35,22 +35,19 @@ public class GameWorlds {
     //コマンドで入力されたステージ名に対応した場所へテレポート
     public void setTeleportStage(int stageId, Player target) {
 
-        Location loc = target.getLocation();
+        Location loc;
 
         switch (stageId) {
             case 1: //venice
-                loc.setX(1403);
-                loc.setY(58);
-                loc.setZ(1027);
+                loc = new Location(target.getWorld(), 1403,58,1027);
                 break;
 
             case 2: //town
-                loc.setX(672);
-                loc.setY(123);
-                loc.setZ(1023);
+                loc = new Location(target.getWorld(), 672,123,1023);
                 break;
 
             case 3:
+                loc = new Location(target.getWorld(), 1191,29,1546);
                 loc.setX(1191);
                 loc.setY(29);
                 loc.setZ(1546);
