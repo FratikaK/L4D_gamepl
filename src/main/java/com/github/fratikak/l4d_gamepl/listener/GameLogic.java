@@ -24,6 +24,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
 public class GameLogic implements Listener {
@@ -147,7 +148,6 @@ public class GameLogic implements Listener {
     }
 
     /**
-     *
      * プレイヤー同士の押し合いを禁止する
      *
      * @param event
@@ -175,7 +175,7 @@ public class GameLogic implements Listener {
         Player player = event.getEntity().getKiller();
 
         //爆発等による死亡はnullが渡されるのでreturnする
-        if (player == null){
+        if (player == null) {
             return;
         }
 
@@ -282,43 +282,42 @@ public class GameLogic implements Listener {
 
         switch (randomValue) {
             case 0:
-                ItemStack firework = new ItemStack(Material.FIREWORK_STAR);
-                ItemMeta fwmeta = firework.getItemMeta();
-                fwmeta.setDisplayName(ChatColor.YELLOW + "グレネード");
-                firework.setItemMeta(fwmeta);
-                entityLocation.getWorld().dropItem(entityLocation, firework);
+                setDropItem(new ItemStack(Material.FIREWORK_STAR),"グレネード",entityLocation);
                 break;
 
             case 1:
-                ItemStack clayball = new ItemStack(Material.CLAY_BALL);
-                ItemMeta cbmeta = clayball.getItemMeta();
-                cbmeta.setDisplayName(ChatColor.YELLOW + "コンカッション");
-                clayball.setItemMeta(cbmeta);
-                entityLocation.getWorld().dropItem(entityLocation, clayball);
+                setDropItem(new ItemStack(Material.CLAY_BALL),"コンカッション",entityLocation);
                 break;
 
             case 2:
-                ItemStack coal = new ItemStack(Material.COAL);
-                ItemMeta cmeta = coal.getItemMeta();
-                cmeta.setDisplayName(ChatColor.YELLOW + "クラスターボム");
-                coal.setItemMeta(cmeta);
-                entityLocation.getWorld().dropItem(entityLocation, coal);
+                setDropItem(new ItemStack(Material.COAL),"クラスターボム",entityLocation);
                 break;
 
             case 3:
-                ItemStack potion = new ItemStack(Material.APPLE);
-                entityLocation.getWorld().dropItem(entityLocation, potion);
+                setDropItem(new ItemStack(Material.APPLE),"リンゴ",entityLocation);
                 break;
 
             case 4:
-                ItemStack minecart = new ItemStack(Material.FURNACE_MINECART);
-                ItemMeta minemeta = minecart.getItemMeta();
-                minemeta.setDisplayName(ChatColor.YELLOW + "Landmine");
-                minecart.setItemMeta(minemeta);
-                entityLocation.getWorld().dropItem(entityLocation, minecart);
+                setDropItem(new ItemStack(Material.FURNACE_MINECART),"Landmine",entityLocation);
                 break;
 
 
         }
+    }
+
+    /**
+     * 引数のLocationにメタデータを付与したItemStackをドロップさせる
+     *
+     * @param item     アイテム
+     * @param name     つけたい名前
+     * @param location ドロップさせたい場所
+     */
+    private void setDropItem(ItemStack item, String name, Location location) {
+        ItemMeta itemMeta = item.getItemMeta();
+        assert itemMeta != null;
+        itemMeta.setDisplayName(ChatColor.YELLOW + "name");
+        item.setItemMeta(itemMeta);
+
+        Objects.requireNonNull(location.getWorld()).dropItem(location, item);
     }
 }
