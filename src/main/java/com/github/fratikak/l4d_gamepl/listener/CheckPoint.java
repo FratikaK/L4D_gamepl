@@ -17,6 +17,8 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import java.util.Objects;
+
 public class CheckPoint implements Listener {
 
     /**
@@ -36,7 +38,7 @@ public class CheckPoint implements Listener {
     }
 
     //補充アイテム
-    public void sendCheckPointItem(Player target, Inventory inventory) {
+    private void sendCheckPointItem(Player target, Inventory inventory) {
         ItemStack firework = new ItemStack(Material.FIREWORK_STAR, 5);
         ItemStack clayball = new ItemStack(Material.CLAY_BALL, 5);
 
@@ -58,7 +60,7 @@ public class CheckPoint implements Listener {
      *
      * @param player 　対象プレイヤー
      */
-    public void resurrectionPlayer(Player player) {
+    private void resurrectionPlayer(Player player) {
 
         //生存プレイヤーならreturn
         if (L4D_gamepl.getSurvivorList().contains(player)) {
@@ -92,10 +94,11 @@ public class CheckPoint implements Listener {
      * @param target     対象プレイヤー
      * @param checkPoint 何番目のチェックポイントか
      */
-    public void checkPointTask(Player target, int checkPoint) {
+    private void checkPointTask(Player target, int checkPoint) {
         target.setHealth(20);
         target.setFoodLevel(6);
         sendCheckPointItem(target, target.getInventory());
+        resurrectionPlayer(target);
         target.playSound(target.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
 
         switch (checkPoint) {
@@ -111,30 +114,6 @@ public class CheckPoint implements Listener {
 
     }
 
-
-    /**
-     * 花火を打ち上げる処理
-     *
-     * @param location どこに花火をだすか
-     * @param amount   打ち上げる回数
-     */
-    public static void spawnFireworks(Location location, int amount) {
-        Location loc = location;
-        Firework fw = (Firework) loc.getWorld().spawnEntity(loc, EntityType.FIREWORK);
-        FireworkMeta fwm = fw.getFireworkMeta();
-
-        fwm.setPower(2);
-        fwm.addEffect(FireworkEffect.builder().withColor(Color.LIME).flicker(true).build());
-
-        fw.setFireworkMeta(fwm);
-        fw.detonate();
-
-        for (int i = 0; i < amount; i++) {
-            Firework fw2 = (Firework) loc.getWorld().spawnEntity(loc, EntityType.FIREWORK);
-            fw2.setFireworkMeta(fwm);
-        }
-    }
-
     //チェックポイント登録
     @EventHandler
     public void setCheckPoint(PlayerMoveEvent event) {
@@ -146,6 +125,7 @@ public class CheckPoint implements Listener {
                 loc.add(0, -0.1, 0);
 
                 //チェックポイントに入る（1回目）
+                //TODO コードを簡略化する
                 if (loc.getBlock().getType().equals(Material.DIAMOND_BLOCK)) {
                     for (Player target : L4D_gamepl.getPlayerList()) {
                         Location targetLoc = target.getLocation().clone();
@@ -156,7 +136,6 @@ public class CheckPoint implements Listener {
                                 targetLoc.setZ(928);
                                 target.teleport(targetLoc);
 
-                                resurrectionPlayer(target);
                                 checkPointTask(target, 1);
                                 break;
 
@@ -166,7 +145,6 @@ public class CheckPoint implements Listener {
                                 targetLoc.setZ(999);
                                 target.teleport(targetLoc);
 
-                                resurrectionPlayer(target);
                                 checkPointTask(target, 1);
                                 break;
 
@@ -176,13 +154,13 @@ public class CheckPoint implements Listener {
                                 targetLoc.setZ(1415);
                                 target.teleport(targetLoc);
 
-                                resurrectionPlayer(target);
-                                checkPointTask(target,1);
+                                checkPointTask(target, 1);
                         }
                     }
                 }
 
                 //チェックポイントから出る（1回目）
+                //TODO コードを簡略化する
                 if (loc.getBlock().getType().equals(Material.GOLD_BLOCK)) {
                     for (Player target : L4D_gamepl.getPlayerList()) {
                         Location targetLoc = target.getLocation().clone();
@@ -222,87 +200,68 @@ public class CheckPoint implements Listener {
 
                 //チェックポイントに入る（2回目）
                 if (loc.getBlock().getType().equals(Material.EMERALD_BLOCK)) {
-                    for (Player target : L4D_gamepl.getPlayerList()) {
-                        Location targetLoc = target.getLocation().clone();
+                    Location targetLoc;
+
+
                         switch (GameWorlds.getStageId()) {
                             case 1:
-                                targetLoc.setX(1376);
-                                targetLoc.setY(47);
-                                targetLoc.setZ(895);
-                                target.teleport(targetLoc);
-
-                                resurrectionPlayer(target);
-                                checkPointTask(target, 2);
+                                targetLoc = new Location(player.getWorld(), 1376,47,895);
                                 break;
 
                             case 2:
-                                targetLoc.setX(665);
-                                targetLoc.setY(132);
-                                targetLoc.setZ(1169);
-                                target.teleport(targetLoc);
-
-                                resurrectionPlayer(target);
-                                checkPointTask(target, 2);
+                                targetLoc = new Location(player.getWorld(), 665,132,1169);
                                 break;
 
                             case 3:
-                                targetLoc.setX(1403);
-                                targetLoc.setY(28);
-                                targetLoc.setZ(1530);
-                                target.teleport(targetLoc);
+                                targetLoc = new Location(player.getWorld(), 403,28,1530);
+                                break;
 
-                                resurrectionPlayer(target);
-                                checkPointTask(target,2);
+                            default:
+                                pl.getLogger().info("[CheckPoint]stageIdに不具合が起きたので実行できませんでした");
+                                return;
                         }
+
+                    for (Player target : L4D_gamepl.getPlayerList()) {
+                        target.teleport(targetLoc);
+                        checkPointTask(target, 2);
                     }
                 }
 
                 //チェックポイントから出る（2回目）
                 if (loc.getBlock().getType().equals(Material.REDSTONE_BLOCK)) {
+                    Location targetLoc;
+                    switch (GameWorlds.getStageId()) {
+                        case 1:
+                            targetLoc = new Location(player.getWorld(), 1336, 42, 877);
+                            break;
+
+                        case 2:
+                            targetLoc = new Location(player.getWorld(), 733, 87, 1150);
+                            break;
+
+                        case 3:
+                            targetLoc = new Location(player.getWorld(), 1343, 4, 1575);
+                            break;
+
+                        default:
+                            pl.getLogger().info("[ChackPoint]stageIdに不具合が起きたので実行できませんでした");
+                            return;
+                    }
+
                     for (Player target : L4D_gamepl.getPlayerList()) {
-                        Location targetLoc = target.getLocation().clone();
-                        switch (GameWorlds.getStageId()) {
-                            case 1:
-                                targetLoc.setX(1336);
-                                targetLoc.setY(42);
-                                targetLoc.setZ(877);
-                                target.teleport(targetLoc);
-                                target.sendMessage(ChatColor.AQUA + "チェックポイントから出ました");
-                                target.sendMessage(ChatColor.AQUA + "ゲームを再開します");
-                                break;
-
-                            case 2:
-                                targetLoc.setX(733);
-                                targetLoc.setY(87);
-                                targetLoc.setZ(1150);
-                                target.teleport(targetLoc);
-                                target.sendMessage(ChatColor.AQUA + "チェックポイントから出ました");
-                                target.sendMessage(ChatColor.AQUA + "ゲームを再開します");
-                                break;
-
-                            case 3:
-                                targetLoc.setX(1343);
-                                targetLoc.setY(4);
-                                targetLoc.setZ(1575);
-                                target.teleport(targetLoc);
-                                target.sendMessage(ChatColor.AQUA + "チェックポイントから出ました");
-                                target.sendMessage(ChatColor.AQUA + "ゲームを再開します");
-                                break;
-
-                        }
+                        target.teleport(targetLoc);
+                        target.sendMessage(ChatColor.AQUA + "チェックポイントから出ました");
+                        target.sendMessage(ChatColor.AQUA + "ゲームを再開します");
                     }
                 }
 
                 //ゴールする
                 if (loc.getBlock().getType().equals(Material.LAPIS_BLOCK)) {
                     for (Player target : L4D_gamepl.getPlayerList()) {
-                        Location targetLoc = target.getLocation().clone();
-                        targetLoc.setX(914);
-                        targetLoc.setY(156);
-                        targetLoc.setZ(1033);
-                        target.teleport(targetLoc);
+                        Location location = new Location(target.getWorld(), 914, 156, 1033);
+                        target.teleport(location);
 
-                        spawnFireworks(targetLoc, 1);
+                        spawnFireworks(location, 1);
                     }
 
                     Bukkit.getOnlinePlayers().forEach(p -> p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 2, 0));
@@ -311,6 +270,28 @@ public class CheckPoint implements Listener {
                 }
 
             }
+        }
+    }
+
+    /**
+     * 花火を打ち上げる処理
+     *
+     * @param location どこに花火をだすか
+     * @param amount   打ち上げる回数
+     */
+    private static void spawnFireworks(Location location, int amount) {
+        Firework fw = (Firework) Objects.requireNonNull(location.getWorld()).spawnEntity(location, EntityType.FIREWORK);
+        FireworkMeta fwm = fw.getFireworkMeta();
+
+        fwm.setPower(2);
+        fwm.addEffect(FireworkEffect.builder().withColor(Color.LIME).flicker(true).build());
+
+        fw.setFireworkMeta(fwm);
+        fw.detonate();
+
+        for (int i = 0; i < amount; i++) {
+            Firework fw2 = (Firework) location.getWorld().spawnEntity(location, EntityType.FIREWORK);
+            fw2.setFireworkMeta(fwm);
         }
     }
 }
