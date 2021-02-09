@@ -44,20 +44,11 @@ public class LobbyItemListener implements Listener {
      */
     private void openStageGUI(Player player) {
 
-        ItemStack venice = new ItemStack(Material.BRICKS);
-        ItemMeta bricks = venice.getItemMeta();
-        bricks.setDisplayName(ChatColor.AQUA + "Venice");
-        venice.setItemMeta(bricks);
+        ItemStack venice = setStageMeta(new ItemStack(Material.BRICK),"Venice");
 
-        ItemStack town = new ItemStack(Material.WHITE_WOOL);
-        ItemMeta white_wool = town.getItemMeta();
-        white_wool.setDisplayName(ChatColor.AQUA + "Town");
-        town.setItemMeta(white_wool);
+        ItemStack town = setStageMeta(new ItemStack(Material.WHITE_WOOL),"Town");
 
-        ItemStack novigrad = new ItemStack(Material.COBBLESTONE);
-        ItemMeta cobblestone = novigrad.getItemMeta();
-        cobblestone.setDisplayName(ChatColor.AQUA + "Novigrad");
-        novigrad.setItemMeta(cobblestone);
+        ItemStack novigrad = setStageMeta(new ItemStack(Material.COBBLESTONE),"Novigrad");
 
         //インベントリ作成、メタデータのあるアイテムをセットする
         Inventory inventory;
@@ -210,5 +201,20 @@ public class LobbyItemListener implements Listener {
                 player.sendMessage("[L4D]" + ChatColor.RED + "ステージを選択してください");
             }
         }
+    }
+
+    /**
+     * 名前をつけたItemStackを返す
+     *
+     * @param item メタデータを付与したいアイテム
+     * @param name つけたい名前
+     * @return メタデータを付与したItemStack
+     */
+    private ItemStack setStageMeta(ItemStack item, String name) {
+        ItemMeta itemMeta = item.getItemMeta();
+        assert itemMeta != null;
+        itemMeta.setDisplayName(ChatColor.AQUA + name);
+        item.setItemMeta(itemMeta);
+        return item;
     }
 }
