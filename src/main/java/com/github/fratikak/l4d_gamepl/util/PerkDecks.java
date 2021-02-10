@@ -5,10 +5,12 @@ import com.shampaggon.crackshot.CSUtility;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * LobbyInteractListenerで付与したい能力を
@@ -21,7 +23,7 @@ public class PerkDecks {
 
     private final static String PEEK_KEY = "PEEKDECK";
 
-    public static String getPeekKey() {
+    public static String getPerkKey() {
         return PEEK_KEY;
     }
 
@@ -30,6 +32,10 @@ public class PerkDecks {
     private final static String scout = "SCOUT";
     private final static String regene = "REGENE";
     private final static String destroyer = "DESTROYER";
+
+    public static String getGrinder() {
+        return grinder;
+    }
 
     public PerkDecks(Player player, L4D_gamepl plugin) {
         this.player = player;
@@ -92,7 +98,7 @@ public class PerkDecks {
                 break;
 
             case destroyer:
-                new CSUtility().giveWeapon(player,"GL",1);
+                new CSUtility().giveWeapon(player, "GL", 1);
                 break;
         }
     }
@@ -100,9 +106,28 @@ public class PerkDecks {
     /**
      * 特定のポーション効果を削除する
      */
-    public void removePotion(){
+    public void removePotion() {
         player.removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE);
         player.removePotionEffect(PotionEffectType.SPEED);
         player.removePotionEffect(PotionEffectType.REGENERATION);
+    }
+
+    /**
+     * 引数のプレイヤーが所持しているMetadataを取得する
+     *
+     * @param player 調べたいplayer
+     * @param key    key
+     * @param plugin 自身のplugin
+     * @return Metadataの値
+     */
+    public Object getMetadata(Player player, String key, Plugin plugin) {
+        List<MetadataValue> values = player.getMetadata(key);
+        for (MetadataValue value : values) {
+            if (Objects.requireNonNull(value.getOwningPlugin()).getDescription().getName()
+                    .equals(plugin.getDescription().getName())) {
+                return value.value();
+            }
+        }
+        return null;
     }
 }
