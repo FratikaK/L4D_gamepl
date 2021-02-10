@@ -5,11 +5,9 @@ import com.github.fratikak.l4d_gamepl.task.StopTask;
 import com.github.fratikak.l4d_gamepl.util.PerkDecks;
 import org.bukkit.*;
 import org.bukkit.block.CreatureSpawner;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.inventory.InventoryCreativeEvent;
@@ -19,14 +17,23 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.metadata.MetadataValue;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 
+/**
+ * ゲーム開始後から修了までの処理を記述する
+ * ・プレイヤーが死亡した場合にstaticプレイヤーリストから削除
+ * ・同じくプレイヤーが死亡した場合にプレイヤーリストネームタグを変更する
+ * ・イベント内容がPlayerEventと被る所があるので統一するかもしれない
+ * ・敵mobを沸かせる処理を実装する
+ * ・mobスポーンを沸かせる条件に確率でRandom関数を採用しているが、
+ * 　もっといい方法がないか模索する必要がある
+ *
+ * @author FratikaK
+ */
 public class GameLogic implements Listener {
 
     private final L4D_gamepl pl;
@@ -38,18 +45,6 @@ public class GameLogic implements Listener {
     public GameLogic(L4D_gamepl pl) {
         this.pl = pl;
     }
-
-    /**
-     * ゲーム開始後から修了までの処理を記述する
-     * ・プレイヤーが死亡した場合にstaticプレイヤーリストから削除
-     * ・同じくプレイヤーが死亡した場合にプレイヤーリストネームタグを変更する
-     * ・イベント内容がPlayerEventと被る所があるので統一するかもしれない
-     * ・敵mobを沸かせる処理を実装する
-     * ・mobスポーンを沸かせる条件に確率でRandom関数を採用しているが、
-     * 　もっといい方法がないか模索する必要がある
-     *
-     * @author FratikaK
-     */
 
     /**
      * プレイヤーが死亡時、リストから削除、プロフィール名変更
@@ -187,31 +182,37 @@ public class GameLogic implements Listener {
             return;
         }
 
-        //メタデータを持ってるか
-        if (player.hasMetadata(PerkDecks.getPeekKey())) {
-
-            //メタデータはリスト型として返ってくるので、for文で取得する必要がある
-            List<MetadataValue> peeks = player.getMetadata(PerkDecks.getPeekKey());
-
-            MetadataValue value = null;
-
-            for (MetadataValue v : peeks) {
-                if (v.getOwningPlugin().getName() == pl.getName()) {
-                    value = v;
-                    break;
-                }
-            }
-
-            //メタデータが見つからなかった場合はreturn
-            if (value == null) {
-                return;
-            }
-
-            //体力を1ポイント回復する
-            if (value.asString().equals("GRINDER")) {
-                player.setHealth(player.getHealth() + 1);
-            }
+        //grinderのmetadataが付与されていれば1ポイント回復する
+        PerkDecks perkDecks = new PerkDecks(player,pl);
+        if (perkDecks.getMetadata(player,PerkDecks.getPerkKey(),pl).equals(PerkDecks.getGrinder())){
+            player.setHealth(player.getHealth() + 1);
         }
+
+//        //メタデータを持ってるか
+//        if (player.hasMetadata(PerkDecks.getPeekKey())) {
+//
+//            //メタデータはリスト型として返ってくるので、for文で取得する必要がある
+//            List<MetadataValue> peeks = player.getMetadata(PerkDecks.getPeekKey());
+//
+//            MetadataValue value = null;
+//
+//            for (MetadataValue v : peeks) {
+//                if (v.getOwningPlugin().getName() == pl.getName()) {
+//                    value = v;
+//                    break;
+//                }
+//            }
+//
+//            //メタデータが見つからなかった場合はreturn
+//            if (value == null) {
+//                return;
+//            }
+//
+//            //体力を1ポイント回復する
+//            if (value.asString().equals("GRINDER")) {
+//                player.setHealth(player.getHealth() + 1);
+//            }
+//        }
     }
 
     /**
@@ -243,6 +244,10 @@ public class GameLogic implements Listener {
             for (int i = 0; i < mobNum; i++) {
                 event.getSpawner().getWorld().spawnEntity(spawnerLocation, event.getSpawner().getSpawnedType());
             }
+
+            //ランダム関数で特殊mobをevent1回につき1匹スポーンさせる
+            Random random = new Random();
+            event.getSpawner().getWorld().spawnEntity(spawnerLocation, spawnSpecialMob(random.nextInt(8)));
 
         }
     }
@@ -282,26 +287,49 @@ public class GameLogic implements Listener {
 
         switch (randomValue) {
             case 0:
-                setDropItem(new ItemStack(Material.FIREWORK_STAR),"グレネード",entityLocation);
+                setDropItem(new ItemStack(Material.FIREWORK_STAR), "グレネード", entityLocation);
                 break;
 
             case 1:
-                setDropItem(new ItemStack(Material.CLAY_BALL),"コンカッション",entityLocation);
+                setDropItem(new ItemStack(Material.CLAY_BALL), "コンカッション", entityLocation);
                 break;
 
             case 2:
-                setDropItem(new ItemStack(Material.COAL),"クラスターボム",entityLocation);
+                setDropItem(new ItemStack(Material.COAL), "クラスターボム", entityLocation);
                 break;
 
             case 3:
-                setDropItem(new ItemStack(Material.APPLE),"リンゴ",entityLocation);
+                setDropItem(new ItemStack(Material.APPLE), "リンゴ", entityLocation);
                 break;
 
             case 4:
-                setDropItem(new ItemStack(Material.FURNACE_MINECART),"Landmine",entityLocation);
+                setDropItem(new ItemStack(Material.FURNACE_MINECART), "Landmine", entityLocation);
                 break;
 
 
+        }
+    }
+
+    /**
+     * 引数に応じた特殊mobを返す
+     *
+     * @param random ランダム関数で生成された整数
+     * @return　スポーンさせたいmobのタイプ
+     */
+    private EntityType spawnSpecialMob(int random) {
+
+        switch (random) {
+            case 1:
+                return EntityType.MAGMA_CUBE;
+
+            case 2:
+                return EntityType.CREEPER;
+
+            case 3:
+                return EntityType.RAVAGER;
+
+            default:
+                return EntityType.ZOMBIE_VILLAGER;
         }
     }
 
