@@ -126,7 +126,6 @@ public class CheckPoint implements Listener {
                 loc.add(0, -0.1, 0);
 
                 //チェックポイントに入る（1回目）
-                //TODO コードを簡略化する
                 if (loc.getBlock().getType().equals(Material.DIAMOND_BLOCK)) {
                         switch (GameWorlds.getStageId()) {
                             case 1:
@@ -153,7 +152,6 @@ public class CheckPoint implements Listener {
                 }
 
                 //チェックポイントから出る（1回目）
-                //TODO コードを簡略化する
                 if (loc.getBlock().getType().equals(Material.GOLD_BLOCK)) {
                     switch (GameWorlds.getStageId()) {
                         case 1:
