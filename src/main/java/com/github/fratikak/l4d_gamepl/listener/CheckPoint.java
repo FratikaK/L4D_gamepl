@@ -19,16 +19,15 @@ import org.bukkit.potion.PotionEffectType;
 
 import java.util.Objects;
 
+/**
+ * チェックポイントを実装する
+ * 特定のブロックの上に乗ったらレストルーム（？）にテレポート
+ * テレポートしたプレイヤーの体力と空腹を回復
+ * 死亡したプレイヤーを復活させる
+ *
+ * @author FratikaK
+ */
 public class CheckPoint implements Listener {
-
-    /**
-     * チェックポイントを実装する
-     * 特定のブロックの上に乗ったらレストルーム（？）にテレポート
-     * テレポートしたプレイヤーの体力と空腹を回復
-     * 死亡したプレイヤーを復活させる
-     *
-     * @author FratikaK
-     */
 
     private final L4D_gamepl pl;
 
@@ -118,8 +117,10 @@ public class CheckPoint implements Listener {
     @EventHandler
     public void setCheckPoint(PlayerMoveEvent event) {
         Player player = event.getPlayer();
-
         if (L4D_gamepl.isGame()) {
+
+            Location targetLoc;
+
             if (player.isOnGround() && player.getGameMode() == GameMode.SURVIVAL) {
                 Location loc = event.getTo().clone();
                 loc.add(0, -0.1, 0);
@@ -127,93 +128,17 @@ public class CheckPoint implements Listener {
                 //チェックポイントに入る（1回目）
                 //TODO コードを簡略化する
                 if (loc.getBlock().getType().equals(Material.DIAMOND_BLOCK)) {
-                    for (Player target : L4D_gamepl.getPlayerList()) {
-                        Location targetLoc = target.getLocation().clone();
                         switch (GameWorlds.getStageId()) {
                             case 1:
-                                targetLoc.setX(1389);
-                                targetLoc.setY(42);
-                                targetLoc.setZ(928);
-                                target.teleport(targetLoc);
-
-                                checkPointTask(target, 1);
+                                targetLoc = new Location(player.getWorld(),1389,42,928);
                                 break;
 
                             case 2:
-                                targetLoc.setX(678);
-                                targetLoc.setY(88);
-                                targetLoc.setZ(999);
-                                target.teleport(targetLoc);
-
-                                checkPointTask(target, 1);
+                                targetLoc = new Location(player.getWorld(), 678,88,999);
                                 break;
 
                             case 3:
-                                targetLoc.setX(913);
-                                targetLoc.setY(29);
-                                targetLoc.setZ(1415);
-                                target.teleport(targetLoc);
-
-                                checkPointTask(target, 1);
-                        }
-                    }
-                }
-
-                //チェックポイントから出る（1回目）
-                //TODO コードを簡略化する
-                if (loc.getBlock().getType().equals(Material.GOLD_BLOCK)) {
-                    for (Player target : L4D_gamepl.getPlayerList()) {
-                        Location targetLoc = target.getLocation().clone();
-                        switch (GameWorlds.getStageId()) {
-                            case 1:
-                                targetLoc.setX(1400);
-                                targetLoc.setY(42);
-                                targetLoc.setZ(918);
-                                target.teleport(targetLoc);
-
-                                target.sendMessage(ChatColor.AQUA + "チェックポイントから出ました");
-                                target.sendMessage(ChatColor.AQUA + "ゲームを再開します");
-                                break;
-
-                            case 2:
-                                targetLoc.setX(571);
-                                targetLoc.setY(94);
-                                targetLoc.setZ(1009);
-                                target.teleport(targetLoc);
-
-                                target.sendMessage(ChatColor.AQUA + "チェックポイントから出ました");
-                                target.sendMessage(ChatColor.AQUA + "ゲームを再開します");
-                                break;
-
-                            case 3:
-                                targetLoc.setX(986);
-                                targetLoc.setY(29);
-                                targetLoc.setZ(1482);
-                                target.teleport(targetLoc);
-
-                                target.sendMessage(ChatColor.AQUA + "チェックポイントから出ました");
-                                target.sendMessage(ChatColor.AQUA + "ゲームを再開します");
-                                break;
-                        }
-                    }
-                }
-
-                //チェックポイントに入る（2回目）
-                if (loc.getBlock().getType().equals(Material.EMERALD_BLOCK)) {
-                    Location targetLoc;
-
-
-                        switch (GameWorlds.getStageId()) {
-                            case 1:
-                                targetLoc = new Location(player.getWorld(), 1376,47,895);
-                                break;
-
-                            case 2:
-                                targetLoc = new Location(player.getWorld(), 665,132,1169);
-                                break;
-
-                            case 3:
-                                targetLoc = new Location(player.getWorld(), 403,28,1530);
+                                targetLoc = new Location(player.getWorld(), 913,29,1415);
                                 break;
 
                             default:
@@ -223,13 +148,64 @@ public class CheckPoint implements Listener {
 
                     for (Player target : L4D_gamepl.getPlayerList()) {
                         target.teleport(targetLoc);
+                        checkPointTask(target,1);
+                    }
+                }
+
+                //チェックポイントから出る（1回目）
+                //TODO コードを簡略化する
+                if (loc.getBlock().getType().equals(Material.GOLD_BLOCK)) {
+                    switch (GameWorlds.getStageId()) {
+                        case 1:
+                            targetLoc = new Location(player.getWorld(), 1400, 42, 918);
+                            break;
+
+                        case 2:
+                            targetLoc = new Location(player.getWorld(), 571, 94, 1009);
+                            break;
+
+                        case 3:
+                            targetLoc = new Location(player.getWorld(), 986, 29, 1482);
+                            break;
+                        default:
+                            pl.getLogger().info("[CheckPoint]stageIdに不具合が起きたので実行できませんでした");
+                            return;
+                    }
+                    for (Player target : L4D_gamepl.getPlayerList()) {
+                        target.teleport(targetLoc);
+                        target.sendMessage(ChatColor.AQUA + "チェックポイントから出ました");
+                        target.sendMessage(ChatColor.AQUA + "ゲームを再開します");
+                    }
+                }
+
+                //チェックポイントに入る（2回目）
+                if (loc.getBlock().getType().equals(Material.EMERALD_BLOCK)) {
+                    switch (GameWorlds.getStageId()) {
+                        case 1:
+                            targetLoc = new Location(player.getWorld(), 1376, 47, 895);
+                            break;
+
+                        case 2:
+                            targetLoc = new Location(player.getWorld(), 665, 132, 1169);
+                            break;
+
+                        case 3:
+                            targetLoc = new Location(player.getWorld(), 403, 28, 1530);
+                            break;
+
+                        default:
+                            pl.getLogger().info("[CheckPoint]stageIdに不具合が起きたので実行できませんでした");
+                            return;
+                    }
+
+                    for (Player target : L4D_gamepl.getPlayerList()) {
+                        target.teleport(targetLoc);
                         checkPointTask(target, 2);
                     }
                 }
 
                 //チェックポイントから出る（2回目）
                 if (loc.getBlock().getType().equals(Material.REDSTONE_BLOCK)) {
-                    Location targetLoc;
                     switch (GameWorlds.getStageId()) {
                         case 1:
                             targetLoc = new Location(player.getWorld(), 1336, 42, 877);
@@ -258,10 +234,10 @@ public class CheckPoint implements Listener {
                 //ゴールする
                 if (loc.getBlock().getType().equals(Material.LAPIS_BLOCK)) {
                     for (Player target : L4D_gamepl.getPlayerList()) {
-                        Location location = new Location(target.getWorld(), 914, 156, 1033);
-                        target.teleport(location);
+                        targetLoc = new Location(target.getWorld(), 914, 156, 1033);
+                        target.teleport(targetLoc);
 
-                        spawnFireworks(location, 1);
+                        spawnFireworks(targetLoc, 1);
                     }
 
                     Bukkit.getOnlinePlayers().forEach(p -> p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 2, 0));
