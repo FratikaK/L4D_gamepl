@@ -84,7 +84,7 @@ public class PlayerEvent implements Listener {
         if (entity.getType() == EntityType.PLAYER) {
             Player player = (Player) entity;
             //メタデータを持ってるか
-            if (player.hasMetadata(PerkDecks.getPeekKey())) {
+            if (player.hasMetadata(PerkDecks.getPerkKey())) {
 
                 //体力満タンであればreturn
                 if (player.getHealth() == 20) {
@@ -92,7 +92,7 @@ public class PlayerEvent implements Listener {
                 }
 
                 //メタデータはリスト型として返ってくるので、for文で取得する必要がある
-                List<MetadataValue> peeks = player.getMetadata(PerkDecks.getPeekKey());
+                List<MetadataValue> peeks = player.getMetadata(PerkDecks.getPerkKey());
 
                 MetadataValue value = null;
 
