@@ -55,7 +55,7 @@ public class PlayerEvent implements Listener {
             pl.getLogger().info("deathList: " + L4D_gamepl.getDeathPlayerList());
 
             //peakの効果は削除
-            new PerkDecks(player,pl).removePotion();
+            new PerkDecks(player, pl).removePotion();
 
             //ゲームプレイヤーが全員いなくなった場合、ゲームを終了
             if (L4D_gamepl.getSurvivorList().isEmpty()) {
@@ -81,41 +81,37 @@ public class PlayerEvent implements Listener {
 
         Entity entity = event.getEntity();
 
-        if (entity.getType() == EntityType.PLAYER) {
-            Player player = (Player) entity;
-            //メタデータを持ってるか
-            if (player.hasMetadata(PerkDecks.getPerkKey())) {
+        if (entity.getType() != EntityType.PLAYER) {
+            return;
+        }
+        Player player = (Player) entity;
+        //メタデータを持ってるか
+        if (player.hasMetadata(PerkDecks.getPerkKey())) {
 
-                //体力満タンであればreturn
-                if (player.getHealth() == 20) {
-                    return;
-                }
+            //メタデータはリスト型として返ってくるので、for文で取得する必要がある
+            List<MetadataValue> peeks = player.getMetadata(PerkDecks.getPerkKey());
 
-                //メタデータはリスト型として返ってくるので、for文で取得する必要がある
-                List<MetadataValue> peeks = player.getMetadata(PerkDecks.getPerkKey());
+            MetadataValue value = null;
 
-                MetadataValue value = null;
-
-                for (MetadataValue v : peeks) {
-                    if (v.getOwningPlugin().getName() == pl.getName()) {
-                        value = v;
-                        break;
-                    }
-                }
-
-                //メタデータが見つからなかった場合はreturn
-                if (value == null) {
-                    return;
-                }
-
-                //グラインダーかスカウトであればダメージ増加
-                if (value.asString() == "GRINDER" || value.asString() == "SCOUT") {
-                    event.setDamage(6);
-                    return;
+            for (MetadataValue v : peeks) {
+                if (v.getOwningPlugin().getName() == pl.getName()) {
+                    value = v;
+                    break;
                 }
             }
-            event.setDamage(4);
+
+            //メタデータが見つからなかった場合はreturn
+            if (value == null) {
+                return;
+            }
+
+            //グラインダーかスカウトであればダメージ増加
+            if (value.asString() == "GRINDER" || value.asString() == "SCOUT") {
+                event.setDamage(6);
+                return;
+            }
         }
+        event.setDamage(4);
     }
 
     /**
@@ -157,6 +153,18 @@ public class PlayerEvent implements Listener {
     }
 
     /**
+     * クリエイティブ（観戦者）時にアイテムを拾わせない
+     * @param event
+     */
+    @EventHandler
+    public void onCreativePickUpItem(PlayerPickupItemEvent event){
+
+        if (event.getPlayer().getGameMode() == GameMode.CREATIVE){
+            event.setCancelled(true);
+        }
+    }
+
+    /**
      * 道具類の耐久減少をキャンセルする
      *
      * @param event
@@ -177,52 +185,4 @@ public class PlayerEvent implements Listener {
     }
 }
 
-
-//    /**
-//     * アイテムドロップ（アイテムを捨てる）を禁止。0,1番目のスロットのみ
-//     *
-//     * @param event
-//     */
-//    @EventHandler
-//    public void onDropItems(PlayerDropItemEvent event) {
-//
-//        Player player = event.getPlayer();
-//
-//        if (player.getInventory().getItem(0) != null &&
-//                player.getInventory().getItem(1) != null) {
-//
-//            player.sendMessage(ChatColor.RED + "武器のスロットを弄ることはできません");
-//            event.setCancelled(true);
-//        }
-//    }
-
-
-//    /**
-//     * 武器スロットを弄れないようにする
-//     *
-//     * @param event
-//     */
-//    @EventHandler
-//    public void setWeaponInventory(InventoryClickEvent event) {
-//        Player player = (Player) event.getWhoClicked();
-//
-//        if (player.getInventory().getItem(0) != null && player.getInventory().getItem(1) != null) {
-//            player.sendMessage(ChatColor.RED + "武器スロットを弄ることはできません");
-//            event.setCancelled(true);
-//        }
-//    }
-
-//    /**
-//     * 同様に武器スロットを弄れないようにする
-//     * @param event
-//     */
-//    @EventHandler
-//    public void setCreativeInventory(InventoryCreativeEvent event) {
-//        Player player = (Player) event.getCursor();
-//
-//        if (event.getHotbarButton() == 0 && event.getHotbarButton() == 1) {
-//            event.setCancelled(true);
-//            player.sendMessage(ChatColor.RED + "武器スロットを弄ることは出来ません！");
-//        }
-//    }
 
