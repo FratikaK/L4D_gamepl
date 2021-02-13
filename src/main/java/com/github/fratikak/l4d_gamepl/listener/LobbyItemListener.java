@@ -44,7 +44,7 @@ public class LobbyItemListener implements Listener {
      */
     private void openStageGUI(Player player) {
 
-        ItemStack venice = setStageMeta(new ItemStack(Material.BRICK),"Venice");
+        ItemStack venice = setStageMeta(new ItemStack(Material.BRICKS),"Venice");
 
         ItemStack town = setStageMeta(new ItemStack(Material.WHITE_WOOL),"Town");
 
