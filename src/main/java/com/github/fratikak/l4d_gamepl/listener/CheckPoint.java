@@ -100,16 +100,8 @@ public class CheckPoint implements Listener {
         resurrectionPlayer(target);
         target.playSound(target.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
 
-        switch (checkPoint) {
-            case 1:
-                target.sendMessage(ChatColor.AQUA + "1番目のチェックポイントにたどり着きました！");
-                target.sendMessage(ChatColor.AQUA + "ゴールドブロックを踏むとゲームが再開します！");
-                break;
-            case 2:
-                target.sendMessage(ChatColor.AQUA + "2番目のチェックポイントにたどり着きました！");
-                target.sendMessage(ChatColor.AQUA + "レッドストーンブロックを踏むとゲームが再開します！");
-                break;
-        }
+        target.sendMessage(ChatColor.AQUA + String.valueOf(checkPoint) + "番目のチェックポイントにたどり着きました！");
+        target.sendMessage(ChatColor.AQUA + "特定のブロックを踏むとゲームを再開します");
 
     }
 
