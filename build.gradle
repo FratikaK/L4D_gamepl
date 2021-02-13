@@ -39,3 +39,9 @@ processResources {
 }
 
 tasks.withType(AbstractCompile)*.options*.encoding = tasks.withType(GroovyCompile)*.groovyOptions*.encoding = 'UTF-8'
+
+task exportJartoBin(type: Copy,dependsOn: 'jar'){
+    from jar
+    into 'C:/Users/c0meb/Documents/l4dgameServer/plugins'
+}
+
