@@ -187,32 +187,6 @@ public class GameLogic implements Listener {
         if (perkDecks.getMetadata(player,PerkDecks.getPerkKey(),pl).equals(PerkDecks.getGrinder())){
             player.setHealth(player.getHealth() + 1);
         }
-
-//        //メタデータを持ってるか
-//        if (player.hasMetadata(PerkDecks.getPeekKey())) {
-//
-//            //メタデータはリスト型として返ってくるので、for文で取得する必要がある
-//            List<MetadataValue> peeks = player.getMetadata(PerkDecks.getPeekKey());
-//
-//            MetadataValue value = null;
-//
-//            for (MetadataValue v : peeks) {
-//                if (v.getOwningPlugin().getName() == pl.getName()) {
-//                    value = v;
-//                    break;
-//                }
-//            }
-//
-//            //メタデータが見つからなかった場合はreturn
-//            if (value == null) {
-//                return;
-//            }
-//
-//            //体力を1ポイント回復する
-//            if (value.asString().equals("GRINDER")) {
-//                player.setHealth(player.getHealth() + 1);
-//            }
-//        }
     }
 
     /**
@@ -343,7 +317,7 @@ public class GameLogic implements Listener {
     private void setDropItem(ItemStack item, String name, Location location) {
         ItemMeta itemMeta = item.getItemMeta();
         assert itemMeta != null;
-        itemMeta.setDisplayName(ChatColor.YELLOW + "name");
+        itemMeta.setDisplayName(ChatColor.YELLOW + name);
         item.setItemMeta(itemMeta);
 
         Objects.requireNonNull(location.getWorld()).dropItem(location, item);
