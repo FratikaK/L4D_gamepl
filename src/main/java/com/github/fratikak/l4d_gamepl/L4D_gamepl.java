@@ -45,8 +45,7 @@ public final class L4D_gamepl extends JavaPlugin {
         //イベントリスナの登録
         getServer().getPluginManager().registerEvents(new Login(this), this);
         getServer().getPluginManager().registerEvents(new PlayerEvent(this), this);
-        getServer().getPluginManager().registerEvents(new DamageOff(this), this);
-        getServer().getPluginManager().registerEvents(new GameLogic(this), this);
+        getServer().getPluginManager().registerEvents(new GameLogicListener(this), this);
         getServer().getPluginManager().registerEvents(new L4DMobs(this), this);
         getServer().getPluginManager().registerEvents(new CheckPoint(this), this);
         getServer().getPluginManager().registerEvents(new Weapons(), this);
