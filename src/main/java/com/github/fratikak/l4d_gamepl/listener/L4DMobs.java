@@ -56,37 +56,4 @@ public class L4DMobs implements Listener {
         world.createExplosion(location, 2, false, false);
     }
 
-    //村人レイドを発生させない
-    @EventHandler
-    public void notRaid(RaidTriggerEvent event) {
-        event.setCancelled(true);
-    }
-
-//    //通常敵対しないmobをスポーンさせた場合、プレイヤーに対して敵対化させる
-//    @EventHandler
-//    public void specialMobLogic(EntitySpawnEvent event) {
-//
-//        if (L4D_gamepl.isGame()) {
-//            Entity entity = event.getEntity();
-//            EntityType type = entity.getType();
-//            World world = entity.getWorld();
-//            LivingEntity livingEntity = (LivingEntity) entity;
-//
-//            //ターゲットとなるプレイヤー
-//            Entity player = (Entity) world.getPlayers();
-//
-//            livingEntity.setAI(true);
-//
-//            /*
-//            今はゾンビホースのみ。今後追加する予定
-//            攻撃力の設定が不明
-//            EntityDamageByEntityEventで処理するかも
-//             */
-//            switch (type) {
-//                case ZOMBIE_HORSE:
-//                    livingEntity.attack(player);
-//                    break;
-//            }
-//        }
-//    }
 }
