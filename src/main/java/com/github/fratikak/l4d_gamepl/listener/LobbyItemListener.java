@@ -176,9 +176,6 @@ public class LobbyItemListener implements Listener {
                 player.setFoodLevel(6);
                 player.setHealth(20);
 
-                //スコアボード登録
-                new ScoreboardSystem(pl).addBoard(player);
-
                 return;
             }
 
