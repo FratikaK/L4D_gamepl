@@ -81,7 +81,6 @@ public class CheckPoint implements Listener {
 
             //初期状態に戻す
             player.setGameMode(GameMode.SURVIVAL);
-            player.removePotionEffect(PotionEffectType.INVISIBILITY);
             player.setFoodLevel(6);
             pl.giveGameItem(player.getInventory(), player);
         }
