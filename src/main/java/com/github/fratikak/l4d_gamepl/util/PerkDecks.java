@@ -37,6 +37,10 @@ public class PerkDecks {
         return grinder;
     }
 
+    public static String getScout() {
+        return scout;
+    }
+
     public PerkDecks(Player player, L4D_gamepl plugin) {
         this.player = player;
         this.plugin = plugin;
