@@ -34,6 +34,23 @@ public class PlayerEvent implements Listener {
     }
 
     /**
+     * 特定のダメージを無効化する
+     * 現在は落下ダメージのみ
+     *
+     * @param event
+     */
+    @EventHandler
+    public void invalidDamage(EntityDamageEvent event) {
+
+        if (event.getEntity() instanceof Player){
+
+            if (event.getCause() == EntityDamageEvent.DamageCause.FALL){
+                event.setCancelled(true);
+            }
+        }
+    }
+
+    /**
      * プレイヤーが謎の一撃死バグで死ぬのを防ぐ処理
      * ヴィンディゲーターなど強力なmobからのダメージも軽減する
      *
@@ -42,11 +59,6 @@ public class PlayerEvent implements Listener {
     @EventHandler
     public void noOverDamage(EntityDamageByEntityEvent event) {
 
-        //落下ダメージは無効
-        if (event.getCause() == EntityDamageEvent.DamageCause.FALL) {
-            event.setCancelled(true);
-            return;
-        }
 
         Entity entity = event.getEntity();
 
