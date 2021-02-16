@@ -14,6 +14,7 @@ import org.bukkit.event.inventory.InventoryCreativeEvent;
 import org.bukkit.event.player.PlayerGameModeChangeEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.raid.RaidTriggerEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -34,7 +35,7 @@ import java.util.Random;
  *
  * @author FratikaK
  */
-public class GameLogic implements Listener {
+public class GameLogicListener implements Listener {
 
     private final L4D_gamepl pl;
 
@@ -42,7 +43,7 @@ public class GameLogic implements Listener {
     private static Location deathLocation;
 
     //コンストラクタ
-    public GameLogic(L4D_gamepl pl) {
+    public GameLogicListener(L4D_gamepl pl) {
         this.pl = pl;
     }
 
@@ -85,7 +86,7 @@ public class GameLogic implements Listener {
      * @param event
      */
     @EventHandler
-    public void setSpectator(PlayerRespawnEvent event) {
+    public void setRespawnLocation(PlayerRespawnEvent event) {
 
         Player player = event.getPlayer();
         Inventory inventory = player.getInventory();
@@ -97,37 +98,21 @@ public class GameLogic implements Listener {
             return;
         }
 
-        //死亡した地点にリスポーン、インベントリ整理
-        player.setGameMode(GameMode.CREATIVE);
-        event.setRespawnLocation(deathLocation);
+
+        player.setGameMode(GameMode.SPECTATOR);
+
+        //近くのプレイヤーのところへリスポーン、いなければ死んだ場所でリスポーンする
+        if (!L4D_gamepl.getSurvivorList().isEmpty()) {
+            for (Player target : L4D_gamepl.getSurvivorList()) {
+                event.setRespawnLocation(target.getLocation());
+                break;
+            }
+        }else {
+            event.setRespawnLocation(deathLocation);
+        }
+
         player.sendMessage("[L4D]" + ChatColor.RED + "あなたは死亡しました。他のプレイヤーがチェックポイントにたどり着けば復帰できます");
         inventory.clear();
-    }
-
-    /**
-     * プレイヤーがクリエイティブモードの時、透明になる
-     *
-     * @param event
-     */
-    @EventHandler
-    public void setSpectatorEffect(PlayerMoveEvent event) {
-        Player player = event.getPlayer();
-        if (player.getGameMode() == GameMode.CREATIVE) {
-            player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 1000000, 0, true));
-            player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 1000000, 0, true));
-        }
-    }
-
-    /**
-     * クリエイティブからサバイバルに変更時、透明化を削除
-     *
-     * @param event
-     */
-    @EventHandler
-    public void changeGamemode(PlayerGameModeChangeEvent event) {
-        if (event.getNewGameMode() == GameMode.SURVIVAL) {
-            event.getPlayer().removePotionEffect(PotionEffectType.INVISIBILITY);
-        }
     }
 
     /**
@@ -152,6 +137,12 @@ public class GameLogic implements Listener {
         if (event.getEntityType() == EntityType.PLAYER) {
             event.setCancelled(true);
         }
+    }
+
+    //村人レイドを発生させない
+    @EventHandler
+    public void notRaid(RaidTriggerEvent event) {
+        event.setCancelled(true);
     }
 
     /**
@@ -183,8 +174,8 @@ public class GameLogic implements Listener {
         }
 
         //grinderのmetadataが付与されていれば1ポイント回復する
-        PerkDecks perkDecks = new PerkDecks(player,pl);
-        if (perkDecks.getMetadata(player,PerkDecks.getPerkKey(),pl).equals(PerkDecks.getGrinder())){
+        PerkDecks perkDecks = new PerkDecks(player, pl);
+        if (perkDecks.getMetadata(player, PerkDecks.getPerkKey(), pl).equals(PerkDecks.getGrinder())) {
             player.setHealth(player.getHealth() + 1);
         }
     }
@@ -256,7 +247,7 @@ public class GameLogic implements Listener {
         }
 
         Random random = new Random();
-        int randomValue = random.nextInt(22);
+        int randomValue = random.nextInt(15);
         Location entityLocation = event.getEntity().getLocation().clone();
 
         switch (randomValue) {
