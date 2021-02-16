@@ -1,8 +1,11 @@
 package com.github.fratikak.l4d_gamepl;
 
+import com.github.fratikak.l4d_gamepl.task.GameCountDownTask;
 import com.github.fratikak.l4d_gamepl.util.GameWorlds;
-import com.github.fratikak.l4d_gamepl.util.ScoreboardSystem;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -101,19 +104,9 @@ public class Start {
         Bukkit.broadcastMessage("");
         Bukkit.broadcastMessage(ChatColor.GOLD + "------------------------------------------------");
 
-        new ScoreboardSystem(pl).setKillScoreBoard();
-
         //武器などのアイテムを渡す処理
         for (Player target : L4D_gamepl.getPlayerList()) {
             if (target.getGameMode() == GameMode.SURVIVAL) {
-
-                /*
-                 * <後で記述するもの>
-                 * ステージへテレポート処理
-                 * 参加プレイヤーのステータスを設定
-                 * アイテム付与
-                 */
-
                 pl.giveGameItem(target.getInventory(), target);
                 target.setPlayerListName("[" + ChatColor.AQUA + "生存者" + ChatColor.WHITE + "]" + target.getDisplayName());
                 target.setFoodLevel(6);
@@ -122,6 +115,9 @@ public class Start {
                 target.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 1000000, 0, true));
             }
         }
+
+        //GameCountDownTaskを開始
+        new GameCountDownTask().runTaskTimer(pl,0,20);
     }
 }
 
