@@ -3,7 +3,6 @@ package com.github.fratikak.l4d_gamepl.listener;
 import com.github.fratikak.l4d_gamepl.L4D_gamepl;
 import com.github.fratikak.l4d_gamepl.task.StopTask;
 import com.github.fratikak.l4d_gamepl.util.PerkDecks;
-import com.github.fratikak.l4d_gamepl.util.ScoreboardSystem;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -11,7 +10,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.potion.PotionEffectType;
 
@@ -57,14 +55,11 @@ public class Login implements Listener {
         player.setHealth(20);
         player.setFoodLevel(20);
 
+        //Mobキル数をリセット
+        player.setStatistic(Statistic.MOB_KILLS, 0);
+
         //ゲームで付与されるポーション効果が残っていれば削除
-
         player.removePotionEffect(PotionEffectType.NIGHT_VISION);
-        player.removePotionEffect(PotionEffectType.INVISIBILITY);
-
-
-        //体力表示スコアボードの登録
-        new ScoreboardSystem(pl).viewHealthBoard();
 
         pl.giveLobbyItem(inventory); //ロビーアイテム追加
         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
