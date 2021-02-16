@@ -18,31 +18,6 @@ public class Weapons implements Listener {
      * @author FratikaK
      */
 
-    /**
-     * プライマリ武器を取得する
-     *
-     * @param player     対象のプレイヤー
-     * @param weaponName 取得する武器名
-     */
-    public void setPrimaryWeapon(Player player, String weaponName) {
-        removePrimaryWeapon(player.getInventory());
-        player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 24);
-        player.sendMessage(ChatColor.AQUA + "プライマリとして" + weaponName + "を装備しました");
-        new CSUtility().giveWeapon(player, weaponName, 1);
-    }
-
-    /**
-     * セカンダリ武器を取得する
-     *
-     * @param player     対象のプレイヤー
-     * @param weaponname 取得する武器名
-     */
-    public void setSecondaryWeapon(Player player, String weaponname) {
-        removeSecondaryWeapon(player.getInventory());
-        player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 24);
-        player.sendMessage(ChatColor.AQUA + "セカンダリとして" + weaponname + "を装備しました");
-        new CSUtility().giveWeapon(player, weaponname, 1);
-    }
 
     /**
      * 特定のブロックを叩くとそれに対応した武器を装備する
@@ -97,11 +72,37 @@ public class Weapons implements Listener {
     }
 
     /**
+     * プライマリ武器を取得する
+     *
+     * @param player     対象のプレイヤー
+     * @param weaponName 取得する武器名
+     */
+    private void setPrimaryWeapon(Player player, String weaponName) {
+        removePrimaryWeapon(player.getInventory());
+        player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 24);
+        player.sendMessage(ChatColor.AQUA + "プライマリとして" + weaponName + "を装備しました");
+        new CSUtility().giveWeapon(player, weaponName, 1);
+    }
+
+    /**
+     * セカンダリ武器を取得する
+     *
+     * @param player     対象のプレイヤー
+     * @param weaponname 取得する武器名
+     */
+    private void setSecondaryWeapon(Player player, String weaponname) {
+        removeSecondaryWeapon(player.getInventory());
+        player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 24);
+        player.sendMessage(ChatColor.AQUA + "セカンダリとして" + weaponname + "を装備しました");
+        new CSUtility().giveWeapon(player, weaponname, 1);
+    }
+
+    /**
      * 武器交換の為に交換用のプライマリ武器を削除する
      *
      * @param playerInventory 対象プレイヤーのインベントリ
      */
-    public void removePrimaryWeapon(Inventory playerInventory) {
+    private void removePrimaryWeapon(Inventory playerInventory) {
         playerInventory.remove(Material.GOLDEN_HOE);
         playerInventory.remove(Material.BLAZE_ROD);
         playerInventory.remove(Material.WOODEN_SHOVEL);
@@ -116,7 +117,7 @@ public class Weapons implements Listener {
      *
      * @param playerInventory 対象プレイヤーのインベントリ
      */
-    public void removeSecondaryWeapon(Inventory playerInventory) {
+    private void removeSecondaryWeapon(Inventory playerInventory) {
         playerInventory.remove(Material.WOODEN_HOE);
         playerInventory.remove(Material.DIAMOND_SHOVEL);
     }
