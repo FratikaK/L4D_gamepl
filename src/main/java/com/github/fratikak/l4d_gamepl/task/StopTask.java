@@ -3,6 +3,7 @@ package com.github.fratikak.l4d_gamepl.task;
 import com.github.fratikak.l4d_gamepl.L4D_gamepl;
 import com.github.fratikak.l4d_gamepl.util.GameWorlds;
 import com.github.fratikak.l4d_gamepl.util.PerkDecks;
+import com.github.fratikak.l4d_gamepl.util.ScoreboardSystem;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -58,13 +59,10 @@ public class StopTask extends BukkitRunnable {
                 target.setHealth(20);
                 target.setFoodLevel(20);
                 target.removePotionEffect(PotionEffectType.NIGHT_VISION);
-                target.removePotionEffect(PotionEffectType.INVISIBILITY);
 
                 //Peekのポーション効果は削除
                 new PerkDecks(target,pl).removePotion();
 
-                //スコアボードリセット
-                target.getScoreboard().resetScores(target);
             }
 
             L4D_gamepl.setGame(false);
@@ -75,6 +73,9 @@ public class StopTask extends BukkitRunnable {
             L4D_gamepl.getSurvivorList().clear();
             L4D_gamepl.getDeathPlayerList().clear();
             GameWorlds.setStageId(0);
+
+            //スコアボード削除
+            new ScoreboardSystem().clearSideBar();
 
             this.cancel();
         }
