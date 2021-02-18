@@ -8,6 +8,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -56,9 +57,8 @@ public class PlayerEvent implements Listener {
      *
      * @param event
      */
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void noOverDamage(EntityDamageByEntityEvent event) {
-
 
         Entity entity = event.getEntity();
 
@@ -74,6 +74,10 @@ public class PlayerEvent implements Listener {
             event.setDamage(6);
         } else {
             event.setDamage(4);
+        }
+
+        if (event.isCancelled()){
+            pl.getLogger().info("nodamage");
         }
     }
 
