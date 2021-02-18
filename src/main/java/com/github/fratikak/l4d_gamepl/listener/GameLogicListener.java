@@ -23,6 +23,7 @@ import org.bukkit.potion.PotionEffectType;
 
 import java.util.Objects;
 import java.util.Random;
+import java.util.UUID;
 
 /**
  * ゲーム開始後から修了までの処理を記述する
@@ -60,22 +61,20 @@ public class GameLogicListener implements Listener {
         pl.getLogger().info(event.getDeathMessage());
 
         if (L4D_gamepl.isGame()) {
-            if (player.getGameMode() == GameMode.SURVIVAL) {
 
-                //生存プレイヤーリストから該当のプレイヤーを削除、死亡者リストに追加
-                L4D_gamepl.getSurvivorList().remove(player);
-                L4D_gamepl.getDeathPlayerList().add(player);
-                player.setPlayerListName("[" + ChatColor.RED + "死亡" + ChatColor.WHITE + "]" + player.getDisplayName());
+            //生存プレイヤーリストから該当のプレイヤーを削除、死亡者リストに追加
+            L4D_gamepl.getSurvivorList().remove(player.getUniqueId());
+            L4D_gamepl.getDeathPlayerList().add(player.getUniqueId());
+            player.setPlayerListName("[" + ChatColor.RED + "死亡" + ChatColor.WHITE + "]" + player.getDisplayName());
 
-                Bukkit.broadcastMessage(ChatColor.RED + player.getDisplayName() + "が死亡しました");
-                Bukkit.broadcastMessage(ChatColor.WHITE + "プレイヤー数残り" + L4D_gamepl.getSurvivorList().size() + "人です");
-                Bukkit.getOnlinePlayers().forEach(p -> p.playSound(p.getLocation(), Sound.ENTITY_WOLF_HOWL, 1, 15));
-                player.sendTitle(ChatColor.RED + "あなたは死亡しました", "", 5, 40, 5);
+            Bukkit.broadcastMessage(ChatColor.RED + player.getDisplayName() + "が死亡しました");
+            Bukkit.broadcastMessage(ChatColor.WHITE + "プレイヤー数残り" + L4D_gamepl.getSurvivorList().size() + "人です");
+            Bukkit.getOnlinePlayers().forEach(p -> p.playSound(p.getLocation(), Sound.ENTITY_WOLF_HOWL, 1, 15));
+            player.sendTitle(ChatColor.RED + "あなたは死亡しました", "", 5, 40, 5);
 
-                //プレイヤーが全員死亡した場合
-                if (L4D_gamepl.getSurvivorList().isEmpty()) {
-                    new StopTask(pl).runTaskTimer(pl, 0, 20);
-                }
+            //プレイヤーが全員死亡した場合
+            if (L4D_gamepl.getSurvivorList().isEmpty()) {
+                new StopTask(pl).runTaskTimer(pl, 0, 20);
             }
         }
     }
@@ -103,11 +102,15 @@ public class GameLogicListener implements Listener {
 
         //近くのプレイヤーのところへリスポーン、いなければ死んだ場所でリスポーンする
         if (!L4D_gamepl.getSurvivorList().isEmpty()) {
-            for (Player target : L4D_gamepl.getSurvivorList()) {
-                event.setRespawnLocation(target.getLocation());
-                break;
+            for (UUID playerId : L4D_gamepl.getSurvivorList()) {
+                for (Player target : Bukkit.getOnlinePlayers()) {
+                    if (target.getUniqueId().equals(playerId)) {
+                        event.setRespawnLocation(target.getLocation());
+                        break;
+                    }
+                }
             }
-        }else {
+        } else {
             event.setRespawnLocation(deathLocation);
         }
 
@@ -165,11 +168,14 @@ public class GameLogicListener implements Listener {
             return;
         }
 
+        //所持金を加算
+        player.setStatistic(Statistic.ANIMALS_BRED, player.getStatistic(Statistic.ANIMALS_BRED) + 5);
+
         //音をならす
         player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 0);
 
         //体力が19以上であればreturn
-        if (player.getHealth() >= 19) {
+        if (player.getHealth() == 20) {
             return;
         }
 
@@ -270,8 +276,6 @@ public class GameLogicListener implements Listener {
             case 4:
                 setDropItem(new ItemStack(Material.FURNACE_MINECART), "Landmine", entityLocation);
                 break;
-
-
         }
     }
 

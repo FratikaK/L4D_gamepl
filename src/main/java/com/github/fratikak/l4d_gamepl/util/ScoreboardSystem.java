@@ -13,6 +13,7 @@ import org.bukkit.scoreboard.Scoreboard;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * スコアボードのシステムを司るクラス
@@ -34,13 +35,18 @@ public class ScoreboardSystem {
             messageList.add("生存者の数" + ChatColor.AQUA + survive + ChatColor.WHITE + "人");
             messageList.add("");
 
-            for (Player target : L4D_gamepl.getSurvivorList()) {
-                int health = (int) target.getHealth();
-                int kills = target.getStatistic(Statistic.MOB_KILLS);
+            for (UUID playerId : L4D_gamepl.getSurvivorList()) {
+                for (Player target : Bukkit.getOnlinePlayers()) {
+                    if (target.getUniqueId().equals(playerId)) {
+                        int health = (int) target.getHealth();
+                        int kills = target.getStatistic(Statistic.MOB_KILLS);
+                        int doller = target.getStatistic(Statistic.ANIMALS_BRED);
 
-                messageList.add(ChatColor.GOLD + "HP" + health + ChatColor.AQUA + target.getDisplayName() + "   " + ChatColor.GOLD + kills);
+                        messageList.add(ChatColor.GOLD + "HP" + health + ChatColor.AQUA + " " + target.getDisplayName() + " " + ChatColor.GREEN + kills + " " + ChatColor.GOLD + "$" + doller);
+                    }
+                }
+
             }
-
             return messageList;
         }
         return null;
@@ -50,7 +56,7 @@ public class ScoreboardSystem {
 
     public void updateScoreBoard() {
 
-        if (Bukkit.getOnlinePlayers().size() <= 0){
+        if (Bukkit.getOnlinePlayers().size() <= 0) {
             return;
         }
 
@@ -58,7 +64,7 @@ public class ScoreboardSystem {
         Objective obj = scoreBoard.getObjective("side");
 
         // Objectiveが存在しなかった場合は作成
-        if ( obj == null ) {
+        if (obj == null) {
             obj = scoreBoard.registerNewObjective("side", "dummy");
         }
 
@@ -69,7 +75,7 @@ public class ScoreboardSystem {
         // 行を取得
         List<String> lines = boardLine();
         // nullが返ってきた場合は非表示にしてreturn
-        if ( lines == null ) {
+        if (lines == null) {
             scoreBoard.clearSlot(DisplaySlot.SIDEBAR);
             return;
         }
@@ -80,15 +86,15 @@ public class ScoreboardSystem {
         clearEntries();
 
         int currentValue = 0;
-        for ( String msg : lines ) {
+        for (String msg : lines) {
 
             // 行が0の場合は空白にする
-            if ( msg == null ) {
+            if (msg == null) {
                 msg = "";
             }
 
             // すでに値が設定されている場合は最後に空白を足していく
-            while ( obj.getScore(msg).isScoreSet() ) {
+            while (obj.getScore(msg).isScoreSet()) {
                 msg = msg + " ";
             }
 
@@ -99,7 +105,7 @@ public class ScoreboardSystem {
 
         // スコアボードを設定する
         Bukkit.getOnlinePlayers().forEach(p -> {
-            if ( p.getScoreboard() != scoreBoard ) {
+            if (p.getScoreboard() != scoreBoard) {
                 p.setScoreboard(scoreBoard);
             }
         });
@@ -116,8 +122,8 @@ public class ScoreboardSystem {
         // boardがnullでなければSIDEBARを削除
         scoreBoard.clearSlot(DisplaySlot.SIDEBAR);
 
-        for (Player target : Bukkit.getOnlinePlayers()){
-            target.setStatistic(Statistic.MOB_KILLS,0);
+        for (Player target : Bukkit.getOnlinePlayers()) {
+            target.setStatistic(Statistic.MOB_KILLS, 0);
         }
     }
 }

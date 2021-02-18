@@ -18,6 +18,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.Objects;
+import java.util.UUID;
 
 /**
  * チェックポイントを実装する
@@ -62,22 +63,18 @@ public class CheckPoint implements Listener {
     private void resurrectionPlayer(Player player) {
 
         //生存プレイヤーならreturn
-        if (L4D_gamepl.getSurvivorList().contains(player)) {
+        if (L4D_gamepl.getSurvivorList().contains(player.getUniqueId())) {
             return;
         }
 
         //死亡プレイヤーリストにあれば復帰処理
-        if (L4D_gamepl.getDeathPlayerList().contains(player)) {
+        if (L4D_gamepl.getDeathPlayerList().contains(player.getUniqueId())) {
 
             //リスト整理
-            L4D_gamepl.getSurvivorList().add(player);
-            L4D_gamepl.getDeathPlayerList().remove(player);
+            L4D_gamepl.getSurvivorList().add(player.getUniqueId());
+            L4D_gamepl.getDeathPlayerList().remove(player.getUniqueId());
 
             player.setPlayerListName("[" + ChatColor.AQUA + "生存者" + ChatColor.WHITE + "]" + player.getDisplayName());
-
-            pl.getLogger().info(ChatColor.AQUA + player.getDisplayName() + "が復活しました");
-            pl.getLogger().info(ChatColor.AQUA + "DeathPlayerList :" + L4D_gamepl.getDeathPlayerList());
-            pl.getLogger().info(ChatColor.AQUA + "PlayerList :" + L4D_gamepl.getSurvivorList());
 
             //初期状態に戻す
             player.setGameMode(GameMode.SURVIVAL);
@@ -118,27 +115,30 @@ public class CheckPoint implements Listener {
 
                 //チェックポイントに入る（1回目）
                 if (loc.getBlock().getType().equals(Material.DIAMOND_BLOCK)) {
-                        switch (GameWorlds.getStageId()) {
-                            case 1:
-                                targetLoc = new Location(player.getWorld(),1389,42,928);
-                                break;
+                    switch (GameWorlds.getStageId()) {
+                        case 1:
+                            targetLoc = new Location(player.getWorld(), 1389, 42, 928);
+                            break;
 
-                            case 2:
-                                targetLoc = new Location(player.getWorld(), 678,88,999);
-                                break;
+                        case 2:
+                            targetLoc = new Location(player.getWorld(), 678, 88, 999);
+                            break;
 
-                            case 3:
-                                targetLoc = new Location(player.getWorld(), 913,29,1415);
-                                break;
+                        case 3:
+                            targetLoc = new Location(player.getWorld(), 913, 29, 1415);
+                            break;
 
-                            default:
-                                pl.getLogger().info("[CheckPoint]stageIdに不具合が起きたので実行できませんでした");
-                                return;
+                        default:
+                            pl.getLogger().info("[CheckPoint]stageIdに不具合が起きたので実行できませんでした");
+                            return;
+                    }
+                    for (UUID playerId : L4D_gamepl.getPlayerList()) {
+                        for (Player target : Bukkit.getOnlinePlayers()) {
+                            if (target.getUniqueId().equals(playerId)) {
+                                target.teleport(targetLoc);
+                                checkPointTask(target, 1);
+                            }
                         }
-
-                    for (Player target : L4D_gamepl.getPlayerList()) {
-                        target.teleport(targetLoc);
-                        checkPointTask(target,1);
                     }
                 }
 
@@ -160,10 +160,14 @@ public class CheckPoint implements Listener {
                             pl.getLogger().info("[CheckPoint]stageIdに不具合が起きたので実行できませんでした");
                             return;
                     }
-                    for (Player target : L4D_gamepl.getPlayerList()) {
-                        target.teleport(targetLoc);
-                        target.sendMessage(ChatColor.AQUA + "チェックポイントから出ました");
-                        target.sendMessage(ChatColor.AQUA + "ゲームを再開します");
+                    for (UUID playerId : L4D_gamepl.getPlayerList()) {
+                        for (Player target : Bukkit.getOnlinePlayers()) {
+                            if (target.getUniqueId().equals(playerId)) {
+                                target.teleport(targetLoc);
+                                target.sendMessage(ChatColor.AQUA + "チェックポイントから出ました");
+                                target.sendMessage(ChatColor.AQUA + "ゲームを再開します");
+                            }
+                        }
                     }
                 }
 
@@ -179,17 +183,20 @@ public class CheckPoint implements Listener {
                             break;
 
                         case 3:
-                            targetLoc = new Location(player.getWorld(), 403, 28, 1530);
+                            targetLoc = new Location(player.getWorld(), 1403, 28, 1530);
                             break;
 
                         default:
                             pl.getLogger().info("[CheckPoint]stageIdに不具合が起きたので実行できませんでした");
                             return;
                     }
-
-                    for (Player target : L4D_gamepl.getPlayerList()) {
-                        target.teleport(targetLoc);
-                        checkPointTask(target, 2);
+                    for (UUID playerId : L4D_gamepl.getPlayerList()) {
+                        for (Player target : Bukkit.getOnlinePlayers()) {
+                            if (target.getUniqueId().equals(playerId)) {
+                                target.teleport(targetLoc);
+                                checkPointTask(target, 2);
+                            }
+                        }
                     }
                 }
 
@@ -212,23 +219,29 @@ public class CheckPoint implements Listener {
                             pl.getLogger().info("[ChackPoint]stageIdに不具合が起きたので実行できませんでした");
                             return;
                     }
-
-                    for (Player target : L4D_gamepl.getPlayerList()) {
-                        target.teleport(targetLoc);
-                        target.sendMessage(ChatColor.AQUA + "チェックポイントから出ました");
-                        target.sendMessage(ChatColor.AQUA + "ゲームを再開します");
+                    for (UUID playerId : L4D_gamepl.getPlayerList()) {
+                        for (Player target : Bukkit.getOnlinePlayers()) {
+                            if (target.getUniqueId().equals(playerId)) {
+                                target.teleport(targetLoc);
+                                target.sendMessage(ChatColor.AQUA + "チェックポイントから出ました");
+                                target.sendMessage(ChatColor.AQUA + "ゲームを再開します");
+                            }
+                        }
                     }
                 }
 
                 //ゴールする
                 if (loc.getBlock().getType().equals(Material.LAPIS_BLOCK)) {
-                    for (Player target : L4D_gamepl.getPlayerList()) {
-                        targetLoc = new Location(target.getWorld(), 914, 156, 1033);
-                        target.teleport(targetLoc);
+                    for (UUID playerId : L4D_gamepl.getPlayerList()) {
+                        for (Player target : Bukkit.getOnlinePlayers()) {
+                            if (target.getUniqueId().equals(playerId)) {
+                                targetLoc = new Location(target.getWorld(), 914, 156, 1033);
+                                target.teleport(targetLoc);
 
-                        spawnFireworks(targetLoc, 1);
+                                spawnFireworks(targetLoc, 1);
+                            }
+                        }
                     }
-
                     Bukkit.getOnlinePlayers().forEach(p -> p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 2, 0));
                     Bukkit.getOnlinePlayers().forEach(p -> p.sendTitle(ChatColor.AQUA + "GAME CLEAR!", null, 5, 100, 5));
                     new StopTask(pl).runTaskTimer(pl, 0, 20);

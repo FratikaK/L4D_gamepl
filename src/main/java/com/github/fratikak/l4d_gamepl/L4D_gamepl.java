@@ -18,6 +18,7 @@ import org.bukkit.potion.PotionEffectType;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 /**
  * メインクラス
@@ -30,9 +31,9 @@ public final class L4D_gamepl extends JavaPlugin {
 
     private static boolean game = false;
     private static boolean preparation = false;
-    private static final List<Player> playerList = new ArrayList<>();
-    private static final List<Player> survivor = new ArrayList<>();
-    private static final List<Player> deathPlayer = new ArrayList<>();
+    private static final List<UUID> playerList = new ArrayList<>();
+    private static final List<UUID> survivor = new ArrayList<>();
+    private static final List<UUID> deathPlayer = new ArrayList<>();
 
 
     @Override
@@ -144,15 +145,15 @@ public final class L4D_gamepl extends JavaPlugin {
         L4D_gamepl.preparation = preparation;
     }
 
-    public static List<Player> getPlayerList() {
+    public static List<UUID> getPlayerList() {
         return playerList;
     }
 
-    public static List<Player> getSurvivorList() {
+    public static List<UUID> getSurvivorList() {
         return survivor;
     }
 
-    public static List<Player> getDeathPlayerList() {
+    public static List<UUID> getDeathPlayerList() {
         return deathPlayer;
     }
 }

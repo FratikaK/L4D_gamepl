@@ -2,13 +2,12 @@ package com.github.fratikak.l4d_gamepl;
 
 import com.github.fratikak.l4d_gamepl.task.GameCountDownTask;
 import com.github.fratikak.l4d_gamepl.util.GameWorlds;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+
+import java.util.UUID;
 
 import static java.lang.Thread.sleep;
 
@@ -58,8 +57,12 @@ public class Start {
         pl.getLogger().info("参加者は" + ChatColor.AQUA + L4D_gamepl.getSurvivorList());
 
         Bukkit.broadcastMessage("[L4D]ゲーム参加者を表示します");
-        for (Player p : L4D_gamepl.getPlayerList()) {
-            Bukkit.broadcastMessage(ChatColor.AQUA + p.getDisplayName());
+        for (UUID p : L4D_gamepl.getPlayerList()) {
+            for (Player target : Bukkit.getOnlinePlayers()) {
+                if (target.getUniqueId().equals(p)) {
+                    Bukkit.broadcastMessage(ChatColor.AQUA + target.getDisplayName());
+                }
+            }
         }
 
         for (int i = 5; i >= 0; i--) {
@@ -81,12 +84,16 @@ public class Start {
             }
         }
 
-        for (Player target : L4D_gamepl.getPlayerList()) {
-            if (target.getGameMode() == GameMode.SURVIVAL) {
-                new GameWorlds().setTeleportStage(stageId, target);
+        for (UUID playerId : L4D_gamepl.getPlayerList()) {
+            for (Player target : Bukkit.getOnlinePlayers()) {
+                if (target.getUniqueId().equals(playerId)) {
+                    if (target.getGameMode() == GameMode.SURVIVAL) {
+                        new GameWorlds().setTeleportStage(stageId, target);
 
-                //生存者リストに格納
-                L4D_gamepl.getSurvivorList().add(target);
+                        //生存者リストに格納
+                        L4D_gamepl.getSurvivorList().add(target.getUniqueId());
+                    }
+                }
             }
         }
 
@@ -105,19 +112,28 @@ public class Start {
         Bukkit.broadcastMessage(ChatColor.GOLD + "------------------------------------------------");
 
         //武器などのアイテムを渡す処理
-        for (Player target : L4D_gamepl.getPlayerList()) {
-            if (target.getGameMode() == GameMode.SURVIVAL) {
-                pl.giveGameItem(target.getInventory(), target);
-                target.setPlayerListName("[" + ChatColor.AQUA + "生存者" + ChatColor.WHITE + "]" + target.getDisplayName());
-                target.setFoodLevel(6);
-                target.setHealth(20);
-                //暗視効果
-                target.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 1000000, 0, true));
+        for (UUID playerId : L4D_gamepl.getPlayerList()) {
+            for (Player target : Bukkit.getOnlinePlayers()) {
+                if (target.getUniqueId().equals(playerId)) {
+                    if (target.getGameMode() == GameMode.SURVIVAL) {
+                        pl.giveGameItem(target.getInventory(), target);
+                        target.setPlayerListName("[" + ChatColor.AQUA + "生存者" + ChatColor.WHITE + "]" + target.getDisplayName());
+                        target.setFoodLevel(6);
+                        target.setHealth(20);
+                        //暗視効果
+                        target.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 1000000, 0, true));
+
+                        //キル数と所持金をリセットする
+                        target.setStatistic(Statistic.MOB_KILLS, 0);
+                        target.setStatistic(Statistic.ANIMALS_BRED, 0);
+                        break;
+                    }
+                }
             }
         }
 
         //GameCountDownTaskを開始
-        new GameCountDownTask().runTaskTimer(pl,0,20);
+        new GameCountDownTask().runTaskTimer(pl, 0, 1);
     }
 }
 
