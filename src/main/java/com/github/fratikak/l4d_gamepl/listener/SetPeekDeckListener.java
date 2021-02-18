@@ -73,7 +73,7 @@ public class SetPeekDeckListener implements Listener {
         ItemStack destroyer = setPeekMeta(Material.TNT, "デストロイヤー", "グレネードランチャーが使用可能になる");
 
 
-        Inventory inventory = Bukkit.createInventory(null, 9, ChatColor.GOLD + "PEEK選択");
+        Inventory inventory = Bukkit.createInventory(null, 9, ChatColor.GOLD + "PERK選択");
         inventory.setItem(0, tank);
         inventory.setItem(1, grinder);
         inventory.setItem(2, scout);
@@ -118,7 +118,7 @@ public class SetPeekDeckListener implements Listener {
             case IRON_CHESTPLATE://タンク
                 event.setCancelled(true);
                 perkDecks.setMeta("TANK");
-                player.sendMessage(ChatColor.GOLD + "PEEKをタンクに設定しました");
+                player.sendMessage(ChatColor.GOLD + "PERKをタンクに設定しました");
                 player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 0);
                 inventoryView.close();
                 break;
@@ -126,7 +126,7 @@ public class SetPeekDeckListener implements Listener {
             case NETHER_STAR://グラインダー
                 event.setCancelled(true);
                 perkDecks.setMeta("GRINDER");
-                player.sendMessage(ChatColor.GOLD + "PEEKをグラインダーに設定しました");
+                player.sendMessage(ChatColor.GOLD + "PERKをグラインダーに設定しました");
                 player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 0);
                 inventoryView.close();
                 break;
@@ -134,7 +134,7 @@ public class SetPeekDeckListener implements Listener {
             case FEATHER://スカウト
                 event.setCancelled(true);
                 perkDecks.setMeta("SCOUT");
-                player.sendMessage(ChatColor.GOLD + "PEEKをスカウトに設定しました");
+                player.sendMessage(ChatColor.GOLD + "PERKをスカウトに設定しました");
                 player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 0);
                 inventoryView.close();
                 break;
@@ -142,7 +142,7 @@ public class SetPeekDeckListener implements Listener {
             case HONEYCOMB://リジュネ
                 event.setCancelled(true);
                 perkDecks.setMeta("REGENE");
-                player.sendMessage(ChatColor.GOLD + "PEEKをリジェネに設定しました");
+                player.sendMessage(ChatColor.GOLD + "PERKをリジェネに設定しました");
                 player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 0);
                 inventoryView.close();
                 break;
@@ -150,7 +150,7 @@ public class SetPeekDeckListener implements Listener {
             case TNT://デストロイヤー
                 event.setCancelled(true);
                 perkDecks.setMeta("DESTROYER");
-                player.sendMessage(ChatColor.GOLD + "PEEKをデストロイヤーに設定しました");
+                player.sendMessage(ChatColor.GOLD + "PERKをデストロイヤーに設定しました");
                 player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 0);
                 inventoryView.close();
                 break;
