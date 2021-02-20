@@ -31,6 +31,7 @@ public final class L4D_gamepl extends JavaPlugin {
 
     private static boolean game = false;
     private static boolean preparation = false;
+    private static boolean checkPoint = false;
     private static final List<UUID> playerList = new ArrayList<>();
     private static final List<UUID> survivor = new ArrayList<>();
     private static final List<UUID> deathPlayer = new ArrayList<>();
@@ -53,6 +54,7 @@ public final class L4D_gamepl extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new Items(), this);
         getServer().getPluginManager().registerEvents(new LobbyItemListener(this), this);
         getServer().getPluginManager().registerEvents(new SetPeekDeckListener(this), this);
+        getServer().getPluginManager().registerEvents(new MerchantListener(),this);
 
         //タスクの実行
         new LagFixTask().runTaskTimer(this, 0, 20 * 60);
@@ -143,6 +145,14 @@ public final class L4D_gamepl extends JavaPlugin {
 
     public static void setPreparation(boolean preparation) {
         L4D_gamepl.preparation = preparation;
+    }
+
+    public static boolean isCheckPoint() {
+        return checkPoint;
+    }
+
+    public static void setCheckPoint(boolean checkPoint) {
+        L4D_gamepl.checkPoint = checkPoint;
     }
 
     public static List<UUID> getPlayerList() {
