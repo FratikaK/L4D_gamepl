@@ -49,6 +49,8 @@ public class LobbyItemListener implements Listener {
 
         ItemStack novigrad = setStageMeta(new ItemStack(Material.COBBLESTONE), "Novigrad");
 
+        ItemStack tokyo = setStageMeta(new ItemStack(Material.RAIL),"tokyo");
+
         //インベントリ作成、メタデータのあるアイテムをセットする
         Inventory inventory;
         inventory = Bukkit.createInventory(null, 9, "ステージを選択してください");
@@ -56,6 +58,7 @@ public class LobbyItemListener implements Listener {
         inventory.setItem(0, venice);
         inventory.setItem(1, town);
         inventory.setItem(2, novigrad);
+        inventory.setItem(3,tokyo);
 
         //インベントリ表示
         player.openInventory(inventory);
@@ -121,6 +124,12 @@ public class LobbyItemListener implements Listener {
             case COBBLESTONE:
                 event.setCancelled(true);
                 new PreparationTask(pl, 3).runTaskTimer(pl, 0, 20);
+                event.getWhoClicked().closeInventory();
+                break;
+
+            case RAIL:
+                event.setCancelled(true);
+                new PreparationTask(pl,4).runTaskTimer(pl,0,20);
                 event.getWhoClicked().closeInventory();
                 break;
 
