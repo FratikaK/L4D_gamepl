@@ -115,6 +115,7 @@ public class CheckPoint implements Listener {
 
                 //チェックポイントに入る（1回目）
                 if (loc.getBlock().getType().equals(Material.DIAMOND_BLOCK)) {
+                    L4D_gamepl.setCheckPoint(true);
                     switch (GameWorlds.getStageId()) {
                         case 1:
                             targetLoc = new Location(player.getWorld(), 1389, 42, 928);
@@ -126,6 +127,10 @@ public class CheckPoint implements Listener {
 
                         case 3:
                             targetLoc = new Location(player.getWorld(), 913, 29, 1415);
+                            break;
+
+                        case 4:
+                            targetLoc = new Location(player.getWorld(),1283,74,370,0,0);
                             break;
 
                         default:
@@ -144,6 +149,7 @@ public class CheckPoint implements Listener {
 
                 //チェックポイントから出る（1回目）
                 if (loc.getBlock().getType().equals(Material.GOLD_BLOCK)) {
+                    L4D_gamepl.setCheckPoint(false);
                     switch (GameWorlds.getStageId()) {
                         case 1:
                             targetLoc = new Location(player.getWorld(), 1400, 42, 918);
@@ -156,6 +162,11 @@ public class CheckPoint implements Listener {
                         case 3:
                             targetLoc = new Location(player.getWorld(), 986, 29, 1482);
                             break;
+
+                        case 4:
+                            targetLoc = new Location(player.getWorld(),1027,76,275,0,0);
+                            break;
+
                         default:
                             pl.getLogger().info("[CheckPoint]stageIdに不具合が起きたので実行できませんでした");
                             return;
@@ -173,6 +184,7 @@ public class CheckPoint implements Listener {
 
                 //チェックポイントに入る（2回目）
                 if (loc.getBlock().getType().equals(Material.EMERALD_BLOCK)) {
+                    L4D_gamepl.setCheckPoint(true);
                     switch (GameWorlds.getStageId()) {
                         case 1:
                             targetLoc = new Location(player.getWorld(), 1376, 47, 895);
@@ -184,6 +196,10 @@ public class CheckPoint implements Listener {
 
                         case 3:
                             targetLoc = new Location(player.getWorld(), 1403, 28, 1530);
+                            break;
+
+                        case 4:
+                            targetLoc = new Location(player.getWorld(), 1207.5,76,270.5,-90,0);
                             break;
 
                         default:
@@ -202,6 +218,7 @@ public class CheckPoint implements Listener {
 
                 //チェックポイントから出る（2回目）
                 if (loc.getBlock().getType().equals(Material.REDSTONE_BLOCK)) {
+                    L4D_gamepl.setCheckPoint(false);
                     switch (GameWorlds.getStageId()) {
                         case 1:
                             targetLoc = new Location(player.getWorld(), 1336, 42, 877);
@@ -213,6 +230,10 @@ public class CheckPoint implements Listener {
 
                         case 3:
                             targetLoc = new Location(player.getWorld(), 1343, 4, 1575);
+                            break;
+
+                        case 4:
+                            targetLoc = new Location(player.getWorld(), 1008,93,283,-120,3);
                             break;
 
                         default:
