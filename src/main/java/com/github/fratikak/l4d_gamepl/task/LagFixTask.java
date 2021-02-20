@@ -20,7 +20,7 @@ public class LagFixTask extends BukkitRunnable {
                 //ワールド内の生存しているエンティティ
                 .flatMap(world -> world.getEntitiesByClasses(Projectile.class, Explosive.class, LivingEntity.class).stream())
                 //20秒以上生存している、プレイヤーではないエンティティ
-                .filter(livingEntity -> livingEntity.getTicksLived() > 20 * 20 && livingEntity.getType() != EntityType.PLAYER)
+                .filter(livingEntity -> livingEntity.getTicksLived() > 20 * 20 && livingEntity.getType() != EntityType.VILLAGER && livingEntity.getType() != EntityType.PLAYER)
                 //エンティティを削除する
                 .peek(Entity::remove)
                 //カウント
