@@ -4,11 +4,11 @@ import com.github.fratikak.l4d_gamepl.L4D_gamepl;
 import com.github.fratikak.l4d_gamepl.util.PerkDecks;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -43,13 +43,14 @@ public class PlayerEvent implements Listener {
     @EventHandler
     public void invalidDamage(EntityDamageEvent event) {
 
-        if (event.getEntity() instanceof Player){
+        if (event.getEntity() instanceof Player) {
 
-            if (event.getCause() == EntityDamageEvent.DamageCause.FALL){
+            if (event.getCause() == EntityDamageEvent.DamageCause.FALL || event.getCause() == EntityDamageEvent.DamageCause.ENTITY_EXPLOSION) {
                 event.setCancelled(true);
             }
         }
     }
+
 
     /**
      * プレイヤーが謎の一撃死バグで死ぬのを防ぐ処理
@@ -57,27 +58,46 @@ public class PlayerEvent implements Listener {
      *
      * @param event
      */
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler
     public void noOverDamage(EntityDamageByEntityEvent event) {
 
         Entity entity = event.getEntity();
+
+        if (event.getDamager().getType() == EntityType.PRIMED_TNT && entity.getType() == EntityType.PLAYER){
+            return;
+        }
 
         if (entity.getType() != EntityType.PLAYER) {
             return;
         }
         Player player = (Player) entity;
 
+        event.setCancelled(true);
+        player.setNoDamageTicks(20);
+        player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_HURT, 1000, 0);
+        player.playSound(player.getLocation(), Sound.ENTITY_WOLF_HURT, 100, 1);
+
         //付与されているPerkがGrinderかScoutであれば受けるダメージが増える
         PerkDecks perkDecks = new PerkDecks(player, pl);
         if (perkDecks.getMetadata(player, PerkDecks.getPerkKey(), pl) == PerkDecks.getGrinder()
                 || perkDecks.getMetadata(player, PerkDecks.getPerkKey(), pl) == PerkDecks.getScout()) {
-            event.setDamage(6);
+            if (player.getHealth() < 6) {
+                player.setHealth(0);
+                return;
+            }
+            player.setHealth(player.getHealth() - 6);
+        } else if (perkDecks.getMetadata(player, PerkDecks.getPerkKey(), pl) == PerkDecks.getTank()) {
+            if (player.getHealth() < 2.5) {
+                player.setHealth(0);
+                return;
+            }
+            player.setHealth(player.getHealth() - 2.5);
         } else {
-            event.setDamage(4);
-        }
-
-        if (event.isCancelled()){
-            pl.getLogger().info("nodamage");
+            if (player.getHealth() < 4) {
+                player.setHealth(0);
+                return;
+            }
+            player.setHealth(player.getHealth() - 4);
         }
     }
 
