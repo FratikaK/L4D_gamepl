@@ -41,6 +41,11 @@ public class L4DCommands implements CommandExecutor {
                         new PreparationTask(pl,3).runTaskTimer(pl,0,20);
                         Bukkit.getLogger().info("novigradが選択されました");
                         return true;
+
+                    case "tokyo":
+                        new PreparationTask(pl,4).runTaskTimer(pl,0,20);
+                        Bukkit.getLogger().info("tokyoが選択されました");
+                        return true;
                 }
 
 
