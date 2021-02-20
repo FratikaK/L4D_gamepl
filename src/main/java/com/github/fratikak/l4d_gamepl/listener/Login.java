@@ -90,6 +90,8 @@ public class Login implements Listener {
 
             //peakの効果は削除
             new PerkDecks(player, pl).removePotion();
+            player.setStatistic(Statistic.ANIMALS_BRED,0);
+            player.setStatistic(Statistic.MOB_KILLS,0);
 
             //ゲームプレイヤーが全員いなくなった場合、ゲームを終了
             if (L4D_gamepl.getSurvivorList().isEmpty()) {
