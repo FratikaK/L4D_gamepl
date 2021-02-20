@@ -259,7 +259,7 @@ public class GameLogicListener implements Listener {
         }
 
         Random random = new Random();
-        int randomValue = random.nextInt(15);
+        int randomValue = random.nextInt(30);
         Location entityLocation = event.getEntity().getLocation().clone();
 
         switch (randomValue) {
