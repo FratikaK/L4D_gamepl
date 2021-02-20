@@ -61,6 +61,7 @@ public class Start {
             for (Player target : Bukkit.getOnlinePlayers()) {
                 if (target.getUniqueId().equals(p)) {
                     Bukkit.broadcastMessage(ChatColor.AQUA + target.getDisplayName());
+                    break;
                 }
             }
         }
@@ -92,6 +93,7 @@ public class Start {
 
                         //生存者リストに格納
                         L4D_gamepl.getSurvivorList().add(target.getUniqueId());
+                        break;
                     }
                 }
             }
@@ -133,7 +135,7 @@ public class Start {
         }
 
         //GameCountDownTaskを開始
-        new GameCountDownTask().runTaskTimer(pl, 0, 1);
+        new GameCountDownTask().runTaskTimer(pl, 0, 20);
     }
 }
 
