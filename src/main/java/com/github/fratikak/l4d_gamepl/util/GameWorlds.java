@@ -21,6 +21,7 @@ public class GameWorlds {
     1   venice
     2   town
     3   novigrad
+    4   tokyo
      */
     private static int stageId = 0;
 
@@ -39,18 +40,19 @@ public class GameWorlds {
 
         switch (stageId) {
             case 1: //venice
-                loc = new Location(target.getWorld(), 1403,58,1027);
+                loc = new Location(target.getWorld(), 1403, 58, 1027);
                 break;
 
             case 2: //town
-                loc = new Location(target.getWorld(), 672,123,1023);
+                loc = new Location(target.getWorld(), 672, 123, 1023);
                 break;
 
             case 3:
-                loc = new Location(target.getWorld(), 1191,29,1546);
-                loc.setX(1191);
-                loc.setY(29);
-                loc.setZ(1546);
+                loc = new Location(target.getWorld(), 1191, 29, 1546);
+                break;
+
+            case 4:
+                loc = new Location(target.getWorld(), 1056, 61, 388,-90,1);
                 break;
 
             default:
@@ -88,13 +90,23 @@ public class GameWorlds {
                 break;
 
             case 3:
-                if (getStageId()==3){
+                if (getStageId() == 3) {
                     setStageId(0);
                     Bukkit.getLogger().info("novigradがfalseになりました");
                     break;
                 }
                 setStageId(3);
                 Bukkit.getLogger().info("novigradがtrueになりました");
+                break;
+
+            case 4:
+                if (getStageId() == 4) {
+                    setStageId(0);
+                    Bukkit.getLogger().info("tokyoがfalseになりました");
+                    break;
+                }
+                setStageId(4);
+                Bukkit.getLogger().info("tokyoがtrueになりました");
                 break;
         }
     }
