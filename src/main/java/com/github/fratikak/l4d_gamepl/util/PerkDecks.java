@@ -18,7 +18,7 @@ import java.util.Objects;
  */
 public class PerkDecks {
 
-    private Player player;
+    private final Player player;
     private final L4D_gamepl plugin;
 
     private final static String PEEK_KEY = "PEEKDECK";
@@ -39,6 +39,10 @@ public class PerkDecks {
 
     public static String getScout() {
         return scout;
+    }
+
+    public static String getTank() {
+        return tank;
     }
 
     public PerkDecks(Player player, L4D_gamepl plugin) {
