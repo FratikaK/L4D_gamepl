@@ -81,9 +81,9 @@ public class Login implements Listener {
         pl.getLogger().info(ChatColor.AQUA + player.getDisplayName() + "がログアウトしました");
         if (L4D_gamepl.isGame()) {
             //リストから削除
-            L4D_gamepl.getPlayerList().remove(player);
-            L4D_gamepl.getSurvivorList().remove(player);
-            L4D_gamepl.getDeathPlayerList().remove(player);
+            L4D_gamepl.getPlayerList().remove(player.getUniqueId());
+            L4D_gamepl.getSurvivorList().remove(player.getUniqueId());
+            L4D_gamepl.getDeathPlayerList().remove(player.getUniqueId());
 
             pl.getLogger().info("survivorList: " + L4D_gamepl.getSurvivorList());
             pl.getLogger().info("deathList: " + L4D_gamepl.getDeathPlayerList());
