@@ -49,6 +49,10 @@ public class PlayerEvent implements Listener {
                 event.setCancelled(true);
             }
         }
+
+        if (event.getEntity().getType() == EntityType.VILLAGER) {
+            event.setCancelled(true);
+        }
     }
 
 
@@ -63,7 +67,7 @@ public class PlayerEvent implements Listener {
 
         Entity entity = event.getEntity();
 
-        if (event.getDamager().getType() == EntityType.PRIMED_TNT && entity.getType() == EntityType.PLAYER){
+        if (event.getDamager().getType() == EntityType.PRIMED_TNT && entity.getType() == EntityType.PLAYER) {
             return;
         }
 
