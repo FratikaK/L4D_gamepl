@@ -51,7 +51,9 @@ public class PlayerEvent implements Listener {
         }
 
         if (event.getEntity().getType() == EntityType.VILLAGER) {
-            event.setCancelled(true);
+            if (L4D_gamepl.isGame()) {
+                event.setCancelled(true);
+            }
         }
     }
 
