@@ -36,6 +36,7 @@ public class MerchantListener implements Listener {
             return;
         }
 
+        event.setCancelled(true);
         showMerchantInventory(event.getPlayer());
     }
 
@@ -80,8 +81,39 @@ public class MerchantListener implements Listener {
                 dealings(player, Material.FURNACE_MINECART, 30, "Landmine");
                 break;
 
+            //ここから武器関係
+            case WOODEN_SHOVEL:
+                dealings(player, Material.WOODEN_SHOVEL, 150, "MAC10");
+                break;
+
+            case BLAZE_ROD:
+                dealings(player, Material.BLAZE_ROD, 150, "M31");
+                break;
+
+            case DIAMOND_AXE:
+                dealings(player, Material.DIAMOND_AXE, 200, "M16A1");
+                break;
+
+            case CARROT_ON_A_STICK:
+                dealings(player, Material.CARROT_ON_A_STICK, 200, "SCARL");
+                break;
+
+            case DIAMOND_HORSE_ARMOR:
+                dealings(player, Material.DIAMOND_HORSE_ARMOR, 350, "SPAS12");
+                break;
+
+            case BONE:
+                dealings(player, Material.BONE, 350, "Chopper");
+                break;
+
             case GOLDEN_SHOVEL:
-                dealings(player, Material.GOLDEN_SHOVEL, 300, "GL");
+                dealings(player, Material.GOLDEN_SHOVEL, 300, "グレネードランチャー");
+                break;
+
+            case DIAMOND_SHOVEL:
+                dealings(player,Material.DIAMOND_SHOVEL,200,"50AE");
+
+            default:
                 break;
         }
     }
@@ -95,21 +127,39 @@ public class MerchantListener implements Listener {
         if (!L4D_gamepl.isCheckPoint()) {
             return;
         }
-        Inventory inventory = Bukkit.createInventory(null, 9, ChatColor.AQUA + "アイテム取引");
+        Inventory inventory = Bukkit.createInventory(null, 54, ChatColor.AQUA + "アイテム取引");
 
         ItemStack firework = getMetaItem(Material.FIREWORK_STAR, "グレネード", "$20");
         ItemStack clay = getMetaItem(Material.CLAY_BALL, "コンカッション", "$70");
         ItemStack apple = getMetaItem(Material.APPLE, "回復のリンゴ", "$50");
         ItemStack beef = getMetaItem(Material.COOKED_BEEF, "ステーキ", "$120");
         ItemStack minecart = getMetaItem(Material.FURNACE_MINECART, "Landmine", "$30");
-        ItemStack shovel = getMetaItem(Material.GOLDEN_SHOVEL, "GL", "$300");
+
+        ItemStack wooden_shovel = getMetaItem(Material.WOODEN_SHOVEL, "MAC10サブマシンガン", "$100");
+        ItemStack blaze_rod = getMetaItem(Material.BLAZE_ROD, "M31ショットガン", "$100");
+        ItemStack diamond_axe = getMetaItem(Material.DIAMOND_AXE, "M16A1アサルトライフル", "$150");
+        ItemStack carrot = getMetaItem(Material.CARROT_ON_A_STICK, "SCARLアサルトライフル", "$150");
+
+        ItemStack diamond_hoase = getMetaItem(Material.DIAMOND_HORSE_ARMOR, "SPAS12ショットガン", "$350");
+        ItemStack bone = getMetaItem(Material.BONE, "Chopperライトマシンガン", "$350");
+        ItemStack shovel = getMetaItem(Material.GOLDEN_SHOVEL, "グレネードランチャー", "$400");
+        ItemStack diamond_shovel = getMetaItem(Material.DIAMOND_SHOVEL,"50AE","$200");
 
         inventory.setItem(0, firework);
         inventory.setItem(1, clay);
         inventory.setItem(2, apple);
         inventory.setItem(3, beef);
         inventory.setItem(4, minecart);
-        inventory.setItem(5, shovel);
+
+        inventory.setItem(18, wooden_shovel);
+        inventory.setItem(19, blaze_rod);
+        inventory.setItem(20, diamond_axe);
+        inventory.setItem(21, carrot);
+
+        inventory.setItem(36, diamond_hoase);
+        inventory.setItem(37, bone);
+        inventory.setItem(38, shovel);
+        inventory.setItem(39,diamond_shovel);
 
         player.openInventory(inventory);
 
