@@ -39,19 +39,8 @@ public class CheckPoint implements Listener {
 
     //補充アイテム
     private void sendCheckPointItem(Player target, Inventory inventory) {
-        ItemStack firework = new ItemStack(Material.FIREWORK_STAR, 5);
-        ItemStack clayball = new ItemStack(Material.CLAY_BALL, 5);
-
-        ItemMeta fwmeta = firework.getItemMeta();
-        ItemMeta cbmeta = clayball.getItemMeta();
-        fwmeta.setDisplayName(ChatColor.YELLOW + "グレネード");
-        cbmeta.setDisplayName(ChatColor.YELLOW + "コンカッション");
-        firework.setItemMeta(fwmeta);
-        clayball.setItemMeta(cbmeta);
-
-        inventory.addItem(firework);
-        inventory.addItem(clayball);
-        inventory.addItem(new ItemStack(Material.COOKED_BEEF, 3));
+        target.setStatistic(Statistic.ANIMALS_BRED,target.getStatistic(Statistic.ANIMALS_BRED) + 200);
+        inventory.addItem(new ItemStack(Material.COOKED_BEEF, 2));
         target.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 1000000, 0, true));
     }
 
@@ -160,7 +149,7 @@ public class CheckPoint implements Listener {
                             break;
 
                         case 3:
-                            targetLoc = new Location(player.getWorld(), 986, 29, 1482);
+                            targetLoc = new Location(player.getWorld(), 986, 29, 1482,-91,0);
                             break;
 
                         case 4:
@@ -229,7 +218,7 @@ public class CheckPoint implements Listener {
                             break;
 
                         case 3:
-                            targetLoc = new Location(player.getWorld(), 1343, 4, 1575);
+                            targetLoc = new Location(player.getWorld(), 1343, 6, 1575,173,0);
                             break;
 
                         case 4:
