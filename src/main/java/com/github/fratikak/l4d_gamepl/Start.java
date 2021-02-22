@@ -127,7 +127,7 @@ public class Start {
 
                         //キル数と所持金をリセットする
                         target.setStatistic(Statistic.MOB_KILLS, 0);
-                        target.setStatistic(Statistic.ANIMALS_BRED, 0);
+                        target.setStatistic(Statistic.ANIMALS_BRED, 200);
                         break;
                     }
                 }
