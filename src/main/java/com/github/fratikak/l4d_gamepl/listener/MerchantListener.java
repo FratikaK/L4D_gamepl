@@ -50,10 +50,6 @@ public class MerchantListener implements Listener {
 
         Player player = (Player) event.getWhoClicked();
 
-        if (!L4D_gamepl.isCheckPoint()) {
-            return;
-        }
-
         if (!event.getCurrentItem().getItemMeta().hasCustomModelData()) {
             return;
         }
@@ -83,35 +79,44 @@ public class MerchantListener implements Listener {
 
             //ここから武器関係
             case WOODEN_SHOVEL:
-                dealings(player, Material.WOODEN_SHOVEL, 150, "MAC10");
+                dealings(player, Material.WOODEN_SHOVEL, 200, "MAC10");
                 break;
 
             case BLAZE_ROD:
-                dealings(player, Material.BLAZE_ROD, 150, "M31");
+                dealings(player, Material.BLAZE_ROD, 200, "M31");
                 break;
 
             case DIAMOND_AXE:
-                dealings(player, Material.DIAMOND_AXE, 200, "M16A1");
+                dealings(player, Material.DIAMOND_AXE, 450, "M16A1");
                 break;
 
             case CARROT_ON_A_STICK:
-                dealings(player, Material.CARROT_ON_A_STICK, 200, "SCARL");
+                dealings(player, Material.CARROT_ON_A_STICK, 450, "SCARL");
+                break;
+
+            case GOLDEN_HOE:
+                dealings(player, Material.GOLDEN_HOE, 450, "AK47");
                 break;
 
             case DIAMOND_HORSE_ARMOR:
-                dealings(player, Material.DIAMOND_HORSE_ARMOR, 350, "SPAS12");
+                dealings(player, Material.DIAMOND_HORSE_ARMOR, 450, "SPAS12");
+                break;
+
+            case GOLDEN_HORSE_ARMOR:
+                dealings(player,Material.GOLDEN_HORSE_ARMOR,600,"Saiga");
                 break;
 
             case BONE:
-                dealings(player, Material.BONE, 350, "Chopper");
+                dealings(player, Material.BONE, 600, "Chopper");
                 break;
 
             case GOLDEN_SHOVEL:
-                dealings(player, Material.GOLDEN_SHOVEL, 300, "グレネードランチャー");
+                dealings(player, Material.GOLDEN_SHOVEL, 600, "グレネードランチャー");
                 break;
 
             case DIAMOND_SHOVEL:
-                dealings(player,Material.DIAMOND_SHOVEL,200,"50AE");
+                dealings(player, Material.DIAMOND_SHOVEL, 200, "50AE");
+                break;
 
             default:
                 break;
@@ -124,10 +129,14 @@ public class MerchantListener implements Listener {
      * @param player
      */
     private void showMerchantInventory(Player player) {
-        if (!L4D_gamepl.isCheckPoint()) {
-            return;
+
+        String traderText = "Trade Items";
+
+        if (!L4D_gamepl.isGame()) {
+            traderText = "Trial Weapons";
         }
-        Inventory inventory = Bukkit.createInventory(null, 54, ChatColor.AQUA + "アイテム取引");
+
+        Inventory inventory = Bukkit.createInventory(null, 54, traderText);
 
         ItemStack firework = getMetaItem(Material.FIREWORK_STAR, "グレネード", "$20");
         ItemStack clay = getMetaItem(Material.CLAY_BALL, "コンカッション", "$70");
@@ -135,15 +144,17 @@ public class MerchantListener implements Listener {
         ItemStack beef = getMetaItem(Material.COOKED_BEEF, "ステーキ", "$120");
         ItemStack minecart = getMetaItem(Material.FURNACE_MINECART, "Landmine", "$30");
 
-        ItemStack wooden_shovel = getMetaItem(Material.WOODEN_SHOVEL, "MAC10サブマシンガン", "$100");
-        ItemStack blaze_rod = getMetaItem(Material.BLAZE_ROD, "M31ショットガン", "$100");
-        ItemStack diamond_axe = getMetaItem(Material.DIAMOND_AXE, "M16A1アサルトライフル", "$150");
-        ItemStack carrot = getMetaItem(Material.CARROT_ON_A_STICK, "SCARLアサルトライフル", "$150");
+        ItemStack wooden_shovel = getMetaItem(Material.WOODEN_SHOVEL, "MAC10サブマシンガン", "$200");
+        ItemStack blaze_rod = getMetaItem(Material.BLAZE_ROD, "M31ショットガン", "$200");
+        ItemStack diamond_axe = getMetaItem(Material.DIAMOND_AXE, "M16A1アサルトライフル", "$450");
+        ItemStack carrot = getMetaItem(Material.CARROT_ON_A_STICK, "SCARLアサルトライフル", "$450");
+        ItemStack golden_hoe = getMetaItem(Material.GOLDEN_HOE, "AK47アサルトライフル", "$450");
 
-        ItemStack diamond_hoase = getMetaItem(Material.DIAMOND_HORSE_ARMOR, "SPAS12ショットガン", "$350");
-        ItemStack bone = getMetaItem(Material.BONE, "Chopperライトマシンガン", "$350");
-        ItemStack shovel = getMetaItem(Material.GOLDEN_SHOVEL, "グレネードランチャー", "$400");
-        ItemStack diamond_shovel = getMetaItem(Material.DIAMOND_SHOVEL,"50AE","$200");
+        ItemStack diamond_horse = getMetaItem(Material.DIAMOND_HORSE_ARMOR, "SPAS12ショットガン", "$450");
+        ItemStack golden_horse = getMetaItem(Material.GOLDEN_HORSE_ARMOR, "Saigaセミオートショットガン", "$600");
+        ItemStack bone = getMetaItem(Material.BONE, "Chopperライトマシンガン", "$600");
+        ItemStack shovel = getMetaItem(Material.GOLDEN_SHOVEL, "グレネードランチャー", "$600");
+        ItemStack diamond_shovel = getMetaItem(Material.DIAMOND_SHOVEL, "50AE", "$200");
 
         inventory.setItem(0, firework);
         inventory.setItem(1, clay);
@@ -155,14 +166,15 @@ public class MerchantListener implements Listener {
         inventory.setItem(19, blaze_rod);
         inventory.setItem(20, diamond_axe);
         inventory.setItem(21, carrot);
+        inventory.setItem(22, golden_hoe);
+        inventory.setItem(23, diamond_horse);
 
-        inventory.setItem(36, diamond_hoase);
+        inventory.setItem(36, golden_horse);
         inventory.setItem(37, bone);
         inventory.setItem(38, shovel);
-        inventory.setItem(39,diamond_shovel);
+        inventory.setItem(39, diamond_shovel);
 
         player.openInventory(inventory);
-
     }
 
     /**
@@ -197,6 +209,17 @@ public class MerchantListener implements Listener {
      * @param itemName 購入するアイテムの名前
      */
     private void dealings(Player player, Material material, int money, String itemName) {
+        //ゲーム中でなければ無料で試せる
+        if (!L4D_gamepl.isGame()) {
+            ItemStack itemStack = new ItemStack(material);
+            ItemMeta itemMeta = itemStack.getItemMeta();
+            itemMeta.setDisplayName(ChatColor.YELLOW + itemName);
+            itemStack.setItemMeta(itemMeta);
+
+            player.getInventory().addItem(itemStack);
+            player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 0);
+            return;
+        }
 
         //所持金が足りなければreturn
         if (player.getStatistic(Statistic.ANIMALS_BRED) < money) {
