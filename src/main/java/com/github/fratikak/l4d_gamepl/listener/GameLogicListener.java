@@ -204,7 +204,7 @@ public class GameLogicListener implements Listener {
 
         if (L4D_gamepl.isGame()) {
             //プレイヤー数 * 任意の数字分沸かせる
-            int mobNum = L4D_gamepl.getSurvivorList().size() * 4;
+            int mobNum = L4D_gamepl.getSurvivorList().size() * 8;
 
             Location spawnerLocation = event.getSpawner().getLocation().clone();
             spawnerLocation.add(0.5, 1, 0.5);
