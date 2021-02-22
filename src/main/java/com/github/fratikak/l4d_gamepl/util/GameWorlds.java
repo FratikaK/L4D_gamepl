@@ -48,11 +48,11 @@ public class GameWorlds {
                 break;
 
             case 3:
-                loc = new Location(target.getWorld(), 1191, 29, 1546);
+                loc = new Location(target.getWorld(), 1191, 29, 1546, 179, 0);
                 break;
 
             case 4:
-                loc = new Location(target.getWorld(), 1056, 61, 388,-90,1);
+                loc = new Location(target.getWorld(), 1056, 61, 388, -90, 1);
                 break;
 
             default:
