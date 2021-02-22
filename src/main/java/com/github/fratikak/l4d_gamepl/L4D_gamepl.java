@@ -50,7 +50,7 @@ public final class L4D_gamepl extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new GameLogicListener(this), this);
         getServer().getPluginManager().registerEvents(new L4DMobs(this), this);
         getServer().getPluginManager().registerEvents(new CheckPoint(this), this);
-        getServer().getPluginManager().registerEvents(new Weapons(), this);
+//        getServer().getPluginManager().registerEvents(new Weapons(), this);
         getServer().getPluginManager().registerEvents(new Items(), this);
         getServer().getPluginManager().registerEvents(new LobbyItemListener(this), this);
         getServer().getPluginManager().registerEvents(new SetPeekDeckListener(this), this);
@@ -96,8 +96,8 @@ public final class L4D_gamepl extends JavaPlugin {
     public void giveGameItem(Inventory inventory, Player player) {
         inventory.clear();
 
-        ItemStack firework = setDisplayMetaItem(new ItemStack(Material.FIREWORK_STAR,3),ChatColor.YELLOW,"グレネード");
-        ItemStack clayball = setDisplayMetaItem(new ItemStack(Material.CLAY_BALL,3),ChatColor.YELLOW,"コンカッション");
+        ItemStack firework = setDisplayMetaItem(new ItemStack(Material.FIREWORK_STAR,2),ChatColor.YELLOW,"グレネード");
+        ItemStack clayball = setDisplayMetaItem(new ItemStack(Material.CLAY_BALL,1),ChatColor.YELLOW,"コンカッション");
 
         new CSUtility().giveWeapon(player, "MAC10", 1);
         new CSUtility().giveWeapon(player, "P226", 1);
