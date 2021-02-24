@@ -98,7 +98,6 @@ public class GameLogicListener implements Listener {
             return;
         }
 
-
         player.setGameMode(GameMode.SPECTATOR);
 
         //近くのプレイヤーのところへリスポーン、いなければ死んだ場所でリスポーンする
@@ -204,7 +203,7 @@ public class GameLogicListener implements Listener {
 
         if (L4D_gamepl.isGame()) {
             //プレイヤー数 * 任意の数字分沸かせる
-            int mobNum = L4D_gamepl.getSurvivorList().size() * 8;
+            int mobNum = 6 + (L4D_gamepl.getSurvivorList().size() * 4);
 
             Location spawnerLocation = event.getSpawner().getLocation().clone();
             spawnerLocation.add(0.5, 1, 0.5);
@@ -302,6 +301,9 @@ public class GameLogicListener implements Listener {
 
             case 3:
                 return EntityType.RAVAGER;
+
+            case 4:
+                return EntityType.EVOKER;
 
             default:
                 return EntityType.ZOMBIE_VILLAGER;
