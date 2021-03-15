@@ -37,6 +37,7 @@ public class PlayerEvent implements Listener {
     /**
      * 特定のダメージを無効化する
      * 現在は落下ダメージのみ
+     * 商人（村人）に関するダメージも無効にする
      *
      * @param event
      */
@@ -44,14 +45,14 @@ public class PlayerEvent implements Listener {
     public void invalidDamage(EntityDamageEvent event) {
 
         if (event.getEntity() instanceof Player) {
-
+            //落下ダメージと爆発ダメージはキャンセル
             if (event.getCause() == EntityDamageEvent.DamageCause.FALL || event.getCause() == EntityDamageEvent.DamageCause.ENTITY_EXPLOSION) {
                 event.setCancelled(true);
             }
         }
-
-        if (event.getEntity().getType() == EntityType.VILLAGER) {
-                event.setCancelled(true);
+        //チェックポイントにいる村人はキャンセル
+        if (event.getEntity().getType() == EntityType.VILLAGER && L4D_gamepl.isCheckPoint()) {
+            event.setCancelled(true);
         }
     }
 
@@ -158,7 +159,7 @@ public class PlayerEvent implements Listener {
      * @param event
      */
     @EventHandler
-    public void setItemDamege(PlayerItemDamageEvent event) {
+    public void setItemDamage(PlayerItemDamageEvent event) {
         event.setCancelled(true);
     }
 

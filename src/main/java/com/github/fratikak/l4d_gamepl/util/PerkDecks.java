@@ -21,10 +21,10 @@ public class PerkDecks {
     private final Player player;
     private final L4D_gamepl plugin;
 
-    private final static String PEEK_KEY = "PEEKDECK";
+    private final static String PERK_KEY = "PERK_DECK";
 
     public static String getPerkKey() {
-        return PEEK_KEY;
+        return PERK_KEY;
     }
 
     private final static String tank = "TANK";
@@ -52,9 +52,9 @@ public class PerkDecks {
 
     public void setMeta(String peekdeck) {
 
-        player.removeMetadata(PEEK_KEY, plugin);
+        player.removeMetadata(PERK_KEY, plugin);
 
-        player.setMetadata(PEEK_KEY, new FixedMetadataValue(plugin, peekdeck));
+        player.setMetadata(PERK_KEY, new FixedMetadataValue(plugin, peekdeck));
     }
 
     /**
@@ -63,18 +63,18 @@ public class PerkDecks {
     public void setPeekDeck() {
 
         //PEEK_KEYを持っているか
-        if (!player.hasMetadata(PEEK_KEY)) {
+        if (!player.hasMetadata(PERK_KEY)) {
             plugin.getLogger().info("[PeekDecks]プレイヤーにメタデータが付与されていません");
             return;
         }
 
         //メタデータはリスト型として返ってくるので、for文で取得する必要がある
-        List<MetadataValue> peeks = player.getMetadata(PEEK_KEY);
+        List<MetadataValue> peeks = player.getMetadata(PERK_KEY);
 
         MetadataValue value = null;
 
         for (MetadataValue v : peeks) {
-            if (v.getOwningPlugin().getName() == plugin.getName()) {
+            if (v.getOwningPlugin().getName().equals(plugin.getName())) {
                 value = v;
                 break;
             }

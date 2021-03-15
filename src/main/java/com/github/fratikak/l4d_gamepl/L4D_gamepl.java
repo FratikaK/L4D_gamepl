@@ -50,7 +50,6 @@ public final class L4D_gamepl extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new GameLogicListener(this), this);
         getServer().getPluginManager().registerEvents(new L4DMobs(this), this);
         getServer().getPluginManager().registerEvents(new CheckPoint(this), this);
-//        getServer().getPluginManager().registerEvents(new Weapons(), this);
         getServer().getPluginManager().registerEvents(new Items(), this);
         getServer().getPluginManager().registerEvents(new LobbyItemListener(this), this);
         getServer().getPluginManager().registerEvents(new SetPeekDeckListener(this), this);
@@ -77,7 +76,7 @@ public final class L4D_gamepl extends JavaPlugin {
         //途中参加ができるエメラルド
         ItemStack emerald = setDisplayMetaItem(new ItemStack(Material.EMERALD),ChatColor.GREEN,"ゲームに参加する");
 
-        //PEEKDECKを選択できるエンドクリスタル
+        //PERKDECKを選択できるエンドクリスタル
         ItemStack end = setDisplayMetaItem(new ItemStack(Material.END_CRYSTAL),ChatColor.GOLD,"PERK選択");
 
         //メタデータをつけたアイテムを付与
