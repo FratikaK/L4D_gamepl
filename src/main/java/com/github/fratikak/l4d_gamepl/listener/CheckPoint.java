@@ -39,7 +39,7 @@ public class CheckPoint implements Listener {
 
     //補充アイテム
     private void sendCheckPointItem(Player target, Inventory inventory) {
-        target.setStatistic(Statistic.ANIMALS_BRED,target.getStatistic(Statistic.ANIMALS_BRED) + 200);
+        target.setStatistic(Statistic.ANIMALS_BRED, target.getStatistic(Statistic.ANIMALS_BRED) + 200);
         inventory.addItem(new ItemStack(Material.COOKED_BEEF, 2));
         target.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 1000000, 0, true));
     }
@@ -119,7 +119,7 @@ public class CheckPoint implements Listener {
                             break;
 
                         case 4:
-                            targetLoc = new Location(player.getWorld(),1283,74,370,0,0);
+                            targetLoc = new Location(player.getWorld(), 1283, 74, 370, 0, 0);
                             break;
 
                         default:
@@ -149,26 +149,18 @@ public class CheckPoint implements Listener {
                             break;
 
                         case 3:
-                            targetLoc = new Location(player.getWorld(), 986, 29, 1482,-91,0);
+                            targetLoc = new Location(player.getWorld(), 986, 29, 1482, -91, 0);
                             break;
 
                         case 4:
-                            targetLoc = new Location(player.getWorld(),1027,76,275,0,0);
+                            targetLoc = new Location(player.getWorld(), 1027, 76, 275, 0, 0);
                             break;
 
                         default:
                             pl.getLogger().info("[CheckPoint]stageIdに不具合が起きたので実行できませんでした");
                             return;
                     }
-                    for (UUID playerId : L4D_gamepl.getPlayerList()) {
-                        for (Player target : Bukkit.getOnlinePlayers()) {
-                            if (target.getUniqueId().equals(playerId)) {
-                                target.teleport(targetLoc);
-                                target.sendMessage(ChatColor.AQUA + "チェックポイントから出ました");
-                                target.sendMessage(ChatColor.AQUA + "ゲームを再開します");
-                            }
-                        }
-                    }
+                    exitCheckPoint(targetLoc);
                 }
 
                 //チェックポイントに入る（2回目）
@@ -188,7 +180,7 @@ public class CheckPoint implements Listener {
                             break;
 
                         case 4:
-                            targetLoc = new Location(player.getWorld(), 1207.5,76,270.5,-90,0);
+                            targetLoc = new Location(player.getWorld(), 1207.5, 76, 270.5, -90, 0);
                             break;
 
                         default:
@@ -218,26 +210,18 @@ public class CheckPoint implements Listener {
                             break;
 
                         case 3:
-                            targetLoc = new Location(player.getWorld(), 1343, 6, 1575,173,0);
+                            targetLoc = new Location(player.getWorld(), 1343, 6, 1575, 173, 0);
                             break;
 
                         case 4:
-                            targetLoc = new Location(player.getWorld(), 1008,93,283,-120,3);
+                            targetLoc = new Location(player.getWorld(), 1008, 93, 283, -120, 3);
                             break;
 
                         default:
                             pl.getLogger().info("[ChackPoint]stageIdに不具合が起きたので実行できませんでした");
                             return;
                     }
-                    for (UUID playerId : L4D_gamepl.getPlayerList()) {
-                        for (Player target : Bukkit.getOnlinePlayers()) {
-                            if (target.getUniqueId().equals(playerId)) {
-                                target.teleport(targetLoc);
-                                target.sendMessage(ChatColor.AQUA + "チェックポイントから出ました");
-                                target.sendMessage(ChatColor.AQUA + "ゲームを再開します");
-                            }
-                        }
-                    }
+                    exitCheckPoint(targetLoc);
                 }
 
                 //ゴールする
@@ -257,6 +241,24 @@ public class CheckPoint implements Listener {
                     new StopTask(pl).runTaskTimer(pl, 0, 20);
                 }
 
+            }
+        }
+    }
+
+    /**
+     * チェックポイントから出る時の処理
+     * 生存プレイヤー全員テレポート、メッセージを送信する
+     *
+     * @param targetLoc
+     */
+    private void exitCheckPoint(Location targetLoc) {
+        for (UUID playerId : L4D_gamepl.getPlayerList()) {
+            for (Player target : Bukkit.getOnlinePlayers()) {
+                if (target.getUniqueId().equals(playerId)) {
+                    target.teleport(targetLoc);
+                    target.sendMessage(ChatColor.AQUA + "チェックポイントから出ました");
+                    target.sendMessage(ChatColor.AQUA + "ゲームを再開します");
+                }
             }
         }
     }
@@ -282,4 +284,5 @@ public class CheckPoint implements Listener {
             fw2.setFireworkMeta(fwm);
         }
     }
+
 }
