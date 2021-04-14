@@ -2,7 +2,7 @@ package com.github.fratikak.l4d_gamepl.listener;
 
 import com.github.fratikak.l4d_gamepl.L4D_gamepl;
 import com.github.fratikak.l4d_gamepl.task.PreparationTask;
-import com.github.fratikak.l4d_gamepl.util.ScoreboardSystem;
+import com.github.fratikak.l4d_gamepl.util.DistributionItems;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -183,7 +183,7 @@ public class LobbyItemListener implements Listener {
                 //プレイヤーリストに格納、初期ゲームアイテムを付与
                 L4D_gamepl.getPlayerList().add(player.getUniqueId());
                 L4D_gamepl.getSurvivorList().add(player.getUniqueId());
-                pl.giveGameItem(player.getInventory(), player);
+                new DistributionItems(pl).giveGameItem(player);
 
                 player.setFoodLevel(6);
                 player.setHealth(20);

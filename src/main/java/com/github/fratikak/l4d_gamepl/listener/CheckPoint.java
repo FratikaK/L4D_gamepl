@@ -1,8 +1,9 @@
 package com.github.fratikak.l4d_gamepl.listener;
 
-import com.github.fratikak.l4d_gamepl.util.GameWorlds;
 import com.github.fratikak.l4d_gamepl.L4D_gamepl;
 import com.github.fratikak.l4d_gamepl.task.StopTask;
+import com.github.fratikak.l4d_gamepl.util.DistributionItems;
+import com.github.fratikak.l4d_gamepl.util.GameWorlds;
 import org.bukkit.*;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Firework;
@@ -13,7 +14,6 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -68,7 +68,7 @@ public class CheckPoint implements Listener {
             //初期状態に戻す
             player.setGameMode(GameMode.SURVIVAL);
             player.setFoodLevel(6);
-            pl.giveGameItem(player.getInventory(), player);
+            new DistributionItems(pl).giveGameItem(player);
         }
     }
 
@@ -99,7 +99,7 @@ public class CheckPoint implements Listener {
             Location targetLoc;
 
             if (player.isOnGround() && player.getGameMode() == GameMode.SURVIVAL) {
-                Location loc = event.getTo().clone();
+                Location loc = Objects.requireNonNull(event.getTo()).clone();
                 loc.add(0, -0.1, 0);
 
                 //チェックポイントに入る（1回目）

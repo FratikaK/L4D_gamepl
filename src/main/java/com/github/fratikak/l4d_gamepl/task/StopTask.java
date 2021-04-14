@@ -1,6 +1,7 @@
 package com.github.fratikak.l4d_gamepl.task;
 
 import com.github.fratikak.l4d_gamepl.L4D_gamepl;
+import com.github.fratikak.l4d_gamepl.util.DistributionItems;
 import com.github.fratikak.l4d_gamepl.util.GameWorlds;
 import com.github.fratikak.l4d_gamepl.util.PerkDecks;
 import com.github.fratikak.l4d_gamepl.util.ScoreboardSystem;
@@ -54,7 +55,7 @@ public class StopTask extends BukkitRunnable {
 
                 //ログイン時の状態に戻す
                 target.setGameMode(GameMode.SURVIVAL);
-                pl.giveLobbyItem(target.getInventory());
+                new DistributionItems(pl).giveLobbyItem(target);
                 targetTeleport(target);
                 target.setHealth(20);
                 target.setFoodLevel(20);

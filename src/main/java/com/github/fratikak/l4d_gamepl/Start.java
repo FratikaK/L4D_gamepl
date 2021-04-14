@@ -1,6 +1,7 @@
 package com.github.fratikak.l4d_gamepl;
 
 import com.github.fratikak.l4d_gamepl.task.GameCountDownTask;
+import com.github.fratikak.l4d_gamepl.util.DistributionItems;
 import com.github.fratikak.l4d_gamepl.util.GameWorlds;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
@@ -118,7 +119,7 @@ public class Start {
             for (Player target : Bukkit.getOnlinePlayers()) {
                 if (target.getUniqueId().equals(playerId)) {
                     if (target.getGameMode() == GameMode.SURVIVAL) {
-                        pl.giveGameItem(target.getInventory(), target);
+                        new DistributionItems(pl).giveGameItem(target);
                         target.setPlayerListName("[" + ChatColor.AQUA + "生存者" + ChatColor.WHITE + "]" + target.getDisplayName());
                         target.setFoodLevel(6);
                         target.setHealth(20);
