@@ -169,7 +169,7 @@ public class GameLogicListener implements Listener {
         }
 
         //体力が0以下だったらreturn
-        if (player.getHealth() <= 0){
+        if (player.getHealth() <= 0) {
             return;
         }
 
@@ -236,13 +236,8 @@ public class GameLogicListener implements Listener {
      */
     @EventHandler
     public void removeRaid(PlayerMoveEvent event) {
-        if (event.getPlayer().hasPotionEffect(PotionEffectType.BAD_OMEN)) {
-            event.getPlayer().removePotionEffect(PotionEffectType.BAD_OMEN);
-        }
-
-        if (event.getPlayer().hasPotionEffect(PotionEffectType.SLOW)) {
-            event.getPlayer().removePotionEffect(PotionEffectType.SLOW);
-        }
+        event.getPlayer().removePotionEffect(PotionEffectType.BAD_OMEN);
+        event.getPlayer().removePotionEffect(PotionEffectType.SLOW);
     }
 
     /**
