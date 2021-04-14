@@ -3,17 +3,7 @@ package com.github.fratikak.l4d_gamepl;
 import com.github.fratikak.l4d_gamepl.command.L4DCommands;
 import com.github.fratikak.l4d_gamepl.listener.*;
 import com.github.fratikak.l4d_gamepl.task.LagFixTask;
-import com.github.fratikak.l4d_gamepl.util.PerkDecks;
-import com.shampaggon.crackshot.CSUtility;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,14 +16,19 @@ import java.util.UUID;
  *
  * @author FratikaK
  */
-
 public final class L4D_gamepl extends JavaPlugin {
 
+    //ゲーム中か
     private static boolean game = false;
+    //準備Task中か
     private static boolean preparation = false;
+    //チェックポイントの中にいるか
     private static boolean checkPoint = false;
+    //ゲームに参加している全てのプレイヤーIDのリスト
     private static final List<UUID> playerList = new ArrayList<>();
+    //生存しているプレイヤーIDのリスト
     private static final List<UUID> survivor = new ArrayList<>();
+    //死亡したプレイヤーIDのリスト
     private static final List<UUID> deathPlayer = new ArrayList<>();
 
 
@@ -63,73 +58,6 @@ public final class L4D_gamepl extends JavaPlugin {
     public void onDisable() {
     }
 
-    /**
-     * 引数のプレイヤーインベントリにロビーアイテムを付与する
-     *
-     * @param inventory 対象プレイヤーのインベントリ
-     */
-    public void giveLobbyItem(Inventory inventory) {
-
-        //ステージ選択のダイアモンド
-        ItemStack diamond = setDisplayMetaItem(new ItemStack(Material.DIAMOND),ChatColor.AQUA,"ステージ選択");
-
-        //途中参加ができるエメラルド
-        ItemStack emerald = setDisplayMetaItem(new ItemStack(Material.EMERALD),ChatColor.GREEN,"ゲームに参加する");
-
-        //PERKDECKを選択できるエンドクリスタル
-        ItemStack end = setDisplayMetaItem(new ItemStack(Material.END_CRYSTAL),ChatColor.GOLD,"PERK選択");
-
-        //メタデータをつけたアイテムを付与
-        inventory.clear();
-        inventory.setItem(0, diamond);
-        inventory.setItem(8, emerald);
-        inventory.setItem(1, end);
-    }
-
-    /**
-     * ゲーム用初期アイテムを付与する
-     *
-     * @param inventory 対象プレイヤーのインベントリ
-     * @param player    対象プレイヤー
-     */
-    public void giveGameItem(Inventory inventory, Player player) {
-        inventory.clear();
-
-        ItemStack firework = setDisplayMetaItem(new ItemStack(Material.FIREWORK_STAR,2),ChatColor.YELLOW,"グレネード");
-        ItemStack clayball = setDisplayMetaItem(new ItemStack(Material.CLAY_BALL,1),ChatColor.YELLOW,"コンカッション");
-
-        new CSUtility().giveWeapon(player, "MAC10", 1);
-        new CSUtility().giveWeapon(player, "P226", 1);
-
-        inventory.addItem(firework);
-        inventory.addItem(clayball);
-        inventory.addItem(new ItemStack(Material.COOKED_BEEF, 3));
-        player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 1000000, 0, true));
-
-        //対応したメタデータの能力を付与する
-        new PerkDecks(player, this).setPeekDeck();
-
-        //tabリストを変更
-        player.setPlayerListName("[" + ChatColor.AQUA + "生存者" + ChatColor.WHITE + "]" + player.getDisplayName());
-
-    }
-
-    /**
-     * メタデータを付与したアイテムを返す
-     *
-     * @param item  メタデータを付与したいアイテム
-     * @param color 名前につけたい色
-     * @param name  付与したい名前
-     * @return　メタデータをセットしたアイテム
-     */
-    private ItemStack setDisplayMetaItem(ItemStack item, ChatColor color, String name) {
-        ItemMeta itemMeta = item.getItemMeta();
-        itemMeta.setDisplayName(color + name);
-        item.setItemMeta(itemMeta);
-        return item;
-    }
-
-    //ゲッターセッター
     public static boolean isGame() {
         return game;
     }
