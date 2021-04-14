@@ -2,6 +2,7 @@ package com.github.fratikak.l4d_gamepl.listener;
 
 import com.github.fratikak.l4d_gamepl.L4D_gamepl;
 import com.github.fratikak.l4d_gamepl.task.StopTask;
+import com.github.fratikak.l4d_gamepl.util.DistributionItems;
 import com.github.fratikak.l4d_gamepl.util.PerkDecks;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
@@ -61,7 +62,7 @@ public class Login implements Listener {
         //ゲームで付与されるポーション効果が残っていれば削除
         player.removePotionEffect(PotionEffectType.NIGHT_VISION);
 
-        pl.giveLobbyItem(inventory); //ロビーアイテム追加
+        new DistributionItems(pl).giveLobbyItem(player); //ロビーアイテム追加
         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
 
         player.teleport(location); //スポーン地点固定
