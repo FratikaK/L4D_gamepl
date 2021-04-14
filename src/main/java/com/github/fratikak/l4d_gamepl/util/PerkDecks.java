@@ -50,11 +50,11 @@ public class PerkDecks {
         this.plugin = plugin;
     }
 
-    public void setMeta(String peekdeck) {
+    public void setMeta(String perkdeck) {
 
         player.removeMetadata(PERK_KEY, plugin);
 
-        player.setMetadata(PERK_KEY, new FixedMetadataValue(plugin, peekdeck));
+        player.setMetadata(PERK_KEY, new FixedMetadataValue(plugin, perkdeck));
     }
 
     /**
@@ -74,7 +74,7 @@ public class PerkDecks {
         MetadataValue value = null;
 
         for (MetadataValue v : peeks) {
-            if (v.getOwningPlugin().getName().equals(plugin.getName())) {
+            if (Objects.requireNonNull(v.getOwningPlugin()).getName().equals(plugin.getName())) {
                 value = v;
                 break;
             }
