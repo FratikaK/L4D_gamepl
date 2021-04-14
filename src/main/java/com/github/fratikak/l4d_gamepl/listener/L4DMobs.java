@@ -9,7 +9,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.SlimeSplitEvent;
-import org.bukkit.event.raid.RaidTriggerEvent;
 
 /**
  * ゲーム中に出現する特殊Mobの処理を記述する
@@ -33,7 +32,7 @@ public class L4DMobs implements Listener {
      * クリーパーが攻撃を受けた時に、即爆発するようにする
      */
     @EventHandler
-    public void bommer(EntityDamageByEntityEvent event) {
+    public void boomer(EntityDamageByEntityEvent event) {
         Entity entity = event.getEntity();
 
         if (entity.getType() == EntityType.CREEPER) {
@@ -49,7 +48,7 @@ public class L4DMobs implements Listener {
      * スライム（マグマキューブ）が分裂する度に爆発が起きる
      */
     @EventHandler
-    public void slimeBommer(SlimeSplitEvent event) {
+    public void slimeBoomer(SlimeSplitEvent event) {
         World world = event.getEntity().getWorld();
         Location location = event.getEntity().getLocation();
 
