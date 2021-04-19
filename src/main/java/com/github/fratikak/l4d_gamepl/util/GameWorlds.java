@@ -5,16 +5,14 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+/**
+ * コマンドで入力したステージへテレポートする
+ * 複数ステージに対応
+ * ステージを増やした場合、checkpointクラスも編集すること
+ *
+ * @author FratikaK
+ */
 public class GameWorlds {
-
-    /**
-     * コマンドで入力したステージへテレポートする
-     * 複数ステージに対応
-     * ステージを増やした場合、checkpointクラスも編集すること
-     *
-     * @author FratikaK
-     */
-
 
     /*
     0   デフォルト
